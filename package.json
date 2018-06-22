@@ -1,0 +1,53 @@
+{
+  "name": "@ng-apimock/core",
+  "description": "ng-apimock core module",
+  "version": "1.0.1",
+  "homepage": "https://github.com/ng-apimock/core#readme",
+  "author": {
+    "name": "Mischa Dasberg",
+    "email": "mischa@dasberg.nl"
+  },
+  "main": "dist/base.client.js",
+  "types": "dist/base.client.d.ts",
+  "scripts": {
+    "precompile": "rimraf dist",
+    "compile": "tsc",
+    "lint": "tslint -p tsconfig.json",
+    "test": "jasmine-ts \"src/**/*.spec.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ng-apimock/core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ng-apimock/core/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/ng-apimock/core/blob/master/LICENSE-MIT"
+    }
+  ],
+  "keywords": [
+    "apimock",
+    "ng-apimock",
+    "http",
+    "api"
+  ],
+  "devDependencies": {
+    "@types/jasmine": "2.8.8",
+    "@types/node-fetch": "2.1.1",
+    "@types/sinon": "5.0.1",
+    "@types/url-join": "0.8.2",
+    "@types/uuid": "3.4.3",
+    "jasmine-ts": "0.2.1",
+    "rimraf": "2.6.2",
+    "sinon": "6.0.0",
+    "tslint": "5.10.0",
+    "tslint-eslint-rules": "5.3.1",
+    "typescript": "2.9.2",
+    "vrsource-tslint-rules": "5.8.2"
+  },
+  "dependencies": {
+  }
+}

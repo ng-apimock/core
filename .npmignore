@@ -1,0 +1,15 @@
+# src
+src
+
+# test
+**/*.spec.*
+
+# configs
+tsconfig.json
+tslint.json
+
+# idea
+.idea
+
+# ci
+.circleci
