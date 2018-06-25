@@ -55,7 +55,7 @@ There are a couple of rules to follow.
 1. For each api call create a separate file
 2. Each file needs to follow the format below.
 
-```json
+```
 {
   "name": "some mock", // the name of the mock
   "isArray": true, // optional, indicator that indicates if the response data is an array or object (for json response)
