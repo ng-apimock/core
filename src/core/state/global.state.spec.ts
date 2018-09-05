@@ -1,16 +1,15 @@
 import SessionState from './session.state';
 
 describe('SessionState', () => {
-    const IDENTIFIER = 'id';
     let state: SessionState;
 
     describe('constructor', () => {
         beforeAll(() => {
-            state = new SessionState(IDENTIFIER);
+            state = new SessionState('id');
         });
 
         it('sets the identifier', () =>
-            expect(state.identifier).toBe(IDENTIFIER));
+            expect(state.identifier).toBe('id'));
 
         it('creates a new mocks object', () =>
             expect(state.mocks).toEqual({}));

@@ -9,58 +9,49 @@ import MocksState from '../../../state/mocks.state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('InitHandler', () => {
-    const APIMOCK_ID = 'apimockId';
-    const BASE_URL = '/base-url';
-
     let container: Container;
     let handler: InitHandler;
-    let mocksState: MocksState;
+    let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let nextFn: sinon.SinonStub;
-    let request: any;
-    let requestOnFn: sinon.SinonStub;
-    let response: http.ServerResponse;
-    let responseEndFn: sinon.SinonStub;
-    let responseWriteHeadFn: sinon.SinonStub;
+    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
+    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
         mocksState = sinon.createStubInstance(MocksState);
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
-        requestOnFn = request.on as sinon.SinonStub;
         response = sinon.createStubInstance(http.ServerResponse);
-        responseEndFn = response.end as sinon.SinonStub;
-        responseWriteHeadFn = response.writeHead as sinon.SinonStub;
 
-        container.bind<string>('BaseUrl').toConstantValue(BASE_URL);
-        container.bind<MocksState>('MocksState').toConstantValue(mocksState);
-        container.bind<InitHandler>('InitHandler').to(InitHandler);
+        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('InitHandler').to(InitHandler);
 
         handler = container.get<InitHandler>('InitHandler');
     });
 
     describe('handle', () =>
         it('ends the response', () => {
-            handler.handle(request, response, nextFn, {id: APIMOCK_ID});
-            sinon.assert.calledWith(responseWriteHeadFn, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(responseEndFn);
+            handler.handle(request as any, response, nextFn, {id: 'apimockId'});
+            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            sinon.assert.called(response.end);
         }));
 
     describe('isApplicable', () => {
         it('indicates applicable when url and action match', () => {
-            request.url = `${BASE_URL}/init`;
+            request.url = `${'/base-url'}/init`;
             request.method = HttpMethods.GET;
-            expect(handler.isApplicable(request)).toBe(true);
+            expect(handler.isApplicable(request as any)).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
-            request.url = `${BASE_URL}/init`;
+            request.url = `${'/base-url'}/init`;
             request.method = HttpMethods.PUT;
-            expect(handler.isApplicable(request)).toBe(false);
+            expect(handler.isApplicable(request as any)).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${BASE_URL}/no-match`;
+            request.url = `${'/base-url'}/no-match`;
             request.method = HttpMethods.GET;
-            expect(handler.isApplicable(request)).toBe(false);
+            expect(handler.isApplicable(request as any)).toBe(false);
         });
     });
 });

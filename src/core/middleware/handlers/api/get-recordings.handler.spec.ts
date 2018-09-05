@@ -10,39 +10,24 @@ import State from '../../../state/state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('GetRecordingsHandler', () => {
-    const APIMOCK_ID = 'apimockId';
-    const BASE_URL = '/base-url';
-    const DEFAULT_MOCKS_STATE = {
-        'one': {scenario: 'some', delay: 0, echo: true},
-        'two': {scenario: 'thing', delay: 1000, echo: false}
-    };
-
     let container: Container;
     let handler: GetRecordingsHandler;
     let matchingState: State;
-    let mocksState: MocksState;
-    let mocksStateGetMatchingStateFn: sinon.SinonStub;
+    let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let nextFn: sinon.SinonStub;
-    let request: any;
-    let requestOnFn: sinon.SinonStub;
-    let response: http.ServerResponse;
-    let responseEndFn: sinon.SinonStub;
-    let responseWriteHeadFn: sinon.SinonStub;
+    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
+    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
         mocksState = sinon.createStubInstance(MocksState);
-        mocksStateGetMatchingStateFn = mocksState.getMatchingState as sinon.SinonStub;
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
-        requestOnFn = request.on as sinon.SinonStub;
         response = sinon.createStubInstance(http.ServerResponse);
-        responseWriteHeadFn = response.writeHead as sinon.SinonStub;
-        responseEndFn = response.end as sinon.SinonStub;
 
-        container.bind<string>('BaseUrl').toConstantValue(BASE_URL);
-        container.bind<MocksState>('MocksState').toConstantValue(mocksState);
-        container.bind<GetRecordingsHandler>('GetRecordingsHandler').to(GetRecordingsHandler);
+        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('GetRecordingsHandler').to(GetRecordingsHandler);
 
         handler = container.get<GetRecordingsHandler>('GetRecordingsHandler');
     });
@@ -52,51 +37,54 @@ describe('GetRecordingsHandler', () => {
             mocksState.mocks = [
                 {
                     name: 'one',
-                    request: {url: '/one', method: 'GET'},
-                    responses: {'some': {}, 'thing': {}}
+                    request: { url: '/one', method: 'GET' },
+                    responses: { 'some': {}, 'thing': {} }
                 },
                 {
                     name: 'two',
-                    request: {url: '/two', method: 'POST'},
-                    responses: {'some': {}, 'thing': {}}
+                    request: { url: '/two', method: 'POST' },
+                    responses: { 'some': {}, 'thing': {} }
                 }
             ];
             matchingState = {
-                mocks: JSON.parse(JSON.stringify(DEFAULT_MOCKS_STATE)),
+                mocks: JSON.parse(JSON.stringify({
+                    'one': { scenario: 'some', delay: 0, echo: true },
+                    'two': { scenario: 'thing', delay: 1000, echo: false }
+                })),
                 variables: {}
             };
-            mocksStateGetMatchingStateFn.returns(matchingState);
+            mocksState.getMatchingState.returns(matchingState);
         });
 
         it('gets the mocks', () => {
-            handler.handle(request, response, nextFn, {id: APIMOCK_ID});
-            sinon.assert.calledWith(responseWriteHeadFn, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.calledWith(responseEndFn, JSON.stringify({
+            handler.handle(request as any, response, nextFn, { id: 'apimockId' });
+            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            sinon.assert.calledWith(response.end, JSON.stringify({
                 recordings: mocksState.recordings,
             }));
         });
 
         afterEach(() => {
-            responseWriteHeadFn.reset();
-            responseEndFn.reset();
+            response.writeHead.reset();
+            response.end.reset();
         });
     });
 
     describe('isApplicable', () => {
         it('indicates applicable when url and method match', () => {
-            request.url = `${BASE_URL}/recordings`;
+            request.url = `${'/base-url'}/recordings`;
             request.method = HttpMethods.GET;
-            expect(handler.isApplicable(request)).toBe(true);
+            expect(handler.isApplicable(request as any)).toBe(true);
         });
         it('indicates not applicable when the method does not match', () => {
-            request.url = `${BASE_URL}/recordings`;
+            request.url = `${'/base-url'}/recordings`;
             request.method = HttpMethods.PUT;
-            expect(handler.isApplicable(request)).toBe(false);
+            expect(handler.isApplicable(request as any)).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${BASE_URL}/no-match`;
+            request.url = `${'/base-url'}/no-match`;
             request.method = HttpMethods.GET;
-            expect(handler.isApplicable(request)).toBe(false);
+            expect(handler.isApplicable(request as any)).toBe(false);
         });
     });
 });

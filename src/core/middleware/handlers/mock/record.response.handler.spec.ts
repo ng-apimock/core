@@ -14,12 +14,11 @@ import {HttpMethods, HttpStatusCode} from '../../http';
 import Recording from '../../../state/recording';
 
 describe('RecordResponseHandler', () => {
-    let body: string;
     let clock: sinon.SinonFakeTimers;
     let container: Container;
     let fetchResponseFn: sinon.SinonStub;
     let fsWriteFileSyncFn: sinon.SinonStub;
-    let mocksState: MocksState;
+    let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let nextFn: sinon.SinonStub;
     let mock: Mock;
     let now: Date;
@@ -29,14 +28,11 @@ describe('RecordResponseHandler', () => {
     let responseBufferFn: sinon.SinonStub;
     let responseHeadersGetFn: sinon.SinonStub;
     let responseHeadersRawFn: sinon.SinonStub;
-    let response: http.ServerResponse;
-    let responseEndFn: sinon.SinonStub;
-    let responseWriteHeadFn: sinon.SinonStub;
+    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
     let uuidV4Fn: sinon.SinonStub;
 
 
     beforeAll(() => {
-        body = '{"x":"x"}';
         container = new Container();
         mocksState = sinon.createStubInstance(MocksState);
         mock = {name: 'some'} as Mock;
@@ -51,20 +47,17 @@ describe('RecordResponseHandler', () => {
         responseHeadersRawFn = sinon.stub();
         responseHeadersGetFn = sinon.stub();
         response = sinon.createStubInstance(http.ServerResponse);
-        responseWriteHeadFn = response.writeHead as sinon.SinonStub;
-        responseEndFn = response.end as sinon.SinonStub;
-        uuidV4Fn = sinon.stub(uuid, <any>'v4');
-        fsWriteFileSyncFn = sinon.stub(fs, <any>'writeFileSync');
+        uuidV4Fn = sinon.stub(uuid, 'v4');
+        fsWriteFileSyncFn = sinon.stub(fs, 'writeFileSync');
 
-        container.bind<string>('BaseUrl').toConstantValue('baseUrl');
-        container.bind<MocksState>('MocksState').toConstantValue(mocksState);
-        container.bind<RecordResponseHandler>('RecordResponseHandler').to(RecordResponseHandler);
+        container.bind('BaseUrl').toConstantValue('baseUrl');
+        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('RecordResponseHandler').to(RecordResponseHandler);
 
-        mocksState = container.get<MocksState>('MocksState');
         recordResponseHandler = container.get<RecordResponseHandler>('RecordResponseHandler');
 
-        recordFn = sinon.stub(RecordResponseHandler.prototype, <any>'record');
-        fetchResponseFn = sinon.stub(RecordResponseHandler.prototype, <any>'fetchResponse');
+        recordFn = sinon.stub(RecordResponseHandler.prototype, 'record');
+        fetchResponseFn = sinon.stub(RecordResponseHandler.prototype, 'fetchResponse');
     });
 
     describe('handle', () => {
@@ -78,7 +71,7 @@ describe('RecordResponseHandler', () => {
                 fetchResponseFn.resolves({
                     buffer: responseBufferFn, headers: {raw: responseHeadersRawFn}, status: 200
                 });
-                recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: body});
+                recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
             });
 
             it('sets the record header to true', () =>
@@ -108,7 +101,7 @@ describe('RecordResponseHandler', () => {
             });
 
             it('on request data record', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: body});
+                await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
                 sinon.assert.calledWith(recordFn, 'some', sinon.match(async (actual: Recording) => {
                     await expect(actual.request.url).toBe('/some/api');
                     await expect(actual.request.method).toBe(HttpMethods.GET);
@@ -123,16 +116,16 @@ describe('RecordResponseHandler', () => {
             });
 
             it('returns the response', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: body});
-                sinon.assert.calledWith(responseWriteHeadFn, HttpStatusCode.OK, {'Content-Type': 'application/pdf'});
-                sinon.assert.calledWith(responseEndFn, 'the-data');
+                await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
+                sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, {'Content-Type': 'application/pdf'});
+                sinon.assert.calledWith(response.end, 'the-data');
             });
 
             afterEach(() => {
                 fetchResponseFn.reset();
                 recordFn.reset();
-                responseEndFn.reset();
-                responseWriteHeadFn.reset();
+                response.end.reset();
+                response.writeHead.reset();
             });
         });
 
@@ -145,18 +138,18 @@ describe('RecordResponseHandler', () => {
 
             it('returns the error response', async () => {
                 try {
-                    await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: body});
+                    await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
                     await rejectedPromise;
                 } catch (err) {
-                    sinon.assert.calledWith(responseEndFn, 'oops');
+                    sinon.assert.calledWith(response.end, 'oops');
                 }
             });
 
             afterEach(() => {
                 fetchResponseFn.reset();
                 recordFn.reset();
-                responseEndFn.reset();
-                responseWriteHeadFn.reset();
+                response.end.reset();
+                response.writeHead.reset();
             });
         });
     });

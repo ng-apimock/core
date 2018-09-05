@@ -38,6 +38,7 @@ class Middleware {
      * @param {MocksState} apimockState The apimock state.
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
      * @param {RecordResponseHandler} recordResponseHandler The record response handler.
+     * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
      */

@@ -11,15 +11,13 @@ import MocksState from '../state/mocks.state';
 import {HttpHeaders} from '../middleware/http';
 
 describe('MocksProcessor', () => {
-    const SRC = 'src';
-
     let consoleLogFn: sinon.SinonStub;
     let consoleWarnFn: sinon.SinonStub;
     let container: Container;
     let doneFn: sinon.SinonStub;
     let fsReadJsonSyncFn: sinon.SinonStub;
     let globSyncFn: sinon.SinonStub;
-    let mocksState: MocksState;
+    let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let processor: MocksProcessor;
 
     beforeAll(() => {
@@ -27,13 +25,13 @@ describe('MocksProcessor', () => {
         doneFn = sinon.stub();
         mocksState = sinon.createStubInstance(MocksState);
 
-        container.bind<MocksState>('MocksState').toConstantValue(mocksState);
-        container.bind<MocksProcessor>('MocksProcessor').to(MocksProcessor);
+        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('MocksProcessor').to(MocksProcessor);
 
-        consoleWarnFn = sinon.stub(console, <any>'warn');
-        consoleLogFn = sinon.stub(console, <any>'log');
-        fsReadJsonSyncFn = sinon.stub(fs, <any>'readJsonSync');
-        globSyncFn = sinon.stub(glob, <any>'sync');
+        consoleWarnFn = sinon.stub(console, 'warn');
+        consoleLogFn = sinon.stub(console, 'log');
+        fsReadJsonSyncFn = sinon.stub(fs, 'readJsonSync');
+        globSyncFn = sinon.stub(glob, 'sync');
 
         processor = container.get<MocksProcessor>('MocksProcessor');
     });
@@ -91,19 +89,19 @@ describe('MocksProcessor', () => {
 
         describe('by default', ()=> {
             beforeAll(()=> {
-                processor.process({src: SRC});
+                processor.process({src: 'src'});
             });
 
             it('processes each mock', () => {
                 sinon.assert.calledWith(globSyncFn,
                     '**/*.json', {
-                        cwd: SRC, root: '/'
+                        cwd: 'src', root: '/'
                     }
                 );
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join(SRC, 'mock/minimal-json-request.json'));
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join(SRC, 'mock/minimal-binary-request.json'));
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join(SRC, 'mock/full-request.json'));
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join(SRC, 'mock/duplicate-request.json'));
+                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-json-request.json'));
+                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-binary-request.json'));
+                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/full-request.json'));
+                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/duplicate-request.json'));
             });
 
             it('overrides a duplicate mock', () => {
@@ -168,23 +166,23 @@ describe('MocksProcessor', () => {
             it('processes unique mocks', () =>
                 sinon.assert.calledWith(consoleLogFn, `Processed 3 unique mocks.`));
 
-            // afterEach(() => {
-            //     consoleLogFn.reset();
-            //     consoleWarnFn.reset();
-            //     fsReadJsonSyncFn.reset();
-            //     globSyncFn.reset();
-            // });
+            afterAll(() => {
+                consoleLogFn.reset();
+                consoleWarnFn.reset();
+                fsReadJsonSyncFn.reset();
+                globSyncFn.reset();
+            });
         });
 
         describe('with full processing options', () => {
             beforeAll(()=> {
                 globSyncFn.returns([]);
-                processor.process({src: SRC, pattern: '**/*.mock.json'});
+                processor.process({src: 'src', pattern: '**/*.mock.json'});
             });
             it('processes each mock', () => {
                 sinon.assert.calledWith(globSyncFn,
                     '**/*.mock.json', {
-                        cwd: SRC, root: '/'
+                        cwd: 'src', root: '/'
                     }
                 );
             });
