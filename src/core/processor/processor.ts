@@ -35,9 +35,12 @@ class MocksProcessor {
             cwd: options.src,
             root: '/'
         }).forEach((file) => {
-            const mock = fs.readJsonSync(path.join(options.src, file));
+            const mockPath = path.join(options.src, file)
+            const mock = fs.readJsonSync(mockPath);
             const match = this.mocksState.mocks.find((_mock: Mock) => _mock.name === mock.name);
             const index = this.mocksState.mocks.indexOf(match);
+
+            mock.path = path.dirname(mockPath);
 
             if (index > -1) { // exists so update mock
                 console.warn(`Mock with identifier '${mock.name}' already exists. Overwriting existing mock.`);

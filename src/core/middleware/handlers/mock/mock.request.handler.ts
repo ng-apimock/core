@@ -3,6 +3,7 @@ import {inject, injectable} from 'inversify';
 
 import * as fs from 'fs-extra';
 import * as http from 'http';
+import * as path from 'path';
 import * as url from 'url';
 
 import Mock from '../../../mock/mock';
@@ -31,7 +32,7 @@ class MockRequestHandler implements Handler {
             let headers = _response.headers;
             let chunk: Buffer | string;
             if (this.isBinaryResponse(_response)) {
-                chunk = fs.readFileSync(_response.file);
+                chunk = fs.readFileSync(path.join(params.mock.path, _response.file));
             } else {
                 const _variables: any = this.mocksState.getVariables(params.id);
                 chunk = this.interpolateResponseData(_response.data, _variables);

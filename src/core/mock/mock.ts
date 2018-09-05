@@ -11,6 +11,8 @@ interface Mock {
     request: MockRequest;
     // the available responses
     responses: { [key: string]: MockResponse };
+    // the path to the mock file
+    path?: string;
 }
 
 export default Mock;

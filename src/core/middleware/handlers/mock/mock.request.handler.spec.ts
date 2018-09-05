@@ -57,29 +57,32 @@ describe('MockRequestHandler', () => {
                 });
 
                 it('reads the binary content and returns it as response', () => {
-                    mockRequestHandler.handle(request as any, response, nextFn, {id: 'apimockId', mock: {
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock});
+                    mockRequestHandler.handle(request as any, response, nextFn, {
+                        id: 'apimockId', mock: {
+                            path: 'path/to',
+                            name: 'some',
+                            request: {
+                                method: HttpMethods.GET,
+                                url: '/some/url',
+                            }
+                        } as Mock
+                    });
 
                     sinon.assert.calledWith(mocksState.getResponse, ({
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock).name, 'apimockId');
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock).name, 'apimockId');
                     sinon.assert.calledWith(mocksState.getDelay, ({
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock).name, 'apimockId');
-                    sinon.assert.calledWith(fsReadFileSyncFn, mockResponse.file);
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock).name, 'apimockId');
+                    sinon.assert.calledWith(fsReadFileSyncFn, 'path/to/some.pdf');
 
                     clock.tick(1000);
                     sinon.assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
@@ -88,13 +91,16 @@ describe('MockRequestHandler', () => {
 
                 it('wraps the body in a json callback', () => {
                     getJsonCallbackNameFn.returns('callback');
-                    mockRequestHandler.handle(request as any, response, nextFn, {id: 'apimockId', mock: {
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock});
+                    mockRequestHandler.handle(request as any, response, nextFn, {
+                        id: 'apimockId', mock: {
+                            name: 'some',
+                            path: 'path/to',
+                            request: {
+                                method: HttpMethods.GET,
+                                url: '/some/url',
+                            }
+                        } as Mock
+                    });
 
                     clock.tick(1000);
                     sinon.assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
@@ -119,9 +125,9 @@ describe('MockRequestHandler', () => {
                     mockResponse = {
                         status: HttpStatusCode.OK,
                         headers: HttpHeaders.CONTENT_TYPE_APPLICATION_JSON,
-                        data: {'a': 'a%%x%%'}
+                        data: { 'a': 'a%%x%%' }
                     };
-                    variables = {x: 'x'};
+                    variables = { x: 'x' };
                     mocksState.getResponse.returns(mockResponse);
                     mocksState.getVariables.returns(variables);
                     mocksState.getDelay.returns(1000);
@@ -130,29 +136,31 @@ describe('MockRequestHandler', () => {
                 });
 
                 it('interpolates the data and returns it as response', () => {
-                    mockRequestHandler.handle(request as any, response, nextFn, {id: 'apimockId', mock: {
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock});
+                    mockRequestHandler.handle(request as any, response, nextFn, {
+                        id: 'apimockId', mock: {
+                            name: 'some',
+                            request: {
+                                method: HttpMethods.GET,
+                                url: '/some/url',
+                            }
+                        } as Mock
+                    });
 
                     sinon.assert.calledWith(mocksState.getResponse, ({
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock).name, 'apimockId');
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock).name, 'apimockId');
                     sinon.assert.calledWith(mocksState.getVariables, 'apimockId');
                     sinon.assert.calledWith(mocksState.getDelay, ({
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock).name, 'apimockId');
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock).name, 'apimockId');
                     sinon.assert.calledWith(interpolateResponseDataFn, mockResponse.data, variables);
 
                     clock.tick(1000);
@@ -162,13 +170,15 @@ describe('MockRequestHandler', () => {
 
                 it('wraps the body in a json callback', () => {
                     getJsonCallbackNameFn.returns('callback');
-                    mockRequestHandler.handle(request as any, response, nextFn, {id: 'apimockId', mock: {
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock});
+                    mockRequestHandler.handle(request as any, response, nextFn, {
+                        id: 'apimockId', mock: {
+                            name: 'some',
+                            request: {
+                                method: HttpMethods.GET,
+                                url: '/some/url',
+                            }
+                        } as Mock
+                    });
 
                     clock.tick(1000);
                     sinon.assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
@@ -191,21 +201,23 @@ describe('MockRequestHandler', () => {
             it('calls next()', () => {
                 mocksState.getResponse.returns(undefined);
 
-                mockRequestHandler.handle(request as any, response, nextFn, {id: 'apimockId', mock: {
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock});
+                mockRequestHandler.handle(request as any, response, nextFn, {
+                    id: 'apimockId', mock: {
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock
+                });
 
                 sinon.assert.calledWith(mocksState.getResponse, ({
-        name: 'some',
-        request: {
-            method: HttpMethods.GET,
-            url: '/some/url',
-        }
-    } as Mock).name, 'apimockId');
+                    name: 'some',
+                    request: {
+                        method: HttpMethods.GET,
+                        url: '/some/url',
+                    }
+                } as Mock).name, 'apimockId');
                 sinon.assert.notCalled(mocksState.getVariables);
                 sinon.assert.called(nextFn);
             }));
@@ -231,7 +243,7 @@ describe('MockRequestHandler', () => {
             expect(mockRequestHandler.interpolateResponseData({
                 x: 'x is %%x%%',
                 y: 'y is %%y%%'
-            }, {x: 'XXX'})).toBe('{"x":"x is XXX","y":"y is %%y%%"}'));
+            }, { x: 'XXX' })).toBe('{"x":"x is XXX","y":"y is %%y%%"}'));
 
     });
 
@@ -241,11 +253,11 @@ describe('MockRequestHandler', () => {
         });
         describe('no query param callback', () =>
             it('returns false', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url'} as http.IncomingMessage)).toBe(false)));
+                expect(mockRequestHandler.getJsonCallbackName({ url: 'some/url' } as http.IncomingMessage)).toBe(false)));
 
         describe('query param callback', () =>
             it('returns the callback name', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url/?callback=callme'} as http.IncomingMessage)).toBe('callme')));
+                expect(mockRequestHandler.getJsonCallbackName({ url: 'some/url/?callback=callme' } as http.IncomingMessage)).toBe('callme')));
     });
 
     afterAll(() => {
