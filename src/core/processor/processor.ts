@@ -35,7 +35,7 @@ class MocksProcessor {
             cwd: options.src,
             root: '/'
         }).forEach((file) => {
-            const mockPath = path.join(options.src, file)
+            const mockPath = path.join(options.src, file);
             const mock = fs.readJsonSync(mockPath);
             const match = this.mocksState.mocks.find((_mock: Mock) => _mock.name === mock.name);
             const index = this.mocksState.mocks.indexOf(match);
