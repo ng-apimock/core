@@ -22,7 +22,8 @@ class GetRecordingsHandler implements ApplicableHandler {
     /** {@inheritDoc}.*/
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
         const result: any = {
-            recordings: this.mocksState.recordings
+            recordings: this.mocksState.recordings,
+            record: this.mocksState.record
         };
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end(JSON.stringify(result));
