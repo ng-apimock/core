@@ -21,6 +21,7 @@ import {ApplicableHandler} from './handlers/handler';
 import {HttpMethods} from './http';
 import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
+import RecordHandler from './handlers/api/record.handler';
 
 describe('Middleware', () => {
     let applicableHandler: ApplicableHandler;
@@ -42,6 +43,7 @@ describe('Middleware', () => {
     let nextFn: sinon.SinonStub;
     let passThroughsHandler: sinon.SinonStubbedInstance<PassThroughsHandler>;
     let recordResponseHandler: sinon.SinonStubbedInstance<RecordResponseHandler>;
+    let recordHandler: sinon.SinonStubbedInstance<RecordHandler>;
     let getRecordedResponseHandler: sinon.SinonStubbedInstance<GetRecordedResponseHandler>;
     let request: any;
     let requestOnFn: sinon.SinonStub;
@@ -68,6 +70,7 @@ describe('Middleware', () => {
         mockRequestHandler = sinon.createStubInstance(MockRequestHandler);
         passThroughsHandler = sinon.createStubInstance(PassThroughsHandler);
         recordResponseHandler = sinon.createStubInstance(RecordResponseHandler);
+        recordHandler = sinon.createStubInstance(RecordHandler);
         getRecordedResponseHandler = sinon.createStubInstance(GetRecordedResponseHandler);
         setVariableHandler = sinon.createStubInstance(SetVariableHandler);
         updateMocksHandler = sinon.createStubInstance(UpdateMocksHandler);
@@ -83,6 +86,7 @@ describe('Middleware', () => {
         container.bind('MocksState').toConstantValue(mocksState);
         container.bind('PassThroughsHandler').toConstantValue(passThroughsHandler);
         container.bind('SetVariableHandler').toConstantValue(setVariableHandler);
+        container.bind('RecordHandler').toConstantValue(recordHandler);
         container.bind('RecordResponseHandler').toConstantValue(recordResponseHandler);
         container.bind('GetRecordedResponseHandler').toConstantValue(getRecordedResponseHandler);
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);

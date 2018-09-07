@@ -17,6 +17,7 @@ import SetVariableHandler from './middleware/handlers/api/set-variable.handler';
 import UpdateMocksHandler from './middleware/handlers/api/update-mocks.handler';
 import GetRecordingsHandler from './middleware/handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './middleware/handlers/api/get-recorded-response.handler';
+import RecordHandler from './middleware/handlers/api/record.handler';
 
 // IOC configuration
 const container = new Container();
@@ -38,7 +39,7 @@ container.bind<DeleteVariableHandler>('DeleteVariableHandler').to(DeleteVariable
 
 container.bind<DefaultsHandler>('DefaultsHandler').to(DefaultsHandler);
 container.bind<PassThroughsHandler>('PassThroughsHandler').to(PassThroughsHandler);
-
+container.bind<RecordHandler>('RecordHandler').to(RecordHandler);
 container.bind<GetRecordedResponseHandler>('GetRecordedResponseHandler').to(GetRecordedResponseHandler);
 container.bind<GetRecordingsHandler>('GetRecordingsHandler').to(GetRecordingsHandler);
 

@@ -19,6 +19,7 @@ import InitHandler from './handlers/api/init.handler';
 import {ApplicableHandler} from './handlers/handler';
 import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
+import RecordHandler from './handlers/api/record.handler';
 
 /** Middleware. */
 @injectable()
@@ -39,6 +40,7 @@ class Middleware {
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
      * @param {RecordResponseHandler} recordResponseHandler The record response handler.
      * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
+     * @param {RecordHandler} recordHandler The record handler.
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
      */
@@ -54,6 +56,7 @@ class Middleware {
                 @inject('PassThroughsHandler') private passThroughsHandler: PassThroughsHandler,
                 @inject('RecordResponseHandler') private recordResponseHandler: RecordResponseHandler,
                 @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
+                @inject('RecordHandler') private recordHandler: RecordHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
                 @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler) {
         this.handlers = [
@@ -65,6 +68,7 @@ class Middleware {
             initHandler,
             passThroughsHandler,
             getRecordedResponseHandler,
+            recordHandler,
             setVariableHandler,
             updateMocksHandler
         ];
@@ -85,16 +89,20 @@ class Middleware {
             const body = requestDataChunks.length > 0 ? JSON.parse(Buffer.concat(requestDataChunks).toString()) : {};
             const handler = this.getMatchingApplicableHandler(request, body);
             if (handler !== undefined) {
-                handler.handle(request, response, next, {id: apimockId, body: body});
+                handler.handle(request, response, next, { id: apimockId, body: body });
             } else {
                 const matchingMock: Mock = this.apimockState.getMatchingMock(request.url, request.method, request.headers, body);
                 if (matchingMock !== undefined) {
                     // console.log("MATCHING MOCK", matchingMock)
-                    this.echoRequestHandler.handle(request, response, next, {id: apimockId, mock: matchingMock, body: body});
+                    this.echoRequestHandler.handle(request, response, next, {
+                        id: apimockId,
+                        mock: matchingMock,
+                        body: body
+                    });
                     if (this.apimockState.record && request.headers.record === undefined) {
-                        this.recordResponseHandler.handle(request, response, next, {mock: matchingMock, body: body});
+                        this.recordResponseHandler.handle(request, response, next, { mock: matchingMock, body: body });
                     } else {
-                        this.mockRequestHandler.handle(request, response, next, {id: apimockId, mock: matchingMock});
+                        this.mockRequestHandler.handle(request, response, next, { id: apimockId, mock: matchingMock });
                     }
                 } else {
                     next();
