@@ -13,8 +13,8 @@ describe('RecordHandler', () => {
     let handler: RecordHandler;
     let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let nextFn: sinon.SinonStub;
-    let request:  sinon.SinonStubbedInstance<http.IncomingMessage>;
-    let response:  sinon.SinonStubbedInstance<http.ServerResponse>;
+    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
+    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
@@ -32,7 +32,7 @@ describe('RecordHandler', () => {
 
     describe('handle', () =>
         it('sets the recording indicator', () => {
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', record: true});
+            handler.handle(request as any, response, nextFn, { id: 'apimockId', body: { record: true } });
 
             expect(mocksState.record).toBe(true);
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
@@ -42,15 +42,15 @@ describe('RecordHandler', () => {
     describe('isApplicable', () => {
         it('indicates applicable when url and action match', () => {
             request.url = `${'/base-url'}/actions`;
-            expect(handler.isApplicable(request as any, {action: 'record'})).toBe(true);
+            expect(handler.isApplicable(request as any, { action: 'record' })).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
             request.url = `${'/base-url'}/actions`;
-            expect(handler.isApplicable(request as any, {action: 'NO-MATCHING-ACTION'})).toBe(false);
+            expect(handler.isApplicable(request as any, { action: 'NO-MATCHING-ACTION' })).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
             request.url = `${'/base-url'}/no-match`;
-            expect(handler.isApplicable(request as any, {action: 'record'})).toBe(false);
+            expect(handler.isApplicable(request as any, { action: 'record' })).toBe(false);
         });
     });
 });

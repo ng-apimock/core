@@ -21,9 +21,9 @@ class RecordHandler implements ApplicableHandler {
 
     /** {@inheritDoc}.*/
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
-        id: string, record?: boolean
+        id: string, body: { record?: boolean }
     }): void {
-        this.mocksState.record = params.record;
+        this.mocksState.record = params.body.record;
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
     }
