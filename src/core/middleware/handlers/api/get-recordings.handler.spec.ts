@@ -54,7 +54,7 @@ describe('GetRecordingsHandler', () => {
                 variables: {}
             };
             mocksState.getMatchingState.returns(matchingState);
-            mocksState.record = true
+            mocksState.record = true;
         });
 
         it('gets the recordings', () => {
