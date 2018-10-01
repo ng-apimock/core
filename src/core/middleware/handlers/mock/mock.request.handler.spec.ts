@@ -89,6 +89,40 @@ describe('MockRequestHandler', () => {
                     sinon.assert.calledWith(response.end, 'binary content');
                 });
 
+                it('throws an error when the binary file cannot be read', () => {
+                    fsReadFileSyncFn.throwsException();
+                    mockRequestHandler.handle(request as any, response, nextFn, {
+                        id: 'apimockId', mock: {
+                            path: 'path/to',
+                            name: 'some',
+                            request: {
+                                method: HttpMethods.GET,
+                                url: '/some/url',
+                            }
+                        } as Mock
+                    });
+
+                    sinon.assert.calledWith(mocksState.getResponse, ({
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock).name, 'apimockId');
+                    sinon.assert.calledWith(mocksState.getDelay, ({
+                        name: 'some',
+                        request: {
+                            method: HttpMethods.GET,
+                            url: '/some/url',
+                        }
+                    } as Mock).name, 'apimockId');
+                    sinon.assert.calledWith(fsReadFileSyncFn, 'path/to/some.pdf');
+
+                    clock.tick(1000);
+                    sinon.assert.calledWith(response.writeHead, HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                    sinon.assert.calledWith(response.end, JSON.stringify({message: 'Error'}));
+                });
+
                 it('wraps the body in a json callback', () => {
                     getJsonCallbackNameFn.returns('callback');
                     mockRequestHandler.handle(request as any, response, nextFn, {

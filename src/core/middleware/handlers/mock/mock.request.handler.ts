@@ -10,6 +10,7 @@ import Mock from '../../../mock/mock';
 import MockResponse from '../../../mock/mock.response';
 import MocksState from '../../../state/mocks.state';
 import {Handler} from '../handler';
+import {HttpHeaders, HttpStatusCode} from '../../http';
 
 /**  Handler for a mock request. */
 @injectable()
@@ -32,7 +33,12 @@ class MockRequestHandler implements Handler {
             let headers = _response.headers;
             let chunk: Buffer | string;
             if (this.isBinaryResponse(_response)) {
-                chunk = fs.readFileSync(path.join(params.mock.path, _response.file));
+                try {
+                    chunk = fs.readFileSync(path.join(params.mock.path, _response.file));
+                } catch (e) {
+                    response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                    response.end(JSON.stringify(e, ['message']));
+                }
             } else {
                 const _variables: any = this.mocksState.getVariables(params.id);
                 chunk = this.interpolateResponseData(_response.data, _variables);

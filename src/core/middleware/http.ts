@@ -13,4 +13,5 @@ export module HttpHeaders {
 export module HttpStatusCode {
     export const OK = 200;
     export const CONFLICT = 409;
+    export const INTERNAL_SERVER_ERROR = 500;
 }
