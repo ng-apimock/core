@@ -12,8 +12,6 @@ interface MockResponse {
     statusText?: string;
     // indicates this response is the default response
     default?: boolean;
-    // delay
-    delay?: number;
 }
 
 export default MockResponse;

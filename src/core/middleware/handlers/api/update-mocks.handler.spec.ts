@@ -42,6 +42,7 @@ describe('UpdateMocksHandler', () => {
                 },
                 {
                     name: 'two',
+                    delay: 1000,
                     request: { url: '/two', method: 'POST' },
                     responses: { 'some': {}, 'thing': {} }
                 }
@@ -60,16 +61,16 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'two', echo: true };
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
-            expect(matchingState.mocks[body.name].echo).toBe(body.echo);
+            expect(matchingState.mocks[body.name].echo).toBe(true);
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
         });
 
         it('sets the delay', () => {
-            const body = { name: 'two', delay: 1000 };
+            const body = { name: 'two', delay: 2000 };
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
-            expect(matchingState.mocks[body.name].delay).toBe(body.delay);
+            expect(matchingState.mocks[body.name].delay).toBe(2000);
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
         });
@@ -78,7 +79,8 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'two', scenario: 'thing' };
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
-            expect(matchingState.mocks[body.name].scenario).toBe(body.scenario);
+            expect(matchingState.mocks[body.name].scenario).toBe('thing');
+            expect(matchingState.mocks[body.name].delay).toBe(1000);
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
         });
@@ -87,7 +89,7 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'two', scenario: 'passThrough' };
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
-            expect(matchingState.mocks[body.name].scenario).toBe(body.scenario);
+            expect(matchingState.mocks[body.name].scenario).toBe('passThrough');
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
         });
@@ -97,7 +99,7 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'two', scenario: 'non-existing' };
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
-            expect(matchingState.mocks[body.name].scenario).toBe(({
+            expect(matchingState.mocks[body.name].scenario).toEqual(({
                 'one': { scenario: 'some', delay: 0, echo: true },
                 'two': { scenario: 'thing', delay: 1000, echo: false }
             } as any)[body.name].scenario);

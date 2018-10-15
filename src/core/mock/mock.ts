@@ -13,6 +13,8 @@ interface Mock {
     responses: { [key: string]: MockResponse };
     // the path to the mock file
     path?: string;
+    // delay
+    delay?: number;
 }
 
 export default Mock;
