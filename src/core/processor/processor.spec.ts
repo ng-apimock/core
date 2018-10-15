@@ -59,6 +59,7 @@ describe('MocksProcessor', () => {
             fsReadJsonSyncFn.onCall(2).returns({
                 name: 'full-request',
                 isArray: true,
+                delay: 1000,
                 request: {url: 'full/url', method: 'GET', headers: {'Cache-control': 'no-store'}, body: {'uuid': '\\d+'}},
                 responses: {
                     'full-response': {
@@ -66,8 +67,7 @@ describe('MocksProcessor', () => {
                         data: [{'a': 'a'}],
                         headers: {'Content-type': 'application/something'},
                         statusText: 'oops',
-                        default: true,
-                        delay: 1000
+                        default: true
                     },
                     'another-full-response': {
                         status: 500,
@@ -75,8 +75,7 @@ describe('MocksProcessor', () => {
                         headers: {'Content-type': 'application/something'},
                         file: 'some.pdf',
                         statusText: 'oops',
-                        default: false,
-                        delay: 0
+                        default: false
                     }
                 }
             });
@@ -129,8 +128,8 @@ describe('MocksProcessor', () => {
                     'duplicate-response': {
                         status: 200, // default is status ok => 200
                         data: {}, // default if isArray is empty of false
-                        headers: HttpHeaders.CONTENT_TYPE_APPLICATION_JSON, // default if no binary file is specified
-                        delay: 0 // default is no delay
+                        headers: HttpHeaders.CONTENT_TYPE_APPLICATION_JSON // default if no binary file is specified
+
                     }
                 });
                 expect(mocksState.mocks[1].responses).toEqual({
@@ -138,8 +137,7 @@ describe('MocksProcessor', () => {
                         status: 200, // default is status ok => 200
                         data: {}, // default if isArray is empty of false
                         headers: HttpHeaders.CONTENT_TYPE_BINARY, // default if a binary file is specified
-                        file: 'some.pdf',
-                        delay: 0 // default is no delay
+                        file: 'some.pdf'
                     }
                 });
                 expect(mocksState.mocks[2].responses).toEqual({
@@ -148,8 +146,7 @@ describe('MocksProcessor', () => {
                         statusText: 'oops',
                         default: true,
                         data: [{a: 'a'}],
-                        headers: {'Content-type': 'application/something'}, // does not add the default headers if specified
-                        delay: 1000
+                        headers: {'Content-type': 'application/something'} // does not add the default headers if specified
                     },
                     'another-full-response': {
                         status: 500,
@@ -157,8 +154,7 @@ describe('MocksProcessor', () => {
                         data: [{a: 'a'}],
                         headers: {'Content-type': 'application/something'}, // does not add the default headers if specified
                         file: 'some.pdf',
-                        default: false,
-                        delay: 0
+                        default: false
                     }
                 });
             });

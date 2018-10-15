@@ -63,9 +63,6 @@ class MocksProcessor {
                         HttpHeaders.CONTENT_TYPE_BINARY :
                         HttpHeaders.CONTENT_TYPE_APPLICATION_JSON;
                 }
-                if (response.delay === undefined) {
-                    response.delay = this.defaultDelay;
-                }
                 return response;
             });
 
@@ -73,14 +70,14 @@ class MocksProcessor {
             let state = {
                 scenario: this.PASS_THROUGH,
                 echo: this.DEFAULT_ECHO,
-                delay: this.defaultDelay
+                delay: mock.delay || this.defaultDelay
             };
 
             if (_default !== undefined) {
                 state = {
                     scenario: _default,
                     echo: this.DEFAULT_ECHO,
-                    delay: mock.responses[_default].delay
+                    delay: mock.delay || this.defaultDelay
                 };
             }
 
