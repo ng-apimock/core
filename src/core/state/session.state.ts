@@ -1,4 +1,5 @@
 import State from './state';
+import Recording from './recording';
 
 /** Session state. */
 class SessionState implements State {
@@ -10,7 +11,9 @@ class SessionState implements State {
             echo: boolean;
         }
     };
-    variables: { [key: string]: string; };
+    variables: { [key: string]: string; }
+    recordings: { [identifier: string]: Recording[] };
+    record: boolean;
 
     /**
      * Constructor.
@@ -20,6 +23,8 @@ class SessionState implements State {
         this.identifier = identifier;
         this.mocks = {};
         this.variables = {};
+        this.recordings = {};
+        this.record = false;
     }
 }
 

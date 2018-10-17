@@ -7,10 +7,12 @@ import * as sinon from 'sinon';
 import MocksState from '../../../state/mocks.state';
 import RecordHandler from './record.handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
+import State from '../../../state/state';
 
 describe('RecordHandler', () => {
     let container: Container;
     let handler: RecordHandler;
+    let matchingState: State;
     let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let nextFn: sinon.SinonStub;
     let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
@@ -30,14 +32,28 @@ describe('RecordHandler', () => {
         handler = container.get<RecordHandler>('RecordHandler');
     });
 
-    describe('handle', () =>
+    describe('handle', () => {
+        beforeEach(() => {
+            matchingState = {
+                mocks: JSON.parse(JSON.stringify({
+                    'one': { scenario: 'some', delay: 0, echo: true },
+                    'two': { scenario: 'thing', delay: 1000, echo: false }
+                })),
+                variables: {},
+                recordings: {},
+                record: false
+            };
+            mocksState.getMatchingState.returns(matchingState);
+        });
+
         it('sets the recording indicator', () => {
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: { record: true } });
 
-            expect(mocksState.record).toBe(true);
+            expect(matchingState.record).toBe(true);
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
-        }));
+        });
+    });
 
     describe('isApplicable', () => {
         it('indicates applicable when url and action match', () => {

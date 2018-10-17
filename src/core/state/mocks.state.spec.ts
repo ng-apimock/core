@@ -124,7 +124,9 @@ describe('MocksState', () => {
         beforeEach(() => {
             state = {
                 mocks: { simple: { scenario: 'one', delay: 0, echo: false } },
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
             mocksStateGetMatchingStateFn.returns(state);
         });
@@ -149,7 +151,9 @@ describe('MocksState', () => {
         beforeEach(() => {
             state = {
                 mocks: { simple: { scenario: 'one', delay: 1000, echo: false } },
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
             mocksStateGetMatchingStateFn.returns(state);
         });
@@ -172,7 +176,9 @@ describe('MocksState', () => {
         beforeEach(() => {
             state = {
                 mocks: { simple: { scenario: 'one', delay: 1000, echo: true } },
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
             mocksStateGetMatchingStateFn.returns(state);
         });
@@ -195,7 +201,9 @@ describe('MocksState', () => {
         beforeEach(() => {
             state = {
                 mocks: {},
-                variables: { this: 'this', that: 'that' }
+                variables: { this: 'this', that: 'that' },
+                recordings: {},
+                record: false
             };
             mocksStateGetMatchingStateFn.returns(state);
         });
@@ -218,7 +226,9 @@ describe('MocksState', () => {
                     simple: { scenario: 'one', delay: 1000, echo: true },
                     advanced: { scenario: 'three', delay: 3000, echo: false }
                 },
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
 
             mocksState.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
@@ -263,7 +273,9 @@ describe('MocksState', () => {
                     simple: { scenario: 'one', delay: 1000, echo: true },
                     advanced: { scenario: 'three', delay: 3000, echo: false }
                 },
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
 
             mocksState.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };

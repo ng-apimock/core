@@ -1,4 +1,5 @@
 import State from './state';
+import Recording from './recording';
 
 /** Global state. */
 class GlobalState implements State {
@@ -10,11 +11,15 @@ class GlobalState implements State {
         }
     };
     variables: { [key: string]: string; };
+    recordings: { [identifier: string]: Recording[] };
+    record: boolean;
 
     /** Constructor. */
     constructor() {
         this.mocks = {};
         this.variables = {};
+        this.recordings = {};
+        this.record = false;
     }
 }
 

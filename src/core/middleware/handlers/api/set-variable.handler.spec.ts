@@ -42,6 +42,8 @@ describe('SetVariableHandler', () => {
                     'two': 'second',
                     'three': 'third'
                 })),
+                recordings: {},
+                record: false
             };
             mocksState.getMatchingState.returns(matchingState);
         });

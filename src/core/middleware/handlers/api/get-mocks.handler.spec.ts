@@ -51,7 +51,9 @@ describe('GetMocksHandler', () => {
                     'one': { scenario: 'some', delay: 0, echo: true },
                     'two': { scenario: 'thing', delay: 1000, echo: false }
                 })),
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
             mocksState.getMatchingState.returns(matchingState);
         });

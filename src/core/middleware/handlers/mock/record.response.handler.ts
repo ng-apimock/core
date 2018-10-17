@@ -30,7 +30,7 @@ class RecordResponseHandler implements Handler {
     }
 
     /** {@inheritDoc}.*/
-    async handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { mock: Mock, body: any }): Promise<any> {
+    async handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string, mock: Mock, body: any }): Promise<any> {
         const method = request.method;
         const headers = request.headers;
 
@@ -67,7 +67,7 @@ class RecordResponseHandler implements Handler {
                 datetime: new Date().getTime()
             };
 
-            this.record(params.mock.name, recording);
+            this.record(params.id, params.mock.name, recording);
 
             response.writeHead(responseStatusCode, responseHeaders);
             response.end(responseData);
@@ -87,13 +87,15 @@ class RecordResponseHandler implements Handler {
 
     /**
      * Stores the recording with the matching mock.
-     * @param {string} identifier The identifier.
+     * @param {string} id The identifier.
+     * @param {string} name The name.
      * @param {Recording} recording The recordings.
      */
-    record(identifier: string, recording: Recording) {
+    record(id: string, name: string, recording: Recording) {
         const contentType: string = recording.response.contentType;
-        if (this.mocksState.recordings[identifier] === undefined) {
-            this.mocksState.recordings[identifier] = [];
+        const recordings = this.mocksState.getMatchingState(id).recordings;
+        if (recordings[name] === undefined) {
+            recordings[name] = [];
         }
 
         if (this.APPLICABLE_MIMETYPES.indexOf(contentType) === -1) {
@@ -103,7 +105,7 @@ class RecordResponseHandler implements Handler {
         } else {
             recording.response.data = recording.response.data.toString();
         }
-        this.mocksState.recordings[identifier].push(recording);
+        recordings[name].push(recording);
     }
 }
 

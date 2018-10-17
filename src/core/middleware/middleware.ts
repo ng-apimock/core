@@ -93,14 +93,14 @@ class Middleware {
             } else {
                 const matchingMock: Mock = this.apimockState.getMatchingMock(request.url, request.method, request.headers, body);
                 if (matchingMock !== undefined) {
-                    // console.log("MATCHING MOCK", matchingMock)
                     this.echoRequestHandler.handle(request, response, next, {
                         id: apimockId,
                         mock: matchingMock,
                         body: body
                     });
-                    if (this.apimockState.record && request.headers.record === undefined) {
-                        this.recordResponseHandler.handle(request, response, next, { mock: matchingMock, body: body });
+                    const matchingState = this.apimockState.getMatchingState(apimockId);
+                    if (matchingState.record && request.headers.record === undefined) {
+                        this.recordResponseHandler.handle(request, response, next, {id: apimockId, mock: matchingMock, body: body });
                     } else {
                         this.mockRequestHandler.handle(request, response, next, { id: apimockId, mock: matchingMock });
                     }

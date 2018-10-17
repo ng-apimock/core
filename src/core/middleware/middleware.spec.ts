@@ -22,6 +22,7 @@ import {HttpMethods} from './http';
 import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
 import RecordHandler from './handlers/api/record.handler';
+import State from '../state/state';
 
 describe('Middleware', () => {
     let applicableHandler: ApplicableHandler;
@@ -37,6 +38,7 @@ describe('Middleware', () => {
     let getVariablesHandler: sinon.SinonStubbedInstance<GetVariablesHandler>;
     let getRecordingsHandler: sinon.SinonStubbedInstance<GetRecordingsHandler>;
     let initHandler: sinon.SinonStubbedInstance<InitHandler>;
+    let matchingState: State;
     let middleware: Middleware;
     let mockRequestHandler: sinon.SinonStubbedInstance<MockRequestHandler>;
     let mocksState: sinon.SinonStubbedInstance<MocksState>;
@@ -140,6 +142,13 @@ describe('Middleware', () => {
                         name: 'matching-mock', isArray: true,
                         request: { url: '/base-url', method: HttpMethods.GET }, responses: {}
                     });
+                    matchingState = {
+                        mocks: {},
+                        variables: {},
+                        recordings: {},
+                        record: false
+                    };
+                    mocksState.getMatchingState.returns(matchingState);
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
@@ -181,7 +190,13 @@ describe('Middleware', () => {
 
             describe('recording is enabled', () => {
                 beforeEach(() => {
-                    mocksState.record = true;
+                    matchingState = {
+                        mocks: {},
+                        variables: {},
+                        recordings: {},
+                        record: true
+                    };
+                    mocksState.getMatchingState.returns(matchingState);
                     getApimockIdFn.returns('apimockId');
                     getMatchingApplicableHandlerFn.returns(undefined);
                     mocksState.getMatchingMock.returns({
@@ -218,6 +233,7 @@ describe('Middleware', () => {
 
                     it('calls the record response handler', () =>
                         sinon.assert.calledWith(recordResponseHandler.handle, request, response, nextFn, {
+                            id: 'apimockId',
                             mock: {
                                 name: 'matching-mock', isArray: true,
                                 request: { url: '/base-url', method: HttpMethods.GET }, responses: {}
@@ -237,7 +253,13 @@ describe('Middleware', () => {
 
             describe('recording is disabled', () => {
                 beforeEach(() => {
-                    mocksState.record = false;
+                    matchingState = {
+                        mocks: {},
+                        variables: {},
+                        recordings: {},
+                        record: false
+                    };
+                    mocksState.getMatchingState.returns(matchingState);
                     getApimockIdFn.returns('apimockId');
                     getMatchingApplicableHandlerFn.returns(undefined);
                     mocksState.getMatchingMock.returns({

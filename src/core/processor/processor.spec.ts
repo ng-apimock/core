@@ -40,7 +40,7 @@ describe('MocksProcessor', () => {
         beforeAll(() => {
             mocksState.mocks = [];
             mocksState.defaults = {};
-            mocksState.global = {mocks: {}, variables: {}};
+            mocksState.global = { mocks: {}, variables: {}, recordings: {}, record: false };
             globSyncFn.returns([
                 'mock/minimal-json-request.json',
                 'mock/minimal-binary-request.json',
@@ -48,31 +48,36 @@ describe('MocksProcessor', () => {
                 'mock/duplicate-request.json']);
             fsReadJsonSyncFn.onCall(0).returns({
                 name: 'minimal-json-request',
-                request: {url: 'minimal/json/url', method: 'GET'},
-                responses: {'minimal-json-response': {}}
+                request: { url: 'minimal/json/url', method: 'GET' },
+                responses: { 'minimal-json-response': {} }
             });
             fsReadJsonSyncFn.onCall(1).returns({
                 name: 'minimal-binary-request',
-                request: {url: 'minimal/binary/url', method: 'GET'},
-                responses: {'minimal-binary-response': {file: 'some.pdf'}}
+                request: { url: 'minimal/binary/url', method: 'GET' },
+                responses: { 'minimal-binary-response': { file: 'some.pdf' } }
             });
             fsReadJsonSyncFn.onCall(2).returns({
                 name: 'full-request',
                 isArray: true,
                 delay: 1000,
-                request: {url: 'full/url', method: 'GET', headers: {'Cache-control': 'no-store'}, body: {'uuid': '\\d+'}},
+                request: {
+                    url: 'full/url',
+                    method: 'GET',
+                    headers: { 'Cache-control': 'no-store' },
+                    body: { 'uuid': '\\d+' }
+                },
                 responses: {
                     'full-response': {
                         status: 404,
-                        data: [{'a': 'a'}],
-                        headers: {'Content-type': 'application/something'},
+                        data: [{ 'a': 'a' }],
+                        headers: { 'Content-type': 'application/something' },
                         statusText: 'oops',
                         default: true
                     },
                     'another-full-response': {
                         status: 500,
-                        data: [{'a': 'a'}],
-                        headers: {'Content-type': 'application/something'},
+                        data: [{ 'a': 'a' }],
+                        headers: { 'Content-type': 'application/something' },
                         file: 'some.pdf',
                         statusText: 'oops',
                         default: false
@@ -81,14 +86,14 @@ describe('MocksProcessor', () => {
             });
             fsReadJsonSyncFn.onCall(3).returns({
                 name: 'minimal-json-request',
-                request: {url: 'duplicate/url', method: 'GET'},
-                responses: {'duplicate-response': {}}
+                request: { url: 'duplicate/url', method: 'GET' },
+                responses: { 'duplicate-response': {} }
             });
         });
 
-        describe('by default', ()=> {
-            beforeAll(()=> {
-                processor.process({src: 'src'});
+        describe('by default', () => {
+            beforeAll(() => {
+                processor.process({ src: 'src' });
             });
 
             it('processes each mock', () => {
@@ -110,16 +115,16 @@ describe('MocksProcessor', () => {
 
             it('sets the defaults', () =>
                 expect(mocksState.defaults).toEqual({
-                    'minimal-json-request': {scenario: 'passThrough', echo: false, delay: 0},
-                    'minimal-binary-request': {scenario: 'passThrough', echo: false, delay: 0},
-                    'full-request': {scenario: 'full-response', echo: false, delay: 1000}
+                    'minimal-json-request': { scenario: 'passThrough', echo: false, delay: 0 },
+                    'minimal-binary-request': { scenario: 'passThrough', echo: false, delay: 0 },
+                    'full-request': { scenario: 'full-response', echo: false, delay: 1000 }
                 }));
 
             it('sets the global mocks', () =>
                 expect(mocksState.global.mocks).toEqual({
-                    'minimal-json-request': {scenario: 'passThrough', echo: false, delay: 0},
-                    'minimal-binary-request': {scenario: 'passThrough', echo: false, delay: 0},
-                    'full-request': {scenario: 'full-response', echo: false, delay: 1000}
+                    'minimal-json-request': { scenario: 'passThrough', echo: false, delay: 0 },
+                    'minimal-binary-request': { scenario: 'passThrough', echo: false, delay: 0 },
+                    'full-request': { scenario: 'full-response', echo: false, delay: 1000 }
                 }));
 
             it('updates the mocks with default values', () => {
@@ -145,14 +150,14 @@ describe('MocksProcessor', () => {
                         status: 404,
                         statusText: 'oops',
                         default: true,
-                        data: [{a: 'a'}],
-                        headers: {'Content-type': 'application/something'} // does not add the default headers if specified
+                        data: [{ a: 'a' }],
+                        headers: { 'Content-type': 'application/something' } // does not add the default headers if specified
                     },
                     'another-full-response': {
                         status: 500,
                         statusText: 'oops',
-                        data: [{a: 'a'}],
-                        headers: {'Content-type': 'application/something'}, // does not add the default headers if specified
+                        data: [{ a: 'a' }],
+                        headers: { 'Content-type': 'application/something' }, // does not add the default headers if specified
                         file: 'some.pdf',
                         default: false
                     }
@@ -171,9 +176,9 @@ describe('MocksProcessor', () => {
         });
 
         describe('with full processing options', () => {
-            beforeAll(()=> {
+            beforeAll(() => {
                 globSyncFn.returns([]);
-                processor.process({src: 'src', pattern: '**/*.mock.json'});
+                processor.process({ src: 'src', pattern: '**/*.mock.json' });
             });
             it('processes each mock', () => {
                 sinon.assert.calledWith(globSyncFn,

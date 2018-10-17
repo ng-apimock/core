@@ -51,17 +51,18 @@ describe('GetRecordingsHandler', () => {
                     'one': { scenario: 'some', delay: 0, echo: true },
                     'two': { scenario: 'thing', delay: 1000, echo: false }
                 })),
-                variables: {}
+                variables: {},
+                recordings: {'some': []},
+                record: true
             };
             mocksState.getMatchingState.returns(matchingState);
-            mocksState.record = true;
         });
 
         it('gets the recordings', () => {
             handler.handle(request as any, response, nextFn, { id: 'apimockId' });
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.calledWith(response.end, JSON.stringify({
-                recordings: mocksState.recordings,
+                recordings: {'some': []},
                 record: true
             }));
         });

@@ -1,3 +1,5 @@
+import Recording from './recording';
+
 /** State. */
 interface State {
     mocks: {
@@ -8,6 +10,8 @@ interface State {
         }
     };
     variables: { [key: string]: string };
+    recordings: { [identifier: string]: Recording[] };
+    record: boolean;
 }
 
 export default State;

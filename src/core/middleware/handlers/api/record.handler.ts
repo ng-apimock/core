@@ -23,7 +23,7 @@ class RecordHandler implements ApplicableHandler {
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { record?: boolean }
     }): void {
-        this.mocksState.record = params.body.record;
+        this.mocksState.getMatchingState(params.id).record = params.body.record;
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
     }

@@ -12,6 +12,7 @@ import MocksState from '../../../state/mocks.state';
 import Mock from '../../../mock/mock';
 import {HttpMethods, HttpStatusCode} from '../../http';
 import Recording from '../../../state/recording';
+import State from '../../../state/state';
 
 describe('RecordResponseHandler', () => {
     let clock: sinon.SinonFakeTimers;
@@ -20,6 +21,7 @@ describe('RecordResponseHandler', () => {
     let fsWriteFileSyncFn: sinon.SinonStub;
     let mocksState: sinon.SinonStubbedInstance<MocksState>;
     let nextFn: sinon.SinonStub;
+    let matchingState: State;
     let mock: Mock;
     let now: Date;
     let recordFn: sinon.SinonStub;
@@ -71,7 +73,7 @@ describe('RecordResponseHandler', () => {
                 fetchResponseFn.resolves({
                     buffer: responseBufferFn, headers: {raw: responseHeadersRawFn}, status: 200
                 });
-                recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
+                recordResponseHandler.handle(request, response, nextFn, {id: 'apimockId', mock: mock, body: '{"x":"x"}'});
             });
 
             it('sets the record header to true', () =>
@@ -101,8 +103,8 @@ describe('RecordResponseHandler', () => {
             });
 
             it('on request data record', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
-                sinon.assert.calledWith(recordFn, 'some', sinon.match(async (actual: Recording) => {
+                await recordResponseHandler.handle(request, response, nextFn, {id: 'apimockId', mock: mock, body: '{"x":"x"}'});
+                sinon.assert.calledWith(recordFn, 'apimockId', 'some', sinon.match(async (actual: Recording) => {
                     await expect(actual.request.url).toBe('/some/api');
                     await expect(actual.request.method).toBe(HttpMethods.GET);
                     await expect(actual.request.headers).toEqual({host: 'localhost:8888', record: 'true'});
@@ -116,7 +118,7 @@ describe('RecordResponseHandler', () => {
             });
 
             it('returns the response', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
+                await recordResponseHandler.handle(request, response, nextFn, {id: 'apimockId', mock: mock, body: '{"x":"x"}'});
                 sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, {'Content-Type': 'application/pdf'});
                 sinon.assert.calledWith(response.end, 'the-data');
             });
@@ -138,7 +140,7 @@ describe('RecordResponseHandler', () => {
 
             it('returns the error response', async () => {
                 try {
-                    await recordResponseHandler.handle(request, response, nextFn, {mock: mock, body: '{"x":"x"}'});
+                    await recordResponseHandler.handle(request, response, nextFn, {id: 'apimockId', mock: mock, body: '{"x":"x"}'});
                     await rejectedPromise;
                 } catch (err) {
                     sinon.assert.calledWith(response.end, 'oops');
@@ -158,7 +160,13 @@ describe('RecordResponseHandler', () => {
         let recording: Recording;
 
         beforeEach(() => {
-            mocksState.recordings = {};
+            matchingState = {
+                mocks: {},
+                variables: {},
+                recordings: {},
+                record: false
+            };
+            mocksState.getMatchingState.returns(matchingState);
 
             recording = {
                 request: {
@@ -184,8 +192,8 @@ describe('RecordResponseHandler', () => {
             it('stores the recording', () => {
                 recording.response.contentType = 'application/json';
                 recordFn.callThrough();
-                recordResponseHandler.record('identifier', recording);
-                const actual = mocksState.recordings['identifier'][0];
+                recordResponseHandler.record('apimockId', 'identifier', recording);
+                const actual = matchingState.recordings['identifier'][0];
                 expect(actual.request.url).toBe('/some/url');
                 expect(actual.request.method).toBe(HttpMethods.GET);
                 expect(actual.request.headers).toEqual({host: 'localhost:8888'});
@@ -200,8 +208,8 @@ describe('RecordResponseHandler', () => {
             it('stores the recording', () => {
                 recording.response.contentType = 'application/pdf';
                 recordFn.callThrough();
-                recordResponseHandler.record('identifier', recording);
-                const actual = mocksState.recordings['identifier'][0];
+                recordResponseHandler.record('apimockId', 'identifier', recording);
+                const actual = matchingState.recordings['identifier'][0];
                 expect(actual.request.url).toBe('/some/url');
                 expect(actual.request.method).toBe(HttpMethods.GET);
                 expect(actual.request.headers).toEqual({host: 'localhost:8888'});

@@ -41,7 +41,9 @@ describe('DeleteVariableHandler', () => {
                     'one': 'first',
                     'two': 'second',
                     'three': 'third'
-                }))
+                })),
+                recordings: {},
+                record: false
             };
             mocksState.getMatchingState.returns(matchingState);
         });

@@ -52,7 +52,9 @@ describe('UpdateMocksHandler', () => {
                     'one': { scenario: 'some', delay: 0, echo: true },
                     'two': { scenario: 'thing', delay: 1000, echo: false }
                 })),
-                variables: {}
+                variables: {},
+                recordings: {},
+                record: false
             };
             mocksState.getMatchingState.returns(matchingState);
         });
@@ -93,7 +95,6 @@ describe('UpdateMocksHandler', () => {
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
         });
-
 
         it('throw error if scenario does not exist', () => {
             const body = { name: 'two', scenario: 'non-existing' };

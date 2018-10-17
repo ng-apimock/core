@@ -7,7 +7,6 @@ import MockResponse from '../mock/mock.response';
 import SessionState from './session.state';
 import State from './state';
 import {IncomingHttpHeaders} from 'http';
-import Recording from './recording';
 
 const DEFAULT_DELAY = 0;
 const DEFAULT_ECHO = false;
@@ -24,8 +23,6 @@ class MocksState {
             echo: boolean;
         }
     };
-    recordings: { [identifier: string]: Recording[] };
-    record: boolean;
     global: GlobalState;
     sessions: SessionState[];
 
@@ -33,8 +30,6 @@ class MocksState {
     constructor() {
         this.mocks = [];
         this.defaults = {};
-        this.recordings = {};
-        this.record = false;
         this.global = new GlobalState();
         this.sessions = [];
     }
