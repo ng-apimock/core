@@ -11,7 +11,7 @@ class SessionState implements State {
             echo: boolean;
         }
     };
-    variables: { [key: string]: string; }
+    variables: { [key: string]: string; };
     recordings: { [identifier: string]: Recording[] };
     record: boolean;
 
