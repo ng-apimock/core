@@ -18,6 +18,8 @@ import UpdateMocksHandler from './middleware/handlers/api/update-mocks.handler';
 import GetRecordingsHandler from './middleware/handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './middleware/handlers/api/get-recorded-response.handler';
 import RecordHandler from './middleware/handlers/api/record.handler';
+import * as bodyParser from 'body-parser';
+import {NextHandleFunction} from 'connect';
 
 // IOC configuration
 const container = new Container();
@@ -44,6 +46,7 @@ container.bind<GetRecordedResponseHandler>('GetRecordedResponseHandler').to(GetR
 container.bind<GetRecordingsHandler>('GetRecordingsHandler').to(GetRecordingsHandler);
 
 container.bind<MocksProcessor>('MocksProcessor').to(MocksProcessor);
+container.bind<NextHandleFunction>('JsonBodyParser').toConstantValue(bodyParser.json());
 container.bind<Middleware>('Middleware').to(Middleware);
 
 export default container;

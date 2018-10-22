@@ -24,6 +24,7 @@ import GetRecordedResponseHandler from './handlers/api/get-recorded-response.han
 import RecordHandler from './handlers/api/record.handler';
 import State from '../state/state';
 
+
 describe('Middleware', () => {
     let applicableHandler: ApplicableHandler;
     let applicableHandlerHandleFn: sinon.SinonStub;
@@ -48,7 +49,7 @@ describe('Middleware', () => {
     let recordHandler: sinon.SinonStubbedInstance<RecordHandler>;
     let getRecordedResponseHandler: sinon.SinonStubbedInstance<GetRecordedResponseHandler>;
     let request: any;
-    let requestOnFn: sinon.SinonStub;
+    let jsonBodyParser: sinon.SinonStub;
     let response: any;
     let setVariableHandler: sinon.SinonStubbedInstance<SetVariableHandler>;
     let updateMocksHandler: sinon.SinonStubbedInstance<UpdateMocksHandler>;
@@ -57,7 +58,7 @@ describe('Middleware', () => {
         container = new Container();
         mocksState = sinon.createStubInstance(MocksState);
         request = sinon.createStubInstance(http.IncomingMessage);
-        requestOnFn = request.on as sinon.SinonStub;
+        jsonBodyParser = sinon.stub();
         response = sinon.createStubInstance(http.ServerResponse);
         defaultsHandler = sinon.createStubInstance(DefaultsHandler);
         deleteVariableHandler = sinon.createStubInstance(DeleteVariableHandler);
@@ -93,6 +94,7 @@ describe('Middleware', () => {
         container.bind('GetRecordedResponseHandler').toConstantValue(getRecordedResponseHandler);
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);
         container.bind('Middleware').to(Middleware);
+        container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
         nextFn = sinon.stub();
 
         middleware = container.get<Middleware>('Middleware');
@@ -106,12 +108,12 @@ describe('Middleware', () => {
                 getApimockIdFn.returns('apimockId');
                 getMatchingApplicableHandlerFn.returns(applicableHandler);
                 request.headers = { 'some': 'header' };
-                requestOnFn.onCall(0).returns(request);
+                request.body = { "x": "x" };
 
                 middleware.middleware(request, response, nextFn);
 
-                requestOnFn.getCall(0).callArgWith(1, new Buffer('{"x":"x"}'));
-                requestOnFn.getCall(1).callArgWith(1);
+                jsonBodyParser.getCall(0).callArg(2);
+
             });
 
             it('gets the apimock id', () =>
@@ -127,9 +129,9 @@ describe('Middleware', () => {
                 }));
 
             afterEach(() => {
-                requestOnFn.reset();
                 getApimockIdFn.reset();
                 getMatchingApplicableHandlerFn.reset();
+                jsonBodyParser.reset();
             });
         });
 
@@ -152,12 +154,11 @@ describe('Middleware', () => {
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
-                    requestOnFn.onCall(0).returns(request);
+                    request.body = { "x": "x" };
 
                     middleware.middleware(request, response, nextFn);
 
-                    requestOnFn.getCall(0).callArgWith(1, new Buffer('{"x":"x"}'));
-                    requestOnFn.getCall(1).callArgWith(1);
+                    jsonBodyParser.getCall(0).callArg(2);
                 });
 
                 it('gets the apimock id', () =>
@@ -182,9 +183,9 @@ describe('Middleware', () => {
                     }));
 
                 afterEach(() => {
-                    requestOnFn.reset();
                     getApimockIdFn.reset();
                     getMatchingApplicableHandlerFn.reset();
+                    jsonBodyParser.reset();
                 });
             });
 
@@ -206,7 +207,7 @@ describe('Middleware', () => {
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
-                    requestOnFn.onCall(0).returns(request);
+                    request.body = { "x": "x" };
                 });
 
                 describe('record header is present', () => {
@@ -214,8 +215,7 @@ describe('Middleware', () => {
                         request.headers.record = 'true';
                         middleware.middleware(request, response, nextFn);
 
-                        requestOnFn.getCall(0).callArgWith(1, new Buffer('{"x":"x"}'));
-                        requestOnFn.getCall(1).callArgWith(1);
+                        jsonBodyParser.getCall(0).callArg(2);
                     });
 
                     it('does not call the record response handler', () =>
@@ -227,8 +227,7 @@ describe('Middleware', () => {
                         request.headers.record = undefined;
                         middleware.middleware(request, response, nextFn);
 
-                        requestOnFn.getCall(0).callArgWith(1, new Buffer('{"x":"x"}'));
-                        requestOnFn.getCall(1).callArgWith(1);
+                        jsonBodyParser.getCall(0).callArg(2);
                     });
 
                     it('calls the record response handler', () =>
@@ -244,10 +243,10 @@ describe('Middleware', () => {
                 });
 
                 afterEach(() => {
-                    requestOnFn.reset();
                     getApimockIdFn.reset();
                     getMatchingApplicableHandlerFn.reset();
                     recordResponseHandler.handle.reset();
+                    jsonBodyParser.reset();
                 });
             });
 
@@ -269,12 +268,11 @@ describe('Middleware', () => {
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
-                    requestOnFn.onCall(0).returns(request);
+                    request.body = { "x": "x" };
 
                     middleware.middleware(request, response, nextFn);
 
-                    requestOnFn.getCall(0).callArgWith(1, new Buffer('{"x":"x"}'));
-                    requestOnFn.getCall(1).callArgWith(1);
+                    jsonBodyParser.getCall(0).callArg(2);
                 });
 
                 it('calls the mock request handler', () => sinon.assert.calledWith(mockRequestHandler.handle, request,
@@ -287,10 +285,10 @@ describe('Middleware', () => {
                     }));
 
                 afterEach(() => {
-                    requestOnFn.reset();
                     getApimockIdFn.reset();
                     getMatchingApplicableHandlerFn.reset();
                     mockRequestHandler.handle.reset();
+                    jsonBodyParser.reset();
                 });
             });
         });
@@ -300,22 +298,22 @@ describe('Middleware', () => {
                 getApimockIdFn.returns('apimockId');
                 getMatchingApplicableHandlerFn.returns(undefined);
                 mocksState.getMatchingMock.returns(undefined);
-                requestOnFn.onCall(0).returns(request);
                 request.headers = { 'some': 'header' };
+                request.body = { "x": "x" };
 
                 middleware.middleware(request, response, nextFn);
 
-                requestOnFn.getCall(0).callArgWith(1, new Buffer('{"x":"x"}'));
-                requestOnFn.getCall(1).callArgWith(1);
+                jsonBodyParser.getCall(0).callArg(2);
+
             });
 
             it('calls next', () => sinon.assert.called(nextFn));
 
             afterEach(() => {
-                requestOnFn.reset();
                 getApimockIdFn.reset();
                 getMatchingApplicableHandlerFn.reset();
                 nextFn.reset();
+                jsonBodyParser.reset();
             });
         });
     });

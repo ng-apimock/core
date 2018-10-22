@@ -20,6 +20,7 @@ import {ApplicableHandler} from './handlers/handler';
 import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
 import RecordHandler from './handlers/api/record.handler';
+import {NextHandleFunction} from 'connect';
 
 /** Middleware. */
 @injectable()
@@ -43,6 +44,7 @@ class Middleware {
      * @param {RecordHandler} recordHandler The record handler.
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
+     * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
      */
     constructor(@inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
                 @inject('DeleteVariableHandler') private deleteVariableHandler: DeleteVariableHandler,
@@ -58,7 +60,8 @@ class Middleware {
                 @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
                 @inject('RecordHandler') private recordHandler: RecordHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
-                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler) {
+                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
+                @inject('JsonBodyParser') private bodyParser: NextHandleFunction) {
         this.handlers = [
             defaultsHandler,
             deleteVariableHandler,
@@ -82,11 +85,8 @@ class Middleware {
      */
     middleware(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
         const apimockId: string = this.getApimockId(request.headers);
-        const requestDataChunks: Buffer[] = [];
-        request.on('data', (rawData: Buffer) => {
-            requestDataChunks.push(rawData);
-        }).on('end', () => {
-            const body = requestDataChunks.length > 0 ? JSON.parse(Buffer.concat(requestDataChunks).toString()) : {};
+        this.bodyParser(request, response, () => {
+            const body = (request as any).body;
             const handler = this.getMatchingApplicableHandler(request, body);
             if (handler !== undefined) {
                 handler.handle(request, response, next, { id: apimockId, body: body });
