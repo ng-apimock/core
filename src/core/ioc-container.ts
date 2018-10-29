@@ -9,7 +9,7 @@ import GetVariablesHandler from './middleware/handlers/api/get-variables.handler
 import InitHandler from './middleware/handlers/api/init.handler';
 import Middleware from './middleware/middleware';
 import MockRequestHandler from './middleware/handlers/mock/mock.request.handler';
-import MocksState from './state/mocks.state';
+import State from './state/state';
 import MocksProcessor from './processor/processor';
 import PassThroughsHandler from './middleware/handlers/api/pass-throughs.handler';
 import RecordResponseHandler from './middleware/handlers/mock/record.response.handler';
@@ -24,7 +24,7 @@ import {NextHandleFunction} from 'connect';
 // IOC configuration
 const container = new Container();
 container.bind<string>('BaseUrl').toConstantValue('/ngapimock');
-container.bind<MocksState>('MocksState').to(MocksState).inSingletonScope();
+container.bind<State>('State').to(State).inSingletonScope();
 
 container.bind<InitHandler>('InitHandler').to(InitHandler);
 

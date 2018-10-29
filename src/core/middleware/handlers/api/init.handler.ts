@@ -3,7 +3,7 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
@@ -12,10 +12,10 @@ import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 class InitHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
      * @param {string} baseUrl The base url.
      */
-    constructor(@inject('MocksState') private mocksState: MocksState,
+    constructor(@inject('State') private state: State,
                 @inject('BaseUrl') private baseUrl: string) {
     }
 

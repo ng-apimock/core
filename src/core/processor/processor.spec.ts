@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as sinon from 'sinon';
 
 import MocksProcessor from './processor';
-import MocksState from '../state/mocks.state';
+import State from '../state/state';
 import {HttpHeaders} from '../middleware/http';
 
 describe('MocksProcessor', () => {
@@ -17,15 +17,15 @@ describe('MocksProcessor', () => {
     let doneFn: sinon.SinonStub;
     let fsReadJsonSyncFn: sinon.SinonStub;
     let globSyncFn: sinon.SinonStub;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let state: sinon.SinonStubbedInstance<State>;
     let processor: MocksProcessor;
 
     beforeAll(() => {
         container = new Container();
         doneFn = sinon.stub();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
 
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('MocksProcessor').to(MocksProcessor);
 
         consoleWarnFn = sinon.stub(console, 'warn');
@@ -38,9 +38,9 @@ describe('MocksProcessor', () => {
 
     describe('process', () => {
         beforeAll(() => {
-            mocksState.mocks = [];
-            mocksState.defaults = {};
-            mocksState.global = { mocks: {}, variables: {}, recordings: {}, record: false };
+            state.mocks = [];
+            state.defaults = {};
+            state.global = { mocks: {}, variables: {}, recordings: {}, record: false };
             globSyncFn.returns([
                 'mock/minimal-json-request.json',
                 'mock/minimal-binary-request.json',
@@ -110,18 +110,18 @@ describe('MocksProcessor', () => {
 
             it('overrides a duplicate mock', () => {
                 sinon.assert.calledWith(consoleWarnFn, `Mock with identifier 'minimal-json-request' already exists. Overwriting existing mock.`);
-                expect(Object.keys(mocksState.mocks[0].responses)).toEqual(['duplicate-response']);
+                expect(Object.keys(state.mocks[0].responses)).toEqual(['duplicate-response']);
             });
 
             it('sets the defaults', () =>
-                expect(mocksState.defaults).toEqual({
+                expect(state.defaults).toEqual({
                     'minimal-json-request': { scenario: 'passThrough', echo: false, delay: 0 },
                     'minimal-binary-request': { scenario: 'passThrough', echo: false, delay: 0 },
                     'full-request': { scenario: 'full-response', echo: false, delay: 1000 }
                 }));
 
             it('sets the global mocks', () =>
-                expect(mocksState.global.mocks).toEqual({
+                expect(state.global.mocks).toEqual({
                     'minimal-json-request': { scenario: 'passThrough', echo: false, delay: 0 },
                     'minimal-binary-request': { scenario: 'passThrough', echo: false, delay: 0 },
                     'full-request': { scenario: 'full-response', echo: false, delay: 1000 }
@@ -129,7 +129,7 @@ describe('MocksProcessor', () => {
 
             it('updates the mocks with default values', () => {
                 consoleLogFn.callThrough();
-                expect(mocksState.mocks[0].responses).toEqual({
+                expect(state.mocks[0].responses).toEqual({
                     'duplicate-response': {
                         status: 200, // default is status ok => 200
                         data: {}, // default if isArray is empty of false
@@ -137,7 +137,7 @@ describe('MocksProcessor', () => {
 
                     }
                 });
-                expect(mocksState.mocks[1].responses).toEqual({
+                expect(state.mocks[1].responses).toEqual({
                     'minimal-binary-response': {
                         status: 200, // default is status ok => 200
                         data: {}, // default if isArray is empty of false
@@ -145,7 +145,7 @@ describe('MocksProcessor', () => {
                         file: 'some.pdf'
                     }
                 });
-                expect(mocksState.mocks[2].responses).toEqual({
+                expect(state.mocks[2].responses).toEqual({
                     'full-response': {
                         status: 404,
                         statusText: 'oops',

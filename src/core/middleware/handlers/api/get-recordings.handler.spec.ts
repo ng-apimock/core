@@ -5,28 +5,28 @@ import * as http from 'http';
 import * as sinon from 'sinon';
 
 import GetRecordingsHandler from './get-recordings.handler';
-import MocksState from '../../../state/mocks.state';
 import State from '../../../state/state';
+import Istate from '../../../state/Istate';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('GetRecordingsHandler', () => {
     let container: Container;
     let handler: GetRecordingsHandler;
-    let matchingState: State;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let matchingState: Istate;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
     let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
     let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
         response = sinon.createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('GetRecordingsHandler').to(GetRecordingsHandler);
 
         handler = container.get<GetRecordingsHandler>('GetRecordingsHandler');
@@ -34,7 +34,7 @@ describe('GetRecordingsHandler', () => {
 
     describe('handle', () => {
         beforeEach(() => {
-            mocksState.mocks = [
+            state.mocks = [
                 {
                     name: 'one',
                     request: { url: '/one', method: 'GET' },
@@ -55,7 +55,7 @@ describe('GetRecordingsHandler', () => {
                 recordings: {'some': []},
                 record: true
             };
-            mocksState.getMatchingState.returns(matchingState);
+            state.getMatchingState.returns(matchingState);
         });
 
         it('gets the recordings', () => {

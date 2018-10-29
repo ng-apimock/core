@@ -7,7 +7,7 @@ import DefaultsHandler from './handlers/api/defaults.handler';
 import EchoRequestHandler from './handlers/mock/echo.request.handler';
 import Mock from '../mock/mock';
 import MockRequestHandler from './handlers/mock/mock.request.handler';
-import MocksState from '../state/mocks.state';
+import State from '../state/state';
 import RecordResponseHandler from './handlers/mock/record.response.handler';
 import UpdateMocksHandler from './handlers/api/update-mocks.handler';
 import SetVariableHandler from './handlers/api/set-variable.handler';
@@ -37,7 +37,7 @@ class Middleware {
      * @param {GetRecordingsHandler} getRecordingsHandler The get recordings handler.
      * @param {InitHandler} initHandler The init handler.
      * @param {MockRequestHandler} mockRequestHandler The mock request handler.
-     * @param {MocksState} apimockState The apimock state.
+     * @param {State} apimockState The apimock state.
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
      * @param {RecordResponseHandler} recordResponseHandler The record response handler.
      * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
@@ -54,7 +54,7 @@ class Middleware {
                 @inject('GetVariablesHandler') private getVariablesHandler: GetVariablesHandler,
                 @inject('InitHandler') private initHandler: InitHandler,
                 @inject('MockRequestHandler') private mockRequestHandler: MockRequestHandler,
-                @inject('MocksState') private apimockState: MocksState,
+                @inject('State') private apimockState: State,
                 @inject('PassThroughsHandler') private passThroughsHandler: PassThroughsHandler,
                 @inject('RecordResponseHandler') private recordResponseHandler: RecordResponseHandler,
                 @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,

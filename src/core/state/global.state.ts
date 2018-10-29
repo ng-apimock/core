@@ -1,15 +1,10 @@
-import State from './state';
+import IState from './Istate';
 import Recording from './recording';
+import MockState from './mock.state';
 
 /** Global state. */
-class GlobalState implements State {
-    mocks: {
-        [identifier: string]: {
-            scenario: string;
-            delay: number;
-            echo: boolean;
-        }
-    };
+class GlobalState implements IState {
+    mocks: { [identifier: string]: MockState };
     variables: { [key: string]: string; };
     recordings: { [identifier: string]: Recording[] };
     record: boolean;

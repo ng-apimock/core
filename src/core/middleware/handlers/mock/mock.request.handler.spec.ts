@@ -8,7 +8,7 @@ import * as sinon from 'sinon';
 import Mock from '../../../mock/mock';
 import MockRequestHandler from './mock.request.handler';
 import MockResponse from '../../../mock/mock.response';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('MockRequestHandler', () => {
@@ -18,7 +18,7 @@ describe('MockRequestHandler', () => {
     let getJsonCallbackNameFn: sinon.SinonStub;
     let interpolateResponseDataFn: sinon.SinonStub;
     let mockRequestHandler: MockRequestHandler;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
     let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
     let response: sinon.SinonStubbedInstance<http.ServerResponse>;
@@ -26,12 +26,12 @@ describe('MockRequestHandler', () => {
     beforeAll(() => {
         clock = sinon.useFakeTimers();
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
         response = sinon.createStubInstance(http.ServerResponse);
 
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('MockRequestHandler').to(MockRequestHandler);
 
         mockRequestHandler = container.get<MockRequestHandler>('MockRequestHandler');
@@ -50,8 +50,8 @@ describe('MockRequestHandler', () => {
                         headers: HttpHeaders.CONTENT_TYPE_BINARY,
                         file: 'some.pdf'
                     };
-                    mocksState.getResponse.returns(mockResponse);
-                    mocksState.getDelay.returns(1000);
+                    state.getResponse.returns(mockResponse);
+                    state.getDelay.returns(1000);
                     fsReadFileSyncFn.returns('binary content');
                     getJsonCallbackNameFn.returns(false);
                 });
@@ -68,14 +68,14 @@ describe('MockRequestHandler', () => {
                         } as Mock
                     });
 
-                    sinon.assert.calledWith(mocksState.getResponse, ({
+                    sinon.assert.calledWith(state.getResponse, ({
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
                             url: '/some/url',
                         }
                     } as Mock).name, 'apimockId');
-                    sinon.assert.calledWith(mocksState.getDelay, ({
+                    sinon.assert.calledWith(state.getDelay, ({
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
@@ -102,14 +102,14 @@ describe('MockRequestHandler', () => {
                         } as Mock
                     });
 
-                    sinon.assert.calledWith(mocksState.getResponse, ({
+                    sinon.assert.calledWith(state.getResponse, ({
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
                             url: '/some/url',
                         }
                     } as Mock).name, 'apimockId');
-                    sinon.assert.calledWith(mocksState.getDelay, ({
+                    sinon.assert.calledWith(state.getDelay, ({
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
@@ -142,9 +142,9 @@ describe('MockRequestHandler', () => {
                 });
 
                 afterEach(() => {
-                    mocksState.getResponse.reset();
-                    mocksState.getVariables.reset();
-                    mocksState.getDelay.reset();
+                    state.getResponse.reset();
+                    state.getVariables.reset();
+                    state.getDelay.reset();
                     getJsonCallbackNameFn.reset();
                     interpolateResponseDataFn.reset();
                     nextFn.reset();
@@ -162,9 +162,9 @@ describe('MockRequestHandler', () => {
                         data: { 'a': 'a%%x%%' }
                     };
                     variables = { x: 'x' };
-                    mocksState.getResponse.returns(mockResponse);
-                    mocksState.getVariables.returns(variables);
-                    mocksState.getDelay.returns(1000);
+                    state.getResponse.returns(mockResponse);
+                    state.getVariables.returns(variables);
+                    state.getDelay.returns(1000);
                     interpolateResponseDataFn.returns('interpolatedResponseData');
                     getJsonCallbackNameFn.returns(false);
                 });
@@ -180,15 +180,15 @@ describe('MockRequestHandler', () => {
                         } as Mock
                     });
 
-                    sinon.assert.calledWith(mocksState.getResponse, ({
+                    sinon.assert.calledWith(state.getResponse, ({
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
                             url: '/some/url',
                         }
                     } as Mock).name, 'apimockId');
-                    sinon.assert.calledWith(mocksState.getVariables, 'apimockId');
-                    sinon.assert.calledWith(mocksState.getDelay, ({
+                    sinon.assert.calledWith(state.getVariables, 'apimockId');
+                    sinon.assert.calledWith(state.getDelay, ({
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
@@ -220,9 +220,9 @@ describe('MockRequestHandler', () => {
                 });
 
                 afterEach(() => {
-                    mocksState.getResponse.reset();
-                    mocksState.getVariables.reset();
-                    mocksState.getDelay.reset();
+                    state.getResponse.reset();
+                    state.getVariables.reset();
+                    state.getDelay.reset();
                     getJsonCallbackNameFn.reset();
                     interpolateResponseDataFn.reset();
                     nextFn.reset();
@@ -233,7 +233,7 @@ describe('MockRequestHandler', () => {
 
         describe('no selected response', () =>
             it('calls next()', () => {
-                mocksState.getResponse.returns(undefined);
+                state.getResponse.returns(undefined);
 
                 mockRequestHandler.handle(request as any, response, nextFn, {
                     id: 'apimockId', mock: {
@@ -245,21 +245,21 @@ describe('MockRequestHandler', () => {
                     } as Mock
                 });
 
-                sinon.assert.calledWith(mocksState.getResponse, ({
+                sinon.assert.calledWith(state.getResponse, ({
                     name: 'some',
                     request: {
                         method: HttpMethods.GET,
                         url: '/some/url',
                     }
                 } as Mock).name, 'apimockId');
-                sinon.assert.notCalled(mocksState.getVariables);
+                sinon.assert.notCalled(state.getVariables);
                 sinon.assert.called(nextFn);
             }));
 
         afterEach(() => {
-            mocksState.getResponse.reset();
-            mocksState.getVariables.reset();
-            mocksState.getDelay.reset();
+            state.getResponse.reset();
+            state.getVariables.reset();
+            state.getDelay.reset();
             getJsonCallbackNameFn.reset();
             interpolateResponseDataFn.reset();
             nextFn.reset();

@@ -10,7 +10,7 @@ import Middleware from './middleware';
 import MockRequestHandler from './handlers/mock/mock.request.handler';
 import RecordResponseHandler from './handlers/mock/record.response.handler';
 import UpdateMocksHandler from './handlers/api/update-mocks.handler';
-import MocksState from '../state/mocks.state';
+import State from '../state/state';
 import SetVariableHandler from './handlers/api/set-variable.handler';
 import InitHandler from './handlers/api/init.handler';
 import GetMocksHandler from './handlers/api/get-mocks.handler';
@@ -22,7 +22,7 @@ import {HttpMethods} from './http';
 import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
 import RecordHandler from './handlers/api/record.handler';
-import State from '../state/state';
+import Istate from '../state/Istate';
 
 
 describe('Middleware', () => {
@@ -39,10 +39,10 @@ describe('Middleware', () => {
     let getVariablesHandler: sinon.SinonStubbedInstance<GetVariablesHandler>;
     let getRecordingsHandler: sinon.SinonStubbedInstance<GetRecordingsHandler>;
     let initHandler: sinon.SinonStubbedInstance<InitHandler>;
-    let matchingState: State;
+    let matchingState: Istate;
     let middleware: Middleware;
     let mockRequestHandler: sinon.SinonStubbedInstance<MockRequestHandler>;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
     let passThroughsHandler: sinon.SinonStubbedInstance<PassThroughsHandler>;
     let recordResponseHandler: sinon.SinonStubbedInstance<RecordResponseHandler>;
@@ -56,7 +56,7 @@ describe('Middleware', () => {
 
     beforeAll(() => {
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         request = sinon.createStubInstance(http.IncomingMessage);
         jsonBodyParser = sinon.stub();
         response = sinon.createStubInstance(http.ServerResponse);
@@ -86,7 +86,7 @@ describe('Middleware', () => {
         container.bind('GetRecordingsHandler').toConstantValue(getRecordingsHandler);
         container.bind('InitHandler').toConstantValue(initHandler);
         container.bind('MockRequestHandler').toConstantValue(mockRequestHandler);
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('PassThroughsHandler').toConstantValue(passThroughsHandler);
         container.bind('SetVariableHandler').toConstantValue(setVariableHandler);
         container.bind('RecordHandler').toConstantValue(recordHandler);
@@ -140,7 +140,7 @@ describe('Middleware', () => {
                 beforeEach(() => {
                     getApimockIdFn.returns('apimockId');
                     getMatchingApplicableHandlerFn.returns(undefined);
-                    mocksState.getMatchingMock.returns({
+                    state.getMatchingMock.returns({
                         name: 'matching-mock', isArray: true,
                         request: { url: '/base-url', method: HttpMethods.GET }, responses: {}
                     });
@@ -150,7 +150,7 @@ describe('Middleware', () => {
                         recordings: {},
                         record: false
                     };
-                    mocksState.getMatchingState.returns(matchingState);
+                    state.getMatchingState.returns(matchingState);
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
@@ -168,7 +168,7 @@ describe('Middleware', () => {
                     sinon.assert.calledWith(getMatchingApplicableHandlerFn, request, { x: 'x' }));
 
                 it('gets the matching mock', () =>
-                    sinon.assert.calledWith(mocksState.getMatchingMock, '/base-url', HttpMethods.GET, {
+                    sinon.assert.calledWith(state.getMatchingMock, '/base-url', HttpMethods.GET, {
                         'some': 'header'
                     }, { x: 'x' }));
 
@@ -197,10 +197,10 @@ describe('Middleware', () => {
                         recordings: {},
                         record: true
                     };
-                    mocksState.getMatchingState.returns(matchingState);
+                    state.getMatchingState.returns(matchingState);
                     getApimockIdFn.returns('apimockId');
                     getMatchingApplicableHandlerFn.returns(undefined);
-                    mocksState.getMatchingMock.returns({
+                    state.getMatchingMock.returns({
                         name: 'matching-mock', isArray: true,
                         request: { url: '/base-url', method: HttpMethods.GET }, responses: {}
                     });
@@ -258,10 +258,10 @@ describe('Middleware', () => {
                         recordings: {},
                         record: false
                     };
-                    mocksState.getMatchingState.returns(matchingState);
+                    state.getMatchingState.returns(matchingState);
                     getApimockIdFn.returns('apimockId');
                     getMatchingApplicableHandlerFn.returns(undefined);
-                    mocksState.getMatchingMock.returns({
+                    state.getMatchingMock.returns({
                         name: 'matching-mock', isArray: true,
                         request: { url: '/base-url', method: HttpMethods.GET }, responses: {}
                     });
@@ -297,7 +297,7 @@ describe('Middleware', () => {
             beforeEach(() => {
                 getApimockIdFn.returns('apimockId');
                 getMatchingApplicableHandlerFn.returns(undefined);
-                mocksState.getMatchingMock.returns(undefined);
+                state.getMatchingMock.returns(undefined);
                 request.headers = { 'some': 'header' };
                 request.body = { "x": "x" };
 

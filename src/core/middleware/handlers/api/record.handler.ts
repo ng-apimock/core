@@ -3,7 +3,7 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
@@ -12,10 +12,10 @@ import {HttpHeaders, HttpStatusCode} from '../../http';
 class RecordHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
      * @param {string} baseUrl The base url.
      */
-    constructor(@inject('MocksState') private mocksState: MocksState,
+    constructor(@inject('State') private state: State,
                 @inject('BaseUrl') private baseUrl: string) {
     }
 
@@ -23,7 +23,7 @@ class RecordHandler implements ApplicableHandler {
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { record?: boolean }
     }): void {
-        this.mocksState.getMatchingState(params.id).record = params.body.record;
+        this.state.getMatchingState(params.id).record = params.body.record;
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
     }

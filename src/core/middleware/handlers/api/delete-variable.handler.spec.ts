@@ -5,28 +5,28 @@ import * as http from 'http';
 import * as sinon from 'sinon';
 
 import DeleteVariableHandler from './delete-variable.handler';
-import MocksState from '../../../state/mocks.state';
 import State from '../../../state/state';
+import Istate from '../../../state/Istate';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('DeleteVariableHandler', () => {
     let container: Container;
     let handler: DeleteVariableHandler;
-    let matchingState: State;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let matchingState: Istate;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
     let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
     let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
         response = sinon.createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('DeleteVariableHandler').to(DeleteVariableHandler);
 
         handler = container.get<DeleteVariableHandler>('DeleteVariableHandler');
@@ -45,7 +45,7 @@ describe('DeleteVariableHandler', () => {
                 recordings: {},
                 record: false
             };
-            mocksState.getMatchingState.returns(matchingState);
+            state.getMatchingState.returns(matchingState);
         });
 
         it('deletes the variable', () => {

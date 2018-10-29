@@ -3,7 +3,7 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
@@ -12,10 +12,10 @@ import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 class SetVariableHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
      * @param {string} baseUrl The base url.
      */
-    constructor(@inject('MocksState') private mocksState: MocksState,
+    constructor(@inject('State') private state: State,
                 @inject('BaseUrl') private baseUrl: string) {
     }
 
@@ -23,7 +23,7 @@ class SetVariableHandler implements ApplicableHandler {
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { [key: string]: string }
     }): void {
-        const state = this.mocksState.getMatchingState(params.id);
+        const state = this.state.getMatchingState(params.id);
         const body = params.body;
         try {
             if (Object.keys(body).length > 0) {

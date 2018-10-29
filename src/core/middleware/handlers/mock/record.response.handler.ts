@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as uuid from 'uuid';
 
 import Mock from '../../../mock/mock';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {Handler} from '../handler';
 import Recording from '../../../state/recording';
 import {HttpMethods} from '../../http';
@@ -23,10 +23,11 @@ class RecordResponseHandler implements Handler {
 
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
+     * @param {string} baseUrl The base url.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string,
-                @inject('MocksState') private mocksState: MocksState) {
+    constructor(@inject('State') private state: State,
+                @inject('BaseUrl') private baseUrl: string) {
     }
 
     /** {@inheritDoc}.*/
@@ -93,7 +94,7 @@ class RecordResponseHandler implements Handler {
      */
     record(id: string, name: string, recording: Recording) {
         const contentType: string = recording.response.contentType;
-        const recordings = this.mocksState.getMatchingState(id).recordings;
+        const recordings = this.state.getMatchingState(id).recordings;
         if (recordings[name] === undefined) {
             recordings[name] = [];
         }

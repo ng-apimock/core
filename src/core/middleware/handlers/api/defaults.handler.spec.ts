@@ -5,27 +5,27 @@ import * as http from 'http';
 import * as sinon from 'sinon';
 
 import DefaultsHandler from './defaults.handler';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
 describe('DefaultsHandler', () => {
     let container: Container;
     let handler: DefaultsHandler;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
     let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
     let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
         response = sinon.createStubInstance(http.ServerResponse);
         response.end = response.end as sinon.SinonStub;
 
         container.bind('BaseUrl').toConstantValue('/base-url');
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('ActionHandler').to(DefaultsHandler);
 
         handler = container.get<DefaultsHandler>('ActionHandler');
@@ -35,7 +35,7 @@ describe('DefaultsHandler', () => {
         it('sets the defaults', () => {
             handler.handle(request as any, response, nextFn, {id: 'apimockId'});
 
-            sinon.assert.calledWith(mocksState.setToDefaults, 'apimockId');
+            sinon.assert.calledWith(state.setToDefaults, 'apimockId');
             sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             sinon.assert.called(response.end);
         }));

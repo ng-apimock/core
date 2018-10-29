@@ -8,20 +8,20 @@ import * as sinon from 'sinon';
 import * as uuid from 'uuid';
 
 import RecordResponseHandler from './record.response.handler';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import Mock from '../../../mock/mock';
 import {HttpMethods, HttpStatusCode} from '../../http';
 import Recording from '../../../state/recording';
-import State from '../../../state/state';
+import Istate from '../../../state/Istate';
 
 describe('RecordResponseHandler', () => {
     let clock: sinon.SinonFakeTimers;
     let container: Container;
     let fetchResponseFn: sinon.SinonStub;
     let fsWriteFileSyncFn: sinon.SinonStub;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
-    let matchingState: State;
+    let matchingState: Istate;
     let mock: Mock;
     let now: Date;
     let recordFn: sinon.SinonStub;
@@ -36,7 +36,7 @@ describe('RecordResponseHandler', () => {
 
     beforeAll(() => {
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         mock = {name: 'some'} as Mock;
         nextFn = sinon.stub();
         now = new Date();
@@ -53,7 +53,7 @@ describe('RecordResponseHandler', () => {
         fsWriteFileSyncFn = sinon.stub(fs, 'writeFileSync');
 
         container.bind('BaseUrl').toConstantValue('baseUrl');
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('RecordResponseHandler').to(RecordResponseHandler);
 
         recordResponseHandler = container.get<RecordResponseHandler>('RecordResponseHandler');
@@ -166,7 +166,7 @@ describe('RecordResponseHandler', () => {
                 recordings: {},
                 record: false
             };
-            mocksState.getMatchingState.returns(matchingState);
+            state.getMatchingState.returns(matchingState);
 
             recording = {
                 request: {

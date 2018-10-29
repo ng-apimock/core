@@ -4,7 +4,7 @@ import {inject, injectable} from 'inversify';
 import * as http from 'http';
 
 import Mock from '../../../mock/mock';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
@@ -15,10 +15,10 @@ class UpdateMocksHandler implements ApplicableHandler {
 
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
      * @param {string} baseUrl The base url.
      */
-    constructor(@inject('MocksState') private mocksState: MocksState,
+    constructor(@inject('State') private state: State,
                 @inject('BaseUrl') private baseUrl: string) {
     }
 
@@ -26,11 +26,11 @@ class UpdateMocksHandler implements ApplicableHandler {
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { name: string, scenario?: string, echo?: boolean, delay?: number }
     }): void {
-        const state = this.mocksState.getMatchingState(params.id);
+        const state = this.state.getMatchingState(params.id);
         const body = params.body;
         try {
             const mockName: string = body.name;
-            const matchingMock: Mock = this.mocksState.mocks.find((mock) => mock.name === mockName);
+            const matchingMock: Mock = this.state.mocks.find((mock) => mock.name === mockName);
 
             if (matchingMock !== undefined) {
                 const scenario: string = body.scenario;

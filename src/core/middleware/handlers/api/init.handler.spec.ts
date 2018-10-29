@@ -5,26 +5,26 @@ import * as http from 'http';
 import * as sinon from 'sinon';
 
 import InitHandler from './init.handler';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('InitHandler', () => {
     let container: Container;
     let handler: InitHandler;
-    let mocksState: sinon.SinonStubbedInstance<MocksState>;
+    let state: sinon.SinonStubbedInstance<State>;
     let nextFn: sinon.SinonStub;
     let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
     let response: sinon.SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        mocksState = sinon.createStubInstance(MocksState);
+        state = sinon.createStubInstance(State);
         nextFn = sinon.stub();
         request = sinon.createStubInstance(http.IncomingMessage);
         response = sinon.createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
-        container.bind('MocksState').toConstantValue(mocksState);
+        container.bind('State').toConstantValue(state);
         container.bind('InitHandler').to(InitHandler);
 
         handler = container.get<InitHandler>('InitHandler');

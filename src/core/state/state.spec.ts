@@ -3,20 +3,20 @@ import {Container} from 'inversify';
 
 import * as sinon from 'sinon';
 
-import MocksState from './mocks.state';
-import SessionState from './session.state';
 import State from './state';
+import SessionState from './session.state';
+import IState from './Istate';
 
-describe('MocksState', () => {
+describe('State', () => {
     let container: Container;
-    let mocksState: MocksState;
-    let mocksStateGetMatchingStateFn: sinon.SinonStub;
+    let state: State;
+    let stateGetMatchingStateFn: sinon.SinonStub;
 
     beforeAll(() => {
         container = new Container();
-        mocksState = new MocksState();
-        mocksStateGetMatchingStateFn = sinon.stub(MocksState.prototype, <any>'getMatchingState');
-        mocksState.mocks = [{
+        state = new State();
+        stateGetMatchingStateFn = sinon.stub(State.prototype, <any>'getMatchingState');
+        state.mocks = [{
             name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
         }, {
             name: 'advanced', request: {
@@ -29,20 +29,20 @@ describe('MocksState', () => {
 
     describe('getMatchingState', () => {
         beforeEach(() => {
-            mocksState.global.mocks['some'] = { scenario: 'thing', echo: true, delay: 0 };
-            mocksState.global.variables['some'] = 'some';
-            mocksState.sessions = [];
-            mocksStateGetMatchingStateFn.callThrough();
+            state.global.mocks['some'] = { scenario: 'thing', echo: true, delay: 0 };
+            state.global.variables['some'] = 'some';
+            state.sessions = [];
+            stateGetMatchingStateFn.callThrough();
         });
 
         describe('id === undefined', () =>
-            it('returns the global mocksState', () =>
-                expect(mocksState.getMatchingState(undefined)).toBe(mocksState.global)));
+            it('returns the global state', () =>
+                expect(state.getMatchingState(undefined)).toBe(state.global)));
 
         describe('no session matching the id', () =>
             it('returns a new SessionState by cloning the GlobalState', () => {
-                const matchingState = mocksState.getMatchingState('someId');
-                expect(mocksState.sessions.length).toBe(1);
+                const matchingState = state.getMatchingState('someId');
+                expect(state.sessions.length).toBe(1);
 
                 expect((matchingState as SessionState).identifier).toBe('someId');
                 expect(Object.keys(matchingState.mocks).length).toBe(1);
@@ -56,45 +56,45 @@ describe('MocksState', () => {
             let sessionState: SessionState;
             beforeEach(() => {
                 sessionState = new SessionState('someId');
-                mocksState.sessions.push(sessionState);
+                state.sessions.push(sessionState);
             });
             it('returns the matching SessionState', () => {
-                const matchingState = mocksState.getMatchingState('someId');
-                expect(mocksState.sessions.length).toBe(1);
+                const matchingState = state.getMatchingState('someId');
+                expect(state.sessions.length).toBe(1);
                 expect(matchingState).toBe(sessionState);
             });
         });
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 
     describe('getMatchingMock', () => {
         describe('url does not match', () =>
             it('returns undefined', () =>
-                expect(mocksState.getMatchingMock('no/match', 'P2OST', {
+                expect(state.getMatchingMock('no/match', 'P2OST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
                 }, { number: 123, identifier: 'abcd' })).toBeUndefined()));
 
         describe('method does not match', () =>
             it('returns undefined', () =>
-                expect(mocksState.getMatchingMock('some/api', 'PUT', {
+                expect(state.getMatchingMock('some/api', 'PUT', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
                 }, { number: 123, identifier: 'abcd' })).toBeUndefined()));
 
         describe('headers does not match', () =>
             it('returns undefined', () =>
-                expect(mocksState.getMatchingMock('some/api', 'POST', {
+                expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'public'
                 }, { number: 123, identifier: 'abcd' })).toBeUndefined()));
 
         describe('body does not match', () =>
             it('returns undefined', () =>
-                expect(mocksState.getMatchingMock('some/api', 'POST', {
+                expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
                 }, { number: 123, identifier: 'ab' })).toBeUndefined()));
@@ -102,11 +102,11 @@ describe('MocksState', () => {
         describe('request matches', () =>
             it('returns the matching mock', () => {
                 // match simple mock - only url and method
-                expect(mocksState.getMatchingMock('some/api', 'GET', {}, {})).toEqual({
+                expect(state.getMatchingMock('some/api', 'GET', {}, {})).toEqual({
                     name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
                 });
                 // match advanced mock - url, method, headers, body
-                expect(mocksState.getMatchingMock('some/api', 'POST', {
+                expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
                 }, { number: 123, identifier: 'abcd' })).toEqual({
@@ -120,108 +120,108 @@ describe('MocksState', () => {
     });
 
     describe('getResponse', () => {
-        let state: State;
+        let matchingState: IState;
         beforeEach(() => {
-            state = {
+            matchingState = {
                 mocks: { simple: { scenario: 'one', delay: 0, echo: false } },
                 variables: {},
                 recordings: {},
                 record: false
             };
-            mocksStateGetMatchingStateFn.returns(state);
+            stateGetMatchingStateFn.returns(matchingState);
         });
 
         describe('no matching mock', () =>
             it('returns undefined', () =>
-                expect(mocksState.getResponse('noMatch', 'id')).toBeUndefined()));
+                expect(state.getResponse('noMatch', 'id')).toBeUndefined()));
 
         describe('matching mock', () =>
             it('returns the selected response', () =>
-                expect(mocksState.getResponse('simple', 'id')).toEqual({
+                expect(state.getResponse('simple', 'id')).toEqual({
                     name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
                 }.responses['one'])));
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 
     describe('getDelay', () => {
-        let state: State;
+        let matchingState: IState;
         beforeEach(() => {
-            state = {
+            matchingState = {
                 mocks: { simple: { scenario: 'one', delay: 1000, echo: false } },
                 variables: {},
                 recordings: {},
                 record: false
             };
-            mocksStateGetMatchingStateFn.returns(state);
+            stateGetMatchingStateFn.returns(matchingState);
         });
 
         describe('no matching mock', () =>
             it('returns 0', () =>
-                expect(mocksState.getDelay('noMatch', 'id')).toBe(0)));
+                expect(state.getDelay('noMatch', 'id')).toBe(0)));
 
         describe('matching mock', () =>
             it('returns the selected delay', () =>
-                expect(mocksState.getDelay('simple', 'id')).toBe(1000)));
+                expect(state.getDelay('simple', 'id')).toBe(1000)));
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 
     describe('getEcho', () => {
-        let state: State;
+        let matchingState: IState;
         beforeEach(() => {
-            state = {
+            matchingState = {
                 mocks: { simple: { scenario: 'one', delay: 1000, echo: true } },
                 variables: {},
                 recordings: {},
                 record: false
             };
-            mocksStateGetMatchingStateFn.returns(state);
+            stateGetMatchingStateFn.returns(matchingState);
         });
 
         describe('no matching mock', () =>
             it('returns false', () =>
-                expect(mocksState.getEcho('noMatch', 'id')).toBe(false)));
+                expect(state.getEcho('noMatch', 'id')).toBe(false)));
 
         describe('matching mock', () =>
             it('returns the selected echo', () =>
-                expect(mocksState.getEcho('simple', 'id')).toBe(true)));
+                expect(state.getEcho('simple', 'id')).toBe(true)));
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 
     describe('getVariables', () => {
-        let state: State;
+        let matchingState: IState;
         beforeEach(() => {
-            state = {
+            matchingState = {
                 mocks: {},
                 variables: { this: 'this', that: 'that' },
                 recordings: {},
                 record: false
             };
-            mocksStateGetMatchingStateFn.returns(state);
+            stateGetMatchingStateFn.returns(matchingState);
         });
 
         it('returns the state variables', () => {
-            const response = mocksState.getVariables('id');
-            expect(response).toBe(state.variables);
+            const response = state.getVariables('id');
+            expect(response).toBe(matchingState.variables);
         });
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 
     describe('setToDefaults', () => {
-        let state: State;
+        let matchingState: IState;
         beforeEach(() => {
-            state = {
+            matchingState = {
                 mocks: {
                     simple: { scenario: 'one', delay: 1000, echo: true },
                     advanced: { scenario: 'three', delay: 3000, echo: false }
@@ -231,44 +231,44 @@ describe('MocksState', () => {
                 record: false
             };
 
-            mocksState.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
-            mocksState.defaults['advanced'] = { scenario: 'four', delay: 4000, echo: true };
+            state.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
+            state.defaults['advanced'] = { scenario: 'four', delay: 4000, echo: true };
         });
 
         it('sets the state to defaults', () => {
-            mocksStateGetMatchingStateFn.returns(state);
-            let simpleMockState = state.mocks['simple'];
+            stateGetMatchingStateFn.returns(matchingState);
+            let simpleMockState = matchingState.mocks['simple'];
             expect(simpleMockState.scenario).toBe('one');
             expect(simpleMockState.delay).toBeTruthy(1000);
             expect(simpleMockState.echo).toBe(true);
 
-            let advancedMockState = state.mocks['advanced'];
+            let advancedMockState = matchingState.mocks['advanced'];
             expect(advancedMockState.scenario).toBe('three');
             expect(advancedMockState.delay).toBeTruthy(3000);
             expect(advancedMockState.echo).toBe(false);
 
-            mocksState.setToDefaults('id');
+            state.setToDefaults('id');
 
-            simpleMockState = state.mocks['simple'];
+            simpleMockState = matchingState.mocks['simple'];
             expect(simpleMockState.scenario).toBe('two');
             expect(simpleMockState.delay).toBeTruthy(2000);
             expect(simpleMockState.echo).toBe(false);
 
-            advancedMockState = state.mocks['advanced'];
+            advancedMockState = matchingState.mocks['advanced'];
             expect(advancedMockState.scenario).toBe('four');
             expect(advancedMockState.delay).toBeTruthy(4000);
             expect(advancedMockState.echo).toBe(true);
         });
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 
     describe('setToPassThroughs', () => {
-        let state: State;
+        let matchingState: IState;
         beforeEach(() => {
-            state = {
+            matchingState = {
                 mocks: {
                     simple: { scenario: 'one', delay: 1000, echo: true },
                     advanced: { scenario: 'three', delay: 3000, echo: false }
@@ -278,37 +278,37 @@ describe('MocksState', () => {
                 record: false
             };
 
-            mocksState.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
-            mocksState.defaults['advanced'] = { scenario: 'four', delay: 4000, echo: true };
+            state.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
+            state.defaults['advanced'] = { scenario: 'four', delay: 4000, echo: true };
         });
 
         it('sets the state to defaults', () => {
-            mocksStateGetMatchingStateFn.returns(state);
-            let simpleMockState = state.mocks['simple'];
+            stateGetMatchingStateFn.returns(matchingState);
+            let simpleMockState = matchingState.mocks['simple'];
             expect(simpleMockState.scenario).toBe('one');
             expect(simpleMockState.delay).toBeTruthy(1000);
             expect(simpleMockState.echo).toBe(true);
 
-            let advancedMockState = state.mocks['advanced'];
+            let advancedMockState = matchingState.mocks['advanced'];
             expect(advancedMockState.scenario).toBe('three');
             expect(advancedMockState.delay).toBeTruthy(3000);
             expect(advancedMockState.echo).toBe(false);
 
-            mocksState.setToPassThroughs('id');
+            state.setToPassThroughs('id');
 
-            simpleMockState = state.mocks['simple'];
+            simpleMockState = matchingState.mocks['simple'];
             expect(simpleMockState.scenario).toBe('passThrough');
             expect(simpleMockState.delay).toBeTruthy(1000);
             expect(simpleMockState.echo).toBe(true);
 
-            advancedMockState = state.mocks['advanced'];
+            advancedMockState = matchingState.mocks['advanced'];
             expect(advancedMockState.scenario).toBe('passThrough');
             expect(advancedMockState.delay).toBeTruthy(3000);
             expect(advancedMockState.echo).toBe(false);
         });
 
         afterEach(() => {
-            mocksStateGetMatchingStateFn.reset();
+            stateGetMatchingStateFn.reset();
         });
     });
 });

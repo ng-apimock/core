@@ -1,16 +1,11 @@
-import State from './state';
+import Istate from './Istate';
 import Recording from './recording';
+import MockState from './mock.state';
 
 /** Session state. */
-class SessionState implements State {
+class SessionState implements Istate {
     identifier: string;
-    mocks: {
-        [identifier: string]: {
-            scenario: string;
-            delay: number;
-            echo: boolean;
-        }
-    };
+    mocks: { [identifier: string]: MockState };
     variables: { [key: string]: string; };
     recordings: { [identifier: string]: Recording[] };
     record: boolean;

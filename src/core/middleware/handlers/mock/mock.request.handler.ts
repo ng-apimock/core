@@ -8,7 +8,7 @@ import * as url from 'url';
 
 import Mock from '../../../mock/mock';
 import MockResponse from '../../../mock/mock.response';
-import MocksState from '../../../state/mocks.state';
+import State from '../../../state/state';
 import {Handler} from '../handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
@@ -17,17 +17,17 @@ import {HttpHeaders, HttpStatusCode} from '../../http';
 class MockRequestHandler implements Handler {
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
      */
-    constructor(@inject('MocksState') private mocksState: MocksState) {
+    constructor(@inject('State') private state: State) {
     }
 
     /** {@inheritDoc}.*/
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string, mock: Mock }): void {
-        const _response: MockResponse = this.mocksState.getResponse(params.mock.name, params.id);
+        const _response: MockResponse = this.state.getResponse(params.mock.name, params.id);
         if (_response !== undefined) {
             const status: number = _response.status;
-            const delay: number = this.mocksState.getDelay(params.mock.name, params.id);
+            const delay: number = this.state.getDelay(params.mock.name, params.id);
             const jsonCallbackName = this.getJsonCallbackName(request);
 
             let headers = _response.headers;
@@ -40,7 +40,7 @@ class MockRequestHandler implements Handler {
                     response.end(JSON.stringify(e, ['message']));
                 }
             } else {
-                const _variables: any = this.mocksState.getVariables(params.id);
+                const _variables: any = this.state.getVariables(params.id);
                 chunk = this.interpolateResponseData(_response.data, _variables);
             }
 

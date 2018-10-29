@@ -6,7 +6,7 @@ import * as glob from 'glob';
 import * as path from 'path';
 
 import Mock from '../mock/mock';
-import MocksState from '../state/mocks.state';
+import State from '../state/state';
 import {HttpHeaders, HttpStatusCode} from '../middleware/http';
 import ProcessingOptions from './processing.options';
 
@@ -19,9 +19,9 @@ class MocksProcessor {
 
     /**
      * Constructor.
-     * @param {MocksState} mocksState The mocks state.
+     * @param {State} state The state.
      */
-    constructor(@inject('MocksState') public mocksState: MocksState) {
+    constructor(@inject('State') public state: State) {
     }
 
     /**
@@ -37,16 +37,16 @@ class MocksProcessor {
         }).forEach((file) => {
             const mockPath = path.join(options.src, file);
             const mock = fs.readJsonSync(mockPath);
-            const match = this.mocksState.mocks.find((_mock: Mock) => _mock.name === mock.name);
-            const index = this.mocksState.mocks.indexOf(match);
+            const match = this.state.mocks.find((_mock: Mock) => _mock.name === mock.name);
+            const index = this.state.mocks.indexOf(match);
 
             mock.path = path.dirname(mockPath);
 
             if (index > -1) { // exists so update mock
                 console.warn(`Mock with identifier '${mock.name}' already exists. Overwriting existing mock.`);
-                this.mocksState.mocks[index] = mock;
+                this.state.mocks[index] = mock;
             } else { // add mock
-                this.mocksState.mocks.push(mock);
+                this.state.mocks.push(mock);
                 counter++;
             }
 
@@ -81,8 +81,8 @@ class MocksProcessor {
                 };
             }
 
-            this.mocksState.defaults[mock.name] = state;
-            this.mocksState.global.mocks[mock.name] = JSON.parse(JSON.stringify(state));
+            this.state.defaults[mock.name] = state;
+            this.state.global.mocks[mock.name] = JSON.parse(JSON.stringify(state));
         });
 
         console.log(`Processed ${counter} unique mocks.`);
