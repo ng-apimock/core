@@ -21,6 +21,8 @@ import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
 import RecordHandler from './handlers/api/record.handler';
 import {NextHandleFunction} from 'connect';
+import GetPresetsHandler from './handlers/api/get-presets.handler';
+import SelectPresetHandler from './handlers/api/select-preset.handler';
 
 /** Middleware. */
 @injectable()
@@ -33,16 +35,18 @@ class Middleware {
      * @param {DeleteVariableHandler} deleteVariableHandler The delete variables handler.
      * @param {EchoRequestHandler} echoRequestHandler The echo request handler.
      * @param {GetMocksHandler} getMocksHandler The get mocks handler.
-     * @param {GetVariablesHandler} getVariablesHandler The get variables handler.
+     * @param {GetPresetsHandler} getPresetsHandler The get presets handler.
      * @param {GetRecordingsHandler} getRecordingsHandler The get recordings handler.
+     * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
+     * @param {GetVariablesHandler} getVariablesHandler The get variables handler.
      * @param {InitHandler} initHandler The init handler.
      * @param {MockRequestHandler} mockRequestHandler The mock request handler.
-     * @param {State} apimockState The apimock state.
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
-     * @param {RecordResponseHandler} recordResponseHandler The record response handler.
-     * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
      * @param {RecordHandler} recordHandler The record handler.
+     * @param {RecordResponseHandler} recordResponseHandler The record response handler.
+     * @param {SelectPresetHandler} selectPresetHandler The set preset handler.
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
+     * @param {State} apimockState The apimock state.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
      * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
      */
@@ -50,22 +54,25 @@ class Middleware {
                 @inject('DeleteVariableHandler') private deleteVariableHandler: DeleteVariableHandler,
                 @inject('EchoRequestHandler') private echoRequestHandler: EchoRequestHandler,
                 @inject('GetMocksHandler') private getMocksHandler: GetMocksHandler,
+                @inject('GetPresetsHandler') private getPresetsHandler: GetPresetsHandler,
                 @inject('GetRecordingsHandler') private getRecordingsHandler: GetRecordingsHandler,
+                @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
                 @inject('GetVariablesHandler') private getVariablesHandler: GetVariablesHandler,
                 @inject('InitHandler') private initHandler: InitHandler,
                 @inject('MockRequestHandler') private mockRequestHandler: MockRequestHandler,
-                @inject('State') private apimockState: State,
                 @inject('PassThroughsHandler') private passThroughsHandler: PassThroughsHandler,
-                @inject('RecordResponseHandler') private recordResponseHandler: RecordResponseHandler,
-                @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
                 @inject('RecordHandler') private recordHandler: RecordHandler,
+                @inject('RecordResponseHandler') private recordResponseHandler: RecordResponseHandler,
+                @inject('SelectPresetHandler') private selectPresetHandler: SelectPresetHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
+                @inject('State') private apimockState: State,
                 @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
                 @inject('JsonBodyParser') private bodyParser: NextHandleFunction) {
         this.handlers = [
             defaultsHandler,
             deleteVariableHandler,
             getMocksHandler,
+            getPresetsHandler,
             getRecordingsHandler,
             getVariablesHandler,
             initHandler,
@@ -73,6 +80,7 @@ class Middleware {
             getRecordedResponseHandler,
             recordHandler,
             setVariableHandler,
+            selectPresetHandler,
             updateMocksHandler
         ];
     }
@@ -100,7 +108,11 @@ class Middleware {
                     });
                     const matchingState = this.apimockState.getMatchingState(apimockId);
                     if (matchingState.record && request.headers.record === undefined) {
-                        this.recordResponseHandler.handle(request, response, next, {id: apimockId, mock: matchingMock, body: body });
+                        this.recordResponseHandler.handle(request, response, next, {
+                            id: apimockId,
+                            mock: matchingMock,
+                            body: body
+                        });
                     } else {
                         this.mockRequestHandler.handle(request, response, next, { id: apimockId, mock: matchingMock });
                     }

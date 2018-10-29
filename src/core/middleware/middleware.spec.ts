@@ -23,6 +23,8 @@ import GetRecordingsHandler from './handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
 import RecordHandler from './handlers/api/record.handler';
 import Istate from '../state/Istate';
+import GetPresetsHandler from './handlers/api/get-presets.handler';
+import SelectPresetHandler from './handlers/api/select-preset.handler';
 
 
 describe('Middleware', () => {
@@ -36,6 +38,7 @@ describe('Middleware', () => {
     let getApimockIdFn: sinon.SinonStub;
     let getMatchingApplicableHandlerFn: sinon.SinonStub;
     let getMocksHandler: sinon.SinonStubbedInstance<GetMocksHandler>;
+    let getPresetsHandler: sinon.SinonStubbedInstance<GetPresetsHandler>;
     let getVariablesHandler: sinon.SinonStubbedInstance<GetVariablesHandler>;
     let getRecordingsHandler: sinon.SinonStubbedInstance<GetRecordingsHandler>;
     let initHandler: sinon.SinonStubbedInstance<InitHandler>;
@@ -52,6 +55,7 @@ describe('Middleware', () => {
     let jsonBodyParser: sinon.SinonStub;
     let response: any;
     let setVariableHandler: sinon.SinonStubbedInstance<SetVariableHandler>;
+    let selectPresetHandler: sinon.SinonStubbedInstance<SelectPresetHandler>;
     let updateMocksHandler: sinon.SinonStubbedInstance<UpdateMocksHandler>;
 
     beforeAll(() => {
@@ -64,6 +68,7 @@ describe('Middleware', () => {
         deleteVariableHandler = sinon.createStubInstance(DeleteVariableHandler);
         echoRequestHandler = sinon.createStubInstance(EchoRequestHandler);
         getMocksHandler = sinon.createStubInstance(GetMocksHandler);
+        getPresetsHandler = sinon.createStubInstance(GetPresetsHandler);
         getVariablesHandler = sinon.createStubInstance(GetVariablesHandler);
         getRecordingsHandler = sinon.createStubInstance(GetRecordingsHandler);
         applicableHandlerHandleFn = sinon.stub();
@@ -76,22 +81,25 @@ describe('Middleware', () => {
         recordHandler = sinon.createStubInstance(RecordHandler);
         getRecordedResponseHandler = sinon.createStubInstance(GetRecordedResponseHandler);
         setVariableHandler = sinon.createStubInstance(SetVariableHandler);
+        selectPresetHandler = sinon.createStubInstance(SelectPresetHandler);
         updateMocksHandler = sinon.createStubInstance(UpdateMocksHandler);
 
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
         container.bind('DeleteVariableHandler').toConstantValue(deleteVariableHandler);
         container.bind('EchoRequestHandler').toConstantValue(echoRequestHandler);
         container.bind('GetMocksHandler').toConstantValue(getMocksHandler);
-        container.bind('GetVariablesHandler').toConstantValue(getVariablesHandler);
+        container.bind('GetPresetsHandler').toConstantValue(getPresetsHandler);
         container.bind('GetRecordingsHandler').toConstantValue(getRecordingsHandler);
+        container.bind('GetRecordedResponseHandler').toConstantValue(getRecordedResponseHandler);
+        container.bind('GetVariablesHandler').toConstantValue(getVariablesHandler);
         container.bind('InitHandler').toConstantValue(initHandler);
         container.bind('MockRequestHandler').toConstantValue(mockRequestHandler);
-        container.bind('State').toConstantValue(state);
         container.bind('PassThroughsHandler').toConstantValue(passThroughsHandler);
-        container.bind('SetVariableHandler').toConstantValue(setVariableHandler);
         container.bind('RecordHandler').toConstantValue(recordHandler);
         container.bind('RecordResponseHandler').toConstantValue(recordResponseHandler);
-        container.bind('GetRecordedResponseHandler').toConstantValue(getRecordedResponseHandler);
+        container.bind('SelectPresetHandler').toConstantValue(selectPresetHandler);
+        container.bind('SetVariableHandler').toConstantValue(setVariableHandler);
+        container.bind('State').toConstantValue(state);
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);
         container.bind('Middleware').to(Middleware);
         container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);

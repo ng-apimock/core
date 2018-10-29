@@ -13,7 +13,7 @@ import ProcessingOptions from './processing.options';
 /** Mocks processor. */
 @injectable()
 class MocksProcessor {
-    private defaultDelay = 0;
+    private DEFAULT_DELAY = 0;
     private DEFAULT_ECHO = false;
     private PASS_THROUGH = 'passThrough';
     private DEFAULT_PATTERN = '**/*.mock.json';
@@ -72,14 +72,14 @@ class MocksProcessor {
             let state = {
                 scenario: this.PASS_THROUGH,
                 echo: this.DEFAULT_ECHO,
-                delay: mock.delay || this.defaultDelay
+                delay: mock.delay || this.DEFAULT_DELAY
             };
 
             if (_default !== undefined) {
                 state = {
                     scenario: _default,
                     echo: this.DEFAULT_ECHO,
-                    delay: mock.delay || this.defaultDelay
+                    delay: mock.delay || this.DEFAULT_DELAY
                 };
             }
 

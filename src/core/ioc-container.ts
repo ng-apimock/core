@@ -5,6 +5,7 @@ import DefaultsHandler from './middleware/handlers/api/defaults.handler';
 import DeleteVariableHandler from './middleware/handlers/api/delete-variable.handler';
 import EchoRequestHandler from './middleware/handlers/mock/echo.request.handler';
 import GetMocksHandler from './middleware/handlers/api/get-mocks.handler';
+import GetPresetsHandler from './middleware/handlers/api/get-presets.handler';
 import GetVariablesHandler from './middleware/handlers/api/get-variables.handler';
 import InitHandler from './middleware/handlers/api/init.handler';
 import Middleware from './middleware/middleware';
@@ -14,6 +15,7 @@ import PresetsProcessor from './processor/presets.processor';
 import Processor from './processor/processor';
 import PassThroughsHandler from './middleware/handlers/api/pass-throughs.handler';
 import RecordResponseHandler from './middleware/handlers/mock/record.response.handler';
+import SelectPresetHandler from './middleware/handlers/api/select-preset.handler';
 import SetVariableHandler from './middleware/handlers/api/set-variable.handler';
 import State from './state/state';
 import UpdateMocksHandler from './middleware/handlers/api/update-mocks.handler';
@@ -36,6 +38,9 @@ container.bind<RecordResponseHandler>('RecordResponseHandler').to(RecordResponse
 
 container.bind<GetMocksHandler>('GetMocksHandler').to(GetMocksHandler);
 container.bind<UpdateMocksHandler>('UpdateMocksHandler').to(UpdateMocksHandler);
+
+container.bind<GetPresetsHandler>('GetPresetsHandler').to(GetPresetsHandler);
+container.bind<SelectPresetHandler>('SelectPresetHandler').to(SelectPresetHandler);
 
 container.bind<GetVariablesHandler>('GetVariablesHandler').to(GetVariablesHandler);
 container.bind<SetVariableHandler>('SetVariableHandler').to(SetVariableHandler);
