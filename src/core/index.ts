@@ -1,12 +1,12 @@
 import container from './ioc-container';
-import MocksProcessor from './processor/processor';
+import Processor from './processor/processor';
 import Middleware from './middleware/middleware';
 import * as http from 'http';
 
 /** NgApimock */
 class NgApimock {
     get processor() {
-        return container.get<MocksProcessor>('MocksProcessor');
+        return container.get<Processor>('Processor');
     }
 
     middleware(request: http.IncomingMessage, response: http.ServerResponse, next: Function) {

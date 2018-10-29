@@ -1,6 +1,9 @@
 interface ProcessingOptions {
     src: string;
-    pattern?: string;
+    patterns?: {
+        mocks?: string;
+        presets?: string;
+    };
 }
 
 export default ProcessingOptions;

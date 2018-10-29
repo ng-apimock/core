@@ -28,7 +28,10 @@ In order to process the mocks you need to call the processor like this:
 ```javascript
 ngApimock.processor.process({
     src: 'the/path/to/your/mocks',
-    pattern: '**/*.mock.json' // optional, defaults to **/*.json
+    patterns: {
+        mocks: '**/*.mock.json', // optional, defaults to **/*.mock.json,
+        presets: '**/*.preset.json' // optional, defaults to **/*.preset.json
+    } 
 });
 ```
 
@@ -101,7 +104,8 @@ These variables can be set using the available clients.
 There are a couple of clients available to connect to @ng-apimock.
 
 - [@ng-apimock/protractor-plugin](https://github.com/ng-apimock/protractor-plugin)
-- [@ng-apimock/web-interface]()
+- [@ng-apimock/webdriver-plugin](https://github.com/ng-apimock/webdriverio-plugin)
+- [@ng-apimock/dev-interface](https://github.com/ng-apimock/dev-interface)
 
 ## Functions
 Ng-apimock provides the following options:

@@ -9,11 +9,13 @@ import GetVariablesHandler from './middleware/handlers/api/get-variables.handler
 import InitHandler from './middleware/handlers/api/init.handler';
 import Middleware from './middleware/middleware';
 import MockRequestHandler from './middleware/handlers/mock/mock.request.handler';
-import State from './state/state';
-import MocksProcessor from './processor/processor';
+import MocksProcessor from './processor/mocks.processor';
+import PresetsProcessor from './processor/presets.processor';
+import Processor from './processor/processor';
 import PassThroughsHandler from './middleware/handlers/api/pass-throughs.handler';
 import RecordResponseHandler from './middleware/handlers/mock/record.response.handler';
 import SetVariableHandler from './middleware/handlers/api/set-variable.handler';
+import State from './state/state';
 import UpdateMocksHandler from './middleware/handlers/api/update-mocks.handler';
 import GetRecordingsHandler from './middleware/handlers/api/get-recordings.handler';
 import GetRecordedResponseHandler from './middleware/handlers/api/get-recorded-response.handler';
@@ -46,6 +48,8 @@ container.bind<GetRecordedResponseHandler>('GetRecordedResponseHandler').to(GetR
 container.bind<GetRecordingsHandler>('GetRecordingsHandler').to(GetRecordingsHandler);
 
 container.bind<MocksProcessor>('MocksProcessor').to(MocksProcessor);
+container.bind<PresetsProcessor>('PresetsProcessor').to(PresetsProcessor);
+container.bind<Processor>('Processor').to(Processor);
 container.bind<NextHandleFunction>('JsonBodyParser').toConstantValue(bodyParser.json());
 container.bind<Middleware>('Middleware').to(Middleware);
 
