@@ -7,6 +7,7 @@ import MockResponse from '../mock/mock.response';
 import SessionState from './session.state';
 import Istate from './Istate';
 import {IncomingHttpHeaders} from 'http';
+import Preset from '../preset/preset';
 import MockState from './mock.state';
 
 const DEFAULT_DELAY = 0;
@@ -17,6 +18,7 @@ const PASS_THROUGH = 'passThrough';
 @injectable()
 class State {
     mocks: Mock[];
+    presets: Preset[];
     defaults: { [identifier: string]: MockState };
     global: GlobalState;
     sessions: SessionState[];
@@ -24,6 +26,7 @@ class State {
     /** Constructor. */
     constructor() {
         this.mocks = [];
+        this.presets = [];
         this.defaults = {};
         this.global = new GlobalState();
         this.sessions = [];
