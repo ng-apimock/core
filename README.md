@@ -1,7 +1,7 @@
 # ng-apimock/core 
 > ng-apimock core module is a [Node.js](https://nodejs.org/) plugin that provides the ability to use scenario based api mocking. You can use it for both:
- - local development (see local development plugins)
- - automated testing (see automated testing plugins)
+ - local development (see [local development plugins](#Local development plugins))
+ - automated testing (see [automated testing plugins](#Automated testing plugins))
  
 ## Getting Started
 
@@ -18,12 +18,12 @@ const ngApimock = require('@ng-apimock/core');
 ## How does it work
 ng-apimock consists of 2 parts.
 
-1. processor - responsible for processing the available mocks (see [Processor](#Processor))
+1. processor - responsible for processing the available mocks and presets (see [Processor](#Processor))
 2. middleware - responsible for handling api calls (see [Middleware](#Middleware))
 
 ## Processor
-The processor is responsible for processing the available mocks.
-In order to process the mocks you need to call the processor like this:
+The processor is responsible for processing the available mocks and presets.
+In order to process the mocks and presets you need to call the processor like this:
 
 ```javascript
 ngApimock.processor.process({
@@ -35,8 +35,8 @@ ngApimock.processor.process({
 });
 ```
 
-Every mock will be processed that matches the pattern within the source directory.
-When a multiple mocks with the same name are available, they will override each other (a message will be printed to the console).
+Every mock and preset will be processed that matches the pattern within the source directory.
+When duplicates (same name) mocks and preset are processed they will override the previously processed version (a message will be printed to the console).
 
 ## Middleware
 The middleware function handles requests. The function is compatible with both [Connect](https://github.com/senchalabs/connect) and [Express](https://expressjs.com/en/guide/using-middleware.html)
@@ -50,7 +50,7 @@ const app = connect();
 app.use(ngApimock.middleware);
 ```
 
-Ng-apimock is makes sure that parallel executed tests do not interfere with each other. Each session is fully isolated.  
+Ng-apimock makes sure that parallel executed tests do not interfere with each other. Each session is fully isolated.  
 
 ## How to write mocks
 There are a couple of rules to follow.
@@ -69,7 +69,7 @@ There are a couple of rules to follow.
     "headers": {} // optional, headers object
   },
   "responses": {
-    "something": {
+    "something": { // the name of the response
         "status": 200, // optional, http status code (defaults to 200)
         "data": {}, // optional, response data (either an object or array of objects)
         "file": "some/file.pdf", // optional, file location
@@ -100,11 +100,42 @@ you need to surround the part with %% like this:
 
 These variables can be set using the available clients.
 
+## How to write presets
+There are a couple of rules to follow.
+
+1. For each preset create a separate file
+2. Each file needs to follow the format below.
+
+```
+{
+  "name": "some flow", // the name of the preset
+  "mocks": {
+    "url": "/items", // the request url
+    "method": "GET", // the request method
+    "body": {}, // optional, body object
+    "headers": {} // optional, headers object
+  },
+  "mocks": {
+    "some mock": { // the name of the mock
+      "scenario": "success", // the name of the scenario
+      "echo": true, // optional, indicates if this request will echoed to the console (defaults to false)
+      "delay": 3000 // optional, delay in milliseconds (defaults to 0)
+    }
+  },
+  "variables": {
+    "some-variable": "some value"
+  }
+}
+```
+
 ## Clients
 There are a couple of clients available to connect to @ng-apimock.
 
+### Automated testing plugins
 - [@ng-apimock/protractor-plugin](https://github.com/ng-apimock/protractor-plugin)
 - [@ng-apimock/webdriver-plugin](https://github.com/ng-apimock/webdriverio-plugin)
+
+### Local development plugins
 - [@ng-apimock/dev-interface](https://github.com/ng-apimock/dev-interface)
 
 ## Functions
@@ -116,5 +147,7 @@ Ng-apimock provides the following options:
 
 - Adding / updating a variable
 - Deleting a variable
+
+- Selecting a preset
 
 See the client documentation for each of these functions.
