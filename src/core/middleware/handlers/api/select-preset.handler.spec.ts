@@ -124,7 +124,7 @@ describe('SelectPresetHandler', () => {
 
             it('throws an error when the scenario does not match', () => {
                 sinon.assert.calledWith(response.writeHead, HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                sinon.assert.calledWith(response.end, JSON.stringify({ message: 'No scenario matching [\'no-match\'] found' }));
+                sinon.assert.calledWith(response.end, JSON.stringify({ message: 'No scenario matching [\'no-match\'] found for mock with name [\'another\']' }));
             });
         });
 

@@ -8,6 +8,7 @@ import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 import Preset from '../../../preset/preset';
 import Mock from '../../../mock/mock';
 import MockState from '../../../state/mock.state';
+import IState from '../../../state/Istate';
 
 /**  Select preset handler. */
 @injectable()
@@ -36,25 +37,8 @@ class SelectPresetHandler implements ApplicableHandler {
 
             if (matchingPreset !== undefined) {
                 try {
-                    Object.keys(matchingPreset.mocks).forEach((mock) => {
-                        const presetMock: MockState = matchingPreset.mocks[mock];
-                        const matchingMock: Mock = this.state.mocks.find((_mock) => _mock.name === mock);
-
-                        if (Object.keys(matchingMock.responses).find((scenario) => scenario === presetMock.scenario)) {
-                            state.mocks[mock] = JSON.parse(JSON.stringify(matchingPreset.mocks[mock]));
-                            if (state.mocks[mock].echo === undefined) {
-                                state.mocks[mock].echo = this.DEFAULT_ECHO;
-                            }
-                            if (state.mocks[mock].delay === undefined) {
-                                state.mocks[mock].delay = this.DEFAULT_DELAY;
-                            }
-                        } else {
-                            throw new Error(`No scenario matching ['${presetMock.scenario}'] found`);
-                        }
-                    });
-                    Object.keys(matchingPreset.variables).forEach((variable) => {
-                        state.variables[variable] = matchingPreset.variables[variable];
-                    });
+                    this.updateMocks(state, matchingPreset);
+                    this.updateVariables(state, matchingPreset);
                 } catch (e) {
                     response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                     response.end(JSON.stringify(e, ['message']));
@@ -75,6 +59,47 @@ class SelectPresetHandler implements ApplicableHandler {
         const methodMatches = request.method === HttpMethods.PUT;
         const urlMatches = request.url.startsWith(`${this.baseUrl}/presets`);
         return urlMatches && methodMatches;
+    }
+
+    /**
+     * Update the mocks state with the preset.
+     * @param {IState} state The state.
+     * @param {Preset} preset The preset
+     */
+    updateMocks(state: IState, preset: Preset): void {
+        if (preset.mocks !== undefined) {
+            Object.keys(preset.mocks).forEach((mock) => {
+                const mockState: MockState = preset.mocks[mock];
+                const matchingMock: Mock = this.state.mocks.find((_mock) => _mock.name === mock);
+                const scenarioExists = Object.keys(matchingMock.responses)
+                    .find((scenario) => scenario === mockState.scenario) !== undefined;
+
+                if (scenarioExists) {
+                    state.mocks[mock] = JSON.parse(JSON.stringify(preset.mocks[mock]));
+                    if (state.mocks[mock].echo === undefined) {
+                        state.mocks[mock].echo = this.DEFAULT_ECHO;
+                    }
+                    if (state.mocks[mock].delay === undefined) {
+                        state.mocks[mock].delay = this.DEFAULT_DELAY;
+                    }
+                } else {
+                    throw new Error(`No scenario matching ['${mockState.scenario}'] found for mock with name ['${mock}']`);
+                }
+            });
+        }
+    }
+
+    /**
+     * Update the variables state with the preset.
+     * @param {IState} state The state.
+     * @param {Preset} preset The preset
+     */
+    updateVariables(state: IState, preset: Preset): void {
+        if (preset.variables !== undefined) {
+            Object.keys(preset.variables).forEach((variable) => {
+                state.variables[variable] = preset.variables[variable];
+            });
+        }
     }
 }
 
