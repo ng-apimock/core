@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {Container} from 'inversify';
 
 import * as http from 'http';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import DefaultsHandler from './handlers/api/defaults.handler';
 import EchoRequestHandler from './handlers/mock/echo.request.handler';
@@ -29,60 +29,60 @@ import SelectPresetHandler from './handlers/api/select-preset.handler';
 
 describe('Middleware', () => {
     let applicableHandler: ApplicableHandler;
-    let applicableHandlerHandleFn: sinon.SinonStub;
-    let applicableHandlerIsApplicableFn: sinon.SinonStub;
+    let applicableHandlerHandleFn: SinonStub;
+    let applicableHandlerIsApplicableFn: SinonStub;
     let container: Container;
-    let defaultsHandler: sinon.SinonStubbedInstance<DefaultsHandler>;
-    let deleteVariableHandler: sinon.SinonStubbedInstance<DeleteVariableHandler>;
-    let echoRequestHandler: sinon.SinonStubbedInstance<EchoRequestHandler>;
-    let getApimockIdFn: sinon.SinonStub;
-    let getMatchingApplicableHandlerFn: sinon.SinonStub;
-    let getMocksHandler: sinon.SinonStubbedInstance<GetMocksHandler>;
-    let getPresetsHandler: sinon.SinonStubbedInstance<GetPresetsHandler>;
-    let getVariablesHandler: sinon.SinonStubbedInstance<GetVariablesHandler>;
-    let getRecordingsHandler: sinon.SinonStubbedInstance<GetRecordingsHandler>;
-    let initHandler: sinon.SinonStubbedInstance<InitHandler>;
+    let defaultsHandler: SinonStubbedInstance<DefaultsHandler>;
+    let deleteVariableHandler: SinonStubbedInstance<DeleteVariableHandler>;
+    let echoRequestHandler: SinonStubbedInstance<EchoRequestHandler>;
+    let getApimockIdFn: SinonStub;
+    let getMatchingApplicableHandlerFn: SinonStub;
+    let getMocksHandler: SinonStubbedInstance<GetMocksHandler>;
+    let getPresetsHandler: SinonStubbedInstance<GetPresetsHandler>;
+    let getVariablesHandler: SinonStubbedInstance<GetVariablesHandler>;
+    let getRecordingsHandler: SinonStubbedInstance<GetRecordingsHandler>;
+    let initHandler: SinonStubbedInstance<InitHandler>;
     let matchingState: Istate;
     let middleware: Middleware;
-    let mockRequestHandler: sinon.SinonStubbedInstance<MockRequestHandler>;
-    let state: sinon.SinonStubbedInstance<State>;
-    let nextFn: sinon.SinonStub;
-    let passThroughsHandler: sinon.SinonStubbedInstance<PassThroughsHandler>;
-    let recordResponseHandler: sinon.SinonStubbedInstance<RecordResponseHandler>;
-    let recordHandler: sinon.SinonStubbedInstance<RecordHandler>;
-    let getRecordedResponseHandler: sinon.SinonStubbedInstance<GetRecordedResponseHandler>;
+    let mockRequestHandler: SinonStubbedInstance<MockRequestHandler>;
+    let state: SinonStubbedInstance<State>;
+    let nextFn: SinonStub;
+    let passThroughsHandler: SinonStubbedInstance<PassThroughsHandler>;
+    let recordResponseHandler: SinonStubbedInstance<RecordResponseHandler>;
+    let recordHandler: SinonStubbedInstance<RecordHandler>;
+    let getRecordedResponseHandler: SinonStubbedInstance<GetRecordedResponseHandler>;
     let request: any;
-    let jsonBodyParser: sinon.SinonStub;
+    let jsonBodyParser: SinonStub;
     let response: any;
-    let setVariableHandler: sinon.SinonStubbedInstance<SetVariableHandler>;
-    let selectPresetHandler: sinon.SinonStubbedInstance<SelectPresetHandler>;
-    let updateMocksHandler: sinon.SinonStubbedInstance<UpdateMocksHandler>;
+    let setVariableHandler: SinonStubbedInstance<SetVariableHandler>;
+    let selectPresetHandler: SinonStubbedInstance<SelectPresetHandler>;
+    let updateMocksHandler: SinonStubbedInstance<UpdateMocksHandler>;
 
     beforeAll(() => {
         container = new Container();
-        state = sinon.createStubInstance(State);
-        request = sinon.createStubInstance(http.IncomingMessage);
-        jsonBodyParser = sinon.stub();
-        response = sinon.createStubInstance(http.ServerResponse);
-        defaultsHandler = sinon.createStubInstance(DefaultsHandler);
-        deleteVariableHandler = sinon.createStubInstance(DeleteVariableHandler);
-        echoRequestHandler = sinon.createStubInstance(EchoRequestHandler);
-        getMocksHandler = sinon.createStubInstance(GetMocksHandler);
-        getPresetsHandler = sinon.createStubInstance(GetPresetsHandler);
-        getVariablesHandler = sinon.createStubInstance(GetVariablesHandler);
-        getRecordingsHandler = sinon.createStubInstance(GetRecordingsHandler);
-        applicableHandlerHandleFn = sinon.stub();
-        applicableHandlerIsApplicableFn = sinon.stub();
+        state = createStubInstance(State);
+        request = createStubInstance(http.IncomingMessage);
+        jsonBodyParser = stub();
+        response = createStubInstance(http.ServerResponse);
+        defaultsHandler = createStubInstance(DefaultsHandler);
+        deleteVariableHandler = createStubInstance(DeleteVariableHandler);
+        echoRequestHandler = createStubInstance(EchoRequestHandler);
+        getMocksHandler = createStubInstance(GetMocksHandler);
+        getPresetsHandler = createStubInstance(GetPresetsHandler);
+        getVariablesHandler = createStubInstance(GetVariablesHandler);
+        getRecordingsHandler = createStubInstance(GetRecordingsHandler);
+        applicableHandlerHandleFn = stub();
+        applicableHandlerIsApplicableFn = stub();
         applicableHandler = { handle: applicableHandlerHandleFn, isApplicable: applicableHandlerIsApplicableFn };
-        initHandler = sinon.createStubInstance(InitHandler);
-        mockRequestHandler = sinon.createStubInstance(MockRequestHandler);
-        passThroughsHandler = sinon.createStubInstance(PassThroughsHandler);
-        recordResponseHandler = sinon.createStubInstance(RecordResponseHandler);
-        recordHandler = sinon.createStubInstance(RecordHandler);
-        getRecordedResponseHandler = sinon.createStubInstance(GetRecordedResponseHandler);
-        setVariableHandler = sinon.createStubInstance(SetVariableHandler);
-        selectPresetHandler = sinon.createStubInstance(SelectPresetHandler);
-        updateMocksHandler = sinon.createStubInstance(UpdateMocksHandler);
+        initHandler = createStubInstance(InitHandler);
+        mockRequestHandler = createStubInstance(MockRequestHandler);
+        passThroughsHandler = createStubInstance(PassThroughsHandler);
+        recordResponseHandler = createStubInstance(RecordResponseHandler);
+        recordHandler = createStubInstance(RecordHandler);
+        getRecordedResponseHandler = createStubInstance(GetRecordedResponseHandler);
+        setVariableHandler = createStubInstance(SetVariableHandler);
+        selectPresetHandler = createStubInstance(SelectPresetHandler);
+        updateMocksHandler = createStubInstance(UpdateMocksHandler);
 
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
         container.bind('DeleteVariableHandler').toConstantValue(deleteVariableHandler);
@@ -103,11 +103,11 @@ describe('Middleware', () => {
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);
         container.bind('Middleware').to(Middleware);
         container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
-        nextFn = sinon.stub();
+        nextFn = stub();
 
         middleware = container.get<Middleware>('Middleware');
-        getApimockIdFn = sinon.stub(Middleware.prototype, 'getApimockId');
-        getMatchingApplicableHandlerFn = sinon.stub(Middleware.prototype, 'getMatchingApplicableHandler');
+        getApimockIdFn = stub(Middleware.prototype, 'getApimockId');
+        getMatchingApplicableHandlerFn = stub(Middleware.prototype, 'getMatchingApplicableHandler');
     });
 
     describe('middleware', () => {
@@ -125,13 +125,13 @@ describe('Middleware', () => {
             });
 
             it('gets the apimock id', () =>
-                sinon.assert.called(getApimockIdFn));
+                assert.called(getApimockIdFn));
 
             it('gets the matching applicable handler', () =>
-                sinon.assert.calledWith(getMatchingApplicableHandlerFn, request, { x: 'x' }));
+                assert.calledWith(getMatchingApplicableHandlerFn, request, { x: 'x' }));
 
             it('calls the handler.handle', () =>
-                sinon.assert.calledWith(applicableHandlerHandleFn, request, response, nextFn, {
+                assert.calledWith(applicableHandlerHandleFn, request, response, nextFn, {
                     id: 'apimockId',
                     body: { x: 'x' }
                 }));
@@ -170,18 +170,18 @@ describe('Middleware', () => {
                 });
 
                 it('gets the apimock id', () =>
-                    sinon.assert.called(getApimockIdFn));
+                    assert.called(getApimockIdFn));
 
                 it('gets the matching applicable handler', () =>
-                    sinon.assert.calledWith(getMatchingApplicableHandlerFn, request, { x: 'x' }));
+                    assert.calledWith(getMatchingApplicableHandlerFn, request, { x: 'x' }));
 
                 it('gets the matching mock', () =>
-                    sinon.assert.calledWith(state.getMatchingMock, '/base-url', HttpMethods.GET, {
+                    assert.calledWith(state.getMatchingMock, '/base-url', HttpMethods.GET, {
                         'some': 'header'
                     }, { x: 'x' }));
 
                 it('calls the echo request handler', () =>
-                    sinon.assert.calledWith(echoRequestHandler.handle, request, response, nextFn, {
+                    assert.calledWith(echoRequestHandler.handle, request, response, nextFn, {
                         id: 'apimockId',
                         mock: {
                             name: 'matching-mock', isArray: true,
@@ -227,7 +227,7 @@ describe('Middleware', () => {
                     });
 
                     it('does not call the record response handler', () =>
-                        sinon.assert.notCalled(recordResponseHandler.handle));
+                        assert.notCalled(recordResponseHandler.handle));
                 });
 
                 describe('record header is not present', () => {
@@ -239,7 +239,7 @@ describe('Middleware', () => {
                     });
 
                     it('calls the record response handler', () =>
-                        sinon.assert.calledWith(recordResponseHandler.handle, request, response, nextFn, {
+                        assert.calledWith(recordResponseHandler.handle, request, response, nextFn, {
                             id: 'apimockId',
                             mock: {
                                 name: 'matching-mock', isArray: true,
@@ -283,7 +283,7 @@ describe('Middleware', () => {
                     jsonBodyParser.getCall(0).callArg(2);
                 });
 
-                it('calls the mock request handler', () => sinon.assert.calledWith(mockRequestHandler.handle, request,
+                it('calls the mock request handler', () => assert.calledWith(mockRequestHandler.handle, request,
                     response, nextFn, {
                         id: 'apimockId',
                         mock: {
@@ -315,7 +315,7 @@ describe('Middleware', () => {
 
             });
 
-            it('calls next', () => sinon.assert.called(nextFn));
+            it('calls next', () => assert.called(nextFn));
 
             afterEach(() => {
                 getApimockIdFn.reset();

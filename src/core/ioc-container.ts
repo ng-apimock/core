@@ -48,6 +48,7 @@ container.bind<DeleteVariableHandler>('DeleteVariableHandler').to(DeleteVariable
 
 container.bind<DefaultsHandler>('DefaultsHandler').to(DefaultsHandler);
 container.bind<PassThroughsHandler>('PassThroughsHandler').to(PassThroughsHandler);
+
 container.bind<RecordHandler>('RecordHandler').to(RecordHandler);
 container.bind<GetRecordedResponseHandler>('GetRecordedResponseHandler').to(GetRecordedResponseHandler);
 container.bind<GetRecordingsHandler>('GetRecordingsHandler').to(GetRecordingsHandler);

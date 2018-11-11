@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {Container} from 'inversify';
 
 import * as http from 'http';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import GetPresetsHandler from './get-presets.handler';
 import State from '../../../state/state';
@@ -11,17 +11,17 @@ import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 describe('GetPresetsHandler', () => {
     let container: Container;
     let handler: GetPresetsHandler;
-    let state: sinon.SinonStubbedInstance<State>;
-    let nextFn: sinon.SinonStub;
-    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
-    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
+    let state: SinonStubbedInstance<State>;
+    let nextFn: SinonStub;
+    let request: SinonStubbedInstance<http.IncomingMessage>;
+    let response: SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        state = sinon.createStubInstance(State);
-        nextFn = sinon.stub();
-        request = sinon.createStubInstance(http.IncomingMessage);
-        response = sinon.createStubInstance(http.ServerResponse);
+        state = createStubInstance(State);
+        nextFn = stub();
+        request = createStubInstance(http.IncomingMessage);
+        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('State').toConstantValue(state);
@@ -52,8 +52,8 @@ describe('GetPresetsHandler', () => {
 
         it('gets the presets', () => {
             handler.handle(request as any, response, nextFn);
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.calledWith(response.end, JSON.stringify({
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.calledWith(response.end, JSON.stringify({
                 presets: [{
                     name: 'one',
                     mocks: {

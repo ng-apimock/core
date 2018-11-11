@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {Container} from 'inversify';
 
 import * as http from 'http';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import State from '../../../state/state';
 import SetVariableHandler from './set-variable.handler';
@@ -13,17 +13,17 @@ describe('SetVariableHandler', () => {
     let container: Container;
     let handler: SetVariableHandler;
     let matchingState: Istate;
-    let state: sinon.SinonStubbedInstance<State>;
-    let nextFn: sinon.SinonStub;
-    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
-    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
+    let state: SinonStubbedInstance<State>;
+    let nextFn: SinonStub;
+    let request: SinonStubbedInstance<http.IncomingMessage>;
+    let response: SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        state = sinon.createStubInstance(State);
-        nextFn = sinon.stub();
-        request = sinon.createStubInstance(http.IncomingMessage);
-        response = sinon.createStubInstance(http.ServerResponse);
+        state = createStubInstance(State);
+        nextFn = stub();
+        request = createStubInstance(http.IncomingMessage);
+        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('State').toConstantValue(state);
@@ -51,16 +51,16 @@ describe('SetVariableHandler', () => {
         it('sets the variable', () => {
             const body = { 'four': 'fourth' } as any;
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(response.end);
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.called(response.end);
             expect(matchingState.variables['four']).toBe('fourth');
         });
 
         it('sets the variables', () => {
             const body = { 'five': 'fifth', 'six': 'sixth' } as any;
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(response.end);
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.called(response.end);
             expect(matchingState.variables['five']).toBe('fifth');
             expect(matchingState.variables['six']).toBe('sixth');
         });
@@ -68,8 +68,8 @@ describe('SetVariableHandler', () => {
         it('throw error if no key value pair is present', () => {
             const body = {} as any;
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.calledWith(response.end, `{"message":"A variable should have a key and value"}`);
+            assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.calledWith(response.end, `{"message":"A variable should have a key and value"}`);
         });
 
         afterEach(() => {

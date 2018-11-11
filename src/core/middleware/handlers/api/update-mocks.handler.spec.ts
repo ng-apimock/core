@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {Container} from 'inversify';
 
 import * as http from 'http';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import UpdateMocksHandler from './update-mocks.handler';
 import State from '../../../state/state';
@@ -13,17 +13,17 @@ describe('UpdateMocksHandler', () => {
     let container: Container;
     let handler: UpdateMocksHandler;
     let matchingState: Istate;
-    let state: sinon.SinonStubbedInstance<State>;
-    let nextFn: sinon.SinonStub;
-    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
-    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
+    let state: SinonStubbedInstance<State>;
+    let nextFn: SinonStub;
+    let request: SinonStubbedInstance<http.IncomingMessage>;
+    let response: SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        state = sinon.createStubInstance(State);
-        nextFn = sinon.stub();
-        request = sinon.createStubInstance(http.IncomingMessage);
-        response = sinon.createStubInstance(http.ServerResponse);
+        state = createStubInstance(State);
+        nextFn = stub();
+        request = createStubInstance(http.IncomingMessage);
+        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('State').toConstantValue(state);
@@ -64,8 +64,8 @@ describe('UpdateMocksHandler', () => {
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
             expect(matchingState.mocks[body.name].echo).toBe(true);
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(response.end);
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.called(response.end);
         });
 
         it('sets the delay', () => {
@@ -73,8 +73,8 @@ describe('UpdateMocksHandler', () => {
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
             expect(matchingState.mocks[body.name].delay).toBe(2000);
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(response.end);
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.called(response.end);
         });
 
         it('selects a mocks', () => {
@@ -83,8 +83,8 @@ describe('UpdateMocksHandler', () => {
 
             expect(matchingState.mocks[body.name].scenario).toBe('thing');
             expect(matchingState.mocks[body.name].delay).toBe(1000);
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(response.end);
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.called(response.end);
         });
 
         it('selects passThrough', () => {
@@ -92,8 +92,8 @@ describe('UpdateMocksHandler', () => {
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
             expect(matchingState.mocks[body.name].scenario).toBe('passThrough');
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.called(response.end);
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.called(response.end);
         });
 
         it('throw error if scenario does not exist', () => {
@@ -104,16 +104,16 @@ describe('UpdateMocksHandler', () => {
                 'one': { scenario: 'some', delay: 0, echo: true },
                 'two': { scenario: 'thing', delay: 1000, echo: false }
             } as any)[body.name].scenario);
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.calledWith(response.end, `{"message":"No scenario matching ['${body.scenario}'] found"}`);
+            assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.calledWith(response.end, `{"message":"No scenario matching ['${body.scenario}'] found"}`);
         });
 
         it('throw error if mock does not exist', () => {
             const body = { name: 'non-existing', scenario: 'non-existing' };
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
 
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            sinon.assert.calledWith(response.end, `{"message":"No mock matching name ['${body.name}'] found"}`);
+            assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            assert.calledWith(response.end, `{"message":"No mock matching name ['${body.name}'] found"}`);
         });
 
         afterEach(() => {

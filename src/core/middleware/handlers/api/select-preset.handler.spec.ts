@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {Container} from 'inversify';
 
 import * as http from 'http';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import SelectPresetHandler from './select-preset.handler';
 import State from '../../../state/state';
@@ -13,17 +13,17 @@ describe('SelectPresetHandler', () => {
     let container: Container;
     let handler: SelectPresetHandler;
     let matchingState: Istate;
-    let state: sinon.SinonStubbedInstance<State>;
-    let nextFn: sinon.SinonStub;
-    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
-    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
+    let state: SinonStubbedInstance<State>;
+    let nextFn: SinonStub;
+    let request: SinonStubbedInstance<http.IncomingMessage>;
+    let response: SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        state = sinon.createStubInstance(State);
-        nextFn = sinon.stub();
-        request = sinon.createStubInstance(http.IncomingMessage);
-        response = sinon.createStubInstance(http.ServerResponse);
+        state = createStubInstance(State);
+        nextFn = stub();
+        request = createStubInstance(http.IncomingMessage);
+        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('State').toConstantValue(state);
@@ -104,15 +104,15 @@ describe('SelectPresetHandler', () => {
                 expect(matchingState.mocks['another'].delay).toBe(0); // defaults
                 expect(matchingState.mocks['another'].echo).toBe(false); // defaults
 
-                sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                sinon.assert.called(response.end);
+                assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                assert.called(response.end);
             });
 
             it('sets the variables', () => {
                 expect(matchingState.variables['today']).toBe('some date');
 
-                sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                sinon.assert.called(response.end);
+                assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                assert.called(response.end);
             });
         });
 
@@ -123,8 +123,8 @@ describe('SelectPresetHandler', () => {
             });
 
             it('throws an error when the scenario does not match', () => {
-                sinon.assert.calledWith(response.writeHead, HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                sinon.assert.calledWith(response.end, JSON.stringify({ message: 'No scenario matching [\'no-match\'] found for mock with name [\'another\']' }));
+                assert.calledWith(response.writeHead, HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                assert.calledWith(response.end, JSON.stringify({ message: 'No scenario matching [\'no-match\'] found for mock with name [\'another\']' }));
             });
         });
 
@@ -135,8 +135,8 @@ describe('SelectPresetHandler', () => {
             });
 
             it('throws an error when the preset does not match', () => {
-                sinon.assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                sinon.assert.calledWith(response.end, JSON.stringify({ message: 'No preset matching name [\'no-match\'] found' }));
+                assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                assert.calledWith(response.end, JSON.stringify({ message: 'No preset matching name [\'no-match\'] found' }));
             });
         });
 

@@ -5,26 +5,26 @@ import * as fs from 'fs-extra';
 import * as http from 'http';
 import * as os from 'os';
 import * as path from 'path';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 import GetRecordedResponseHandler from './get-recorded-response.handler';
 
 describe('GetRecordedResponseHandler', () => {
     let container: Container;
-    let fsReadFileSyncFn: sinon.SinonStub;
+    let fsReadFileSyncFn: SinonStub;
     let handler: GetRecordedResponseHandler;
-    let nextFn: sinon.SinonStub;
-    let request: sinon.SinonStubbedInstance<http.IncomingMessage>;
-    let response: sinon.SinonStubbedInstance<http.ServerResponse>;
+    let nextFn: SinonStub;
+    let request: SinonStubbedInstance<http.IncomingMessage>;
+    let response: SinonStubbedInstance<http.ServerResponse>;
 
     beforeAll(() => {
         container = new Container();
-        fsReadFileSyncFn = sinon.stub(fs, 'readFileSync');
-        nextFn = sinon.stub();
-        request = sinon.createStubInstance(http.IncomingMessage);
+        fsReadFileSyncFn = stub(fs, 'readFileSync');
+        nextFn = stub();
+        request = createStubInstance(http.IncomingMessage);
         request.url = 'some/url/to/some.pdf';
-        response = sinon.createStubInstance(http.ServerResponse);
+        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('GetRecordedResponseHandler').to(GetRecordedResponseHandler);
@@ -36,9 +36,9 @@ describe('GetRecordedResponseHandler', () => {
         it('returns the recorded response', () => {
             handler.handle(request as any, response, nextFn);
 
-            sinon.assert.calledWith(fsReadFileSyncFn, path.join(os.tmpdir(), 'some.pdf'));
-            sinon.assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
-            sinon.assert.called(response.end);
+            assert.calledWith(fsReadFileSyncFn, path.join(os.tmpdir(), 'some.pdf'));
+            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
+            assert.called(response.end);
         }));
 
     describe('isApplicable', () => {
