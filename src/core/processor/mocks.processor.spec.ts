@@ -8,6 +8,7 @@ import * as sinon from 'sinon';
 import State from '../state/state';
 import {HttpHeaders} from '../middleware/http';
 import MocksProcessor from './mocks.processor';
+import GlobalState from '../state/global.state';
 
 describe('MocksProcessor', () => {
     let consoleLogFn: sinon.SinonStub;
@@ -39,7 +40,7 @@ describe('MocksProcessor', () => {
         beforeAll(() => {
             (state as any)._mocks = [];
             (state as any)._defaults = {};
-            state.global = { mocks: {}, variables: {}, recordings: {}, record: false };
+            (state as any)._global = new GlobalState();
             globSyncFn.returns([
                 'mock/minimal-json-request.mock.json',
                 'mock/minimal-binary-request.mock.json',

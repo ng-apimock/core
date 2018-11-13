@@ -20,7 +20,7 @@ class State {
     readonly _mocks: Mock[];
     readonly _presets: Preset[];
     readonly _defaults: { [identifier: string]: MockState };
-    global: GlobalState;
+    readonly _global: GlobalState;
     sessions: SessionState[];
 
     /** Constructor. */
@@ -28,7 +28,7 @@ class State {
         this._mocks = [];
         this._presets = [];
         this._defaults = {};
-        this.global = new GlobalState();
+        this._global = new GlobalState();
         this.sessions = [];
     }
 
@@ -37,14 +37,19 @@ class State {
         return this._mocks;
     }
 
-    /** Gets the mocks. */
+    /** Gets the presets. */
     get presets():Preset[] {
         return this._presets;
     }
 
-    /** Gets the mocks. */
+    /** Gets the defaults. */
     get defaults():{ [identifier: string]: MockState } {
         return this._defaults;
+    }
+
+    /** Gets the global state. */
+    get global():GlobalState {
+        return this._global;
     }
 
     /**
