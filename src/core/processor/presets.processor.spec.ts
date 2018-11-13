@@ -36,7 +36,7 @@ describe('PresetsProcessor', () => {
 
     describe('process', () => {
         beforeAll(() => {
-            state.presets = [];
+            (state as any)._presets = [];
             globSyncFn.returns([
                 'preset/happy.preset.json',
                 'preset/unhappy.preset.json',

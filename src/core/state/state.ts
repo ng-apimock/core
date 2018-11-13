@@ -18,7 +18,7 @@ const PASS_THROUGH = 'passThrough';
 @injectable()
 class State {
     readonly _mocks: Mock[];
-    presets: Preset[];
+    readonly _presets: Preset[];
     defaults: { [identifier: string]: MockState };
     global: GlobalState;
     sessions: SessionState[];
@@ -26,15 +26,20 @@ class State {
     /** Constructor. */
     constructor() {
         this._mocks = [];
-        this.presets = [];
+        this._presets = [];
         this.defaults = {};
         this.global = new GlobalState();
         this.sessions = [];
     }
 
     /** Gets the mocks. */
-    get mocks():Mock[] {
+    get mocks(): Mock[] {
         return this._mocks;
+    }
+
+    /** Gets the mocks. */
+    get presets():Preset[] {
+        return this._presets;
     }
 
     /**

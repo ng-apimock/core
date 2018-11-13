@@ -48,7 +48,8 @@ describe('SelectPresetHandler', () => {
                     responses: { 'success': {}, 'failure': {} }
                 }
             ]);
-            state.presets = [{
+            (state as any)._presets = [];
+            state.presets.push(...[{
                 name: 'valid',
                 mocks: {
                     'some': {
@@ -78,7 +79,7 @@ describe('SelectPresetHandler', () => {
                 variables: {
                     'today': 'some date'
                 }
-            }];
+            }]);
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
                     'some': { scenario: 'failure', delay: 0, echo: true },

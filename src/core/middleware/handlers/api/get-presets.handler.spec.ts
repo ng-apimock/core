@@ -32,7 +32,8 @@ describe('GetPresetsHandler', () => {
 
     describe('handle', () => {
         beforeEach(() => {
-            state.presets = [{
+            (state as any)._presets = [];
+            state.presets.push(...[{
                 name: 'one',
                 mocks: {
                     'some': {
@@ -47,7 +48,7 @@ describe('GetPresetsHandler', () => {
                 variables: {
                     'today': 'some date'
                 }
-            }];
+            }]);
         });
 
         it('gets the presets', () => {
