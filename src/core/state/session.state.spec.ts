@@ -1,12 +1,15 @@
-import GlobalState from './global.state';
+import SessionState from './session.state';
 
-describe('GlobalState', () => {
-    let state: GlobalState;
+describe('SessionState', () => {
+    let state: SessionState;
 
     describe('constructor', () => {
         beforeAll(() => {
-            state = new GlobalState();
+            state = new SessionState('id');
         });
+
+        it('sets the identifier', () =>
+            expect(state.identifier).toBe('id'));
 
         it('creates a new mocks object', () =>
             expect(state.mocks).toEqual({}));
