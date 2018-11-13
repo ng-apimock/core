@@ -17,7 +17,7 @@ const PASS_THROUGH = 'passThrough';
 /** The state. */
 @injectable()
 class State {
-    mocks: Mock[];
+    readonly _mocks: Mock[];
     presets: Preset[];
     defaults: { [identifier: string]: MockState };
     global: GlobalState;
@@ -25,11 +25,16 @@ class State {
 
     /** Constructor. */
     constructor() {
-        this.mocks = [];
+        this._mocks = [];
         this.presets = [];
         this.defaults = {};
         this.global = new GlobalState();
         this.sessions = [];
+    }
+
+    /** Gets the mocks. */
+    get mocks():Mock[] {
+        return this._mocks;
     }
 
     /**
@@ -60,7 +65,7 @@ class State {
      * @return {Mock} mock The matching mock.
      */
     getMatchingMock(url: string, method: string, headers: IncomingHttpHeaders, body: any): Mock {
-        return this.mocks.find(_mock => {
+        return this._mocks.find(_mock => {
             const matchUrl = new RegExp(_mock.request.url).exec(decodeURI(url)) !== null;
             const matchMethod = _mock.request.method === method;
 
@@ -99,7 +104,7 @@ class State {
 
         if (state.mocks[name] !== undefined) {
             scenario = state.mocks[name].scenario;
-            const mock = this.mocks.find((_mock: Mock) => _mock.name === name);
+            const mock = this._mocks.find((_mock: Mock) => _mock.name === name);
             response = mock.responses[scenario];
         }
 

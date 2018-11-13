@@ -34,7 +34,8 @@ describe('GetMocksHandler', () => {
 
     describe('handle', () => {
         beforeEach(() => {
-            state.mocks = [
+            (state as any)._mocks = [];
+            state.mocks.push(...[
                 {
                     name: 'one',
                     request: { url: '/one', method: 'GET' },
@@ -45,7 +46,7 @@ describe('GetMocksHandler', () => {
                     request: { url: '/two', method: 'POST' },
                     responses: { 'some': {}, 'thing': {} }
                 }
-            ];
+            ]);
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
                     'one': { scenario: 'some', delay: 0, echo: true },

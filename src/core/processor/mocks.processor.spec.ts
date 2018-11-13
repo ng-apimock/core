@@ -37,7 +37,7 @@ describe('MocksProcessor', () => {
 
     describe('process', () => {
         beforeAll(() => {
-            state.mocks = [];
+            (state as any)._mocks = [];
             state.defaults = {};
             state.global = { mocks: {}, variables: {}, recordings: {}, record: false };
             globSyncFn.returns([
@@ -95,7 +95,7 @@ describe('MocksProcessor', () => {
                 processor.process({ src: 'src' });
             });
 
-            it('processes each mock', () => {
+           it('processes each mock', () => {
                 sinon.assert.calledWith(globSyncFn,
                     '**/*.mock.json', {
                         cwd: 'src', root: '/'

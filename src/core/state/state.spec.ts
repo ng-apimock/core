@@ -16,7 +16,8 @@ describe('State', () => {
         container = new Container();
         state = new State();
         stateGetMatchingStateFn = sinon.stub(State.prototype, <any>'getMatchingState');
-        state.mocks = [{
+        (state as any)._mocks = [];
+        state.mocks.push(...[{
             name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
         }, {
             name: 'advanced', request: {
@@ -24,7 +25,7 @@ describe('State', () => {
                 headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
                 body: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' }
             }, responses: { three: {}, four: {} }
-        }];
+        }]);
     });
 
     describe('getMatchingState', () => {

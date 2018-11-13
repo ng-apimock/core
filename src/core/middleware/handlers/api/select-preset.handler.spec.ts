@@ -34,7 +34,8 @@ describe('SelectPresetHandler', () => {
 
     describe('handle', () => {
         beforeEach(() => {
-            state.mocks = [
+            (state as any)._mocks = [];
+            state.mocks.push(...[
                 {
                     name: 'some',
                     request: { url: '/one', method: 'GET' },
@@ -46,7 +47,7 @@ describe('SelectPresetHandler', () => {
                     request: { url: '/two', method: 'POST' },
                     responses: { 'success': {}, 'failure': {} }
                 }
-            ];
+            ]);
             state.presets = [{
                 name: 'valid',
                 mocks: {
