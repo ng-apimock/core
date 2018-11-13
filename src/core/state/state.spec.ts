@@ -32,7 +32,7 @@ describe('State', () => {
         beforeEach(() => {
             state.global.mocks['some'] = { scenario: 'thing', echo: true, delay: 0 };
             state.global.variables['some'] = 'some';
-            state.sessions = [];
+            (state as any)._sessions = [];
             stateGetMatchingStateFn.callThrough();
         });
 
