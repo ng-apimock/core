@@ -56,7 +56,7 @@ describe('State', () => {
         describe('session matches the id', () => {
             let sessionState: SessionState;
             beforeEach(() => {
-                sessionState = new SessionState('someId');
+                sessionState = new SessionState('someId', {},{});
                 state.sessions.push(sessionState);
             });
             it('returns the matching SessionState', () => {

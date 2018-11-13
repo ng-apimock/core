@@ -5,7 +5,7 @@ describe('SessionState', () => {
 
     describe('constructor', () => {
         beforeAll(() => {
-            state = new SessionState('id');
+            state = new SessionState('id', {}, {});
         });
 
         it('sets the identifier', () =>
@@ -16,5 +16,11 @@ describe('SessionState', () => {
 
         it('creates a new variables object', () =>
             expect(state.variables).toEqual({}));
+
+        it('creates a new recordings object', () =>
+            expect(state.recordings).toEqual({}));
+
+        it('sets the record indicator to false', () =>
+            expect(state.record).toBe(false));
     });
 });

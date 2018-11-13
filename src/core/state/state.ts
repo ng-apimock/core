@@ -67,9 +67,9 @@ class State {
         if (id) {
             state = this.sessions.find((session: SessionState) => session.identifier === id);
             if (state === undefined) {
-                state = new SessionState(id);
-                state.mocks = JSON.parse(JSON.stringify(this.global.mocks));
-                state.variables = JSON.parse(JSON.stringify(this.global.variables));
+                const mocks = JSON.parse(JSON.stringify(this.global.mocks));
+                const variables = JSON.parse(JSON.stringify(this.global.variables));
+                state = new SessionState(id, mocks, variables);
                 this.sessions.push(state as SessionState);
             }
         }
