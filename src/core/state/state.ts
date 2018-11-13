@@ -85,7 +85,7 @@ class State {
      * @return {Mock} mock The matching mock.
      */
     getMatchingMock(url: string, method: string, headers: IncomingHttpHeaders, body: any): Mock {
-        return this._mocks.find(_mock => {
+        return this.mocks.find(_mock => {
             const matchUrl = new RegExp(_mock.request.url).exec(decodeURI(url)) !== null;
             const matchMethod = _mock.request.method === method;
 
@@ -124,7 +124,7 @@ class State {
 
         if (state.mocks[name] !== undefined) {
             scenario = state.mocks[name].scenario;
-            const mock = this._mocks.find((_mock: Mock) => _mock.name === name);
+            const mock = this.mocks.find((_mock: Mock) => _mock.name === name);
             response = mock.responses[scenario];
         }
 
