@@ -19,7 +19,7 @@ const PASS_THROUGH = 'passThrough';
 class State {
     readonly _mocks: Mock[];
     readonly _presets: Preset[];
-    defaults: { [identifier: string]: MockState };
+    readonly _defaults: { [identifier: string]: MockState };
     global: GlobalState;
     sessions: SessionState[];
 
@@ -27,7 +27,7 @@ class State {
     constructor() {
         this._mocks = [];
         this._presets = [];
-        this.defaults = {};
+        this._defaults = {};
         this.global = new GlobalState();
         this.sessions = [];
     }
@@ -40,6 +40,11 @@ class State {
     /** Gets the mocks. */
     get presets():Preset[] {
         return this._presets;
+    }
+
+    /** Gets the mocks. */
+    get defaults():{ [identifier: string]: MockState } {
+        return this._defaults;
     }
 
     /**

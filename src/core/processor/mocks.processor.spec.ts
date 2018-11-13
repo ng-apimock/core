@@ -38,7 +38,7 @@ describe('MocksProcessor', () => {
     describe('process', () => {
         beforeAll(() => {
             (state as any)._mocks = [];
-            state.defaults = {};
+            (state as any)._defaults = {};
             state.global = { mocks: {}, variables: {}, recordings: {}, record: false };
             globSyncFn.returns([
                 'mock/minimal-json-request.mock.json',
