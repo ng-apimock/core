@@ -110,12 +110,6 @@ There are a couple of rules to follow.
 {
   "name": "some flow", // the name of the preset
   "mocks": {
-    "url": "/items", // the request url
-    "method": "GET", // the request method
-    "body": {}, // optional, body object
-    "headers": {} // optional, headers object
-  },
-  "mocks": {
     "some mock": { // the name of the mock
       "scenario": "success", // the name of the scenario
       "echo": true, // optional, indicates if this request will echoed to the console (defaults to false)
