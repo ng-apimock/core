@@ -24,11 +24,13 @@ import GetRecordedResponseHandler from './middleware/handlers/api/get-recorded-r
 import RecordHandler from './middleware/handlers/api/record.handler';
 import * as bodyParser from 'body-parser';
 import {NextHandleFunction} from 'connect';
+import {Configuration, DefaultConfiguration} from './configuration';
 
 // IOC configuration
 const container = new Container();
 container.bind<string>('BaseUrl').toConstantValue('/ngapimock');
 container.bind<State>('State').to(State).inSingletonScope();
+container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
 
 container.bind<InitHandler>('InitHandler').to(InitHandler);
 

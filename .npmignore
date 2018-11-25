@@ -13,3 +13,6 @@ tslint.json
 
 # ci
 .circleci
+
+# generated
+.converted

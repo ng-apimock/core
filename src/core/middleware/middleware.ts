@@ -23,6 +23,7 @@ import RecordHandler from './handlers/api/record.handler';
 import {NextHandleFunction} from 'connect';
 import GetPresetsHandler from './handlers/api/get-presets.handler';
 import SelectPresetHandler from './handlers/api/select-preset.handler';
+import {Configuration} from '../configuration';
 
 /** Middleware. */
 @injectable()
@@ -49,6 +50,7 @@ class Middleware {
      * @param {State} apimockState The apimock state.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
      * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
+     * @param {Configuration} configuration The configuration object.
      */
     constructor(@inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
                 @inject('DeleteVariableHandler') private deleteVariableHandler: DeleteVariableHandler,
@@ -67,7 +69,8 @@ class Middleware {
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
                 @inject('State') private apimockState: State,
                 @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
-                @inject('JsonBodyParser') private bodyParser: NextHandleFunction) {
+                @inject('JsonBodyParser') private bodyParser: NextHandleFunction,
+                @inject('Configuration') private configuration: Configuration) {
         this.handlers = [
             defaultsHandler,
             deleteVariableHandler,
@@ -139,7 +142,27 @@ class Middleware {
      * @returns {string} id The apimock id.
      */
     getApimockId(headers: http.IncomingHttpHeaders): string {
-        const result = headers.cookie && (headers.cookie as string)
+        return this.configuration.middleware.useHeader ?
+            this.getApimockIdFromHeader(headers) :
+            this.getApimockIdFromCookie(headers);
+    }
+
+    /**
+     * Gets the apimock identifier from the header.
+     * @param { http.IncomingHttpHeaders} headers The headers.
+     * @return {string} identifier The identifier.
+     */
+    getApimockIdFromHeader(headers: http.IncomingHttpHeaders): string {
+        return headers[this.configuration.middleware.identifier] as string;
+    }
+
+    /**
+     * Gets the apimock identifier from the cookie.
+     * @param { http.IncomingHttpHeaders} headers The headers.
+     * @return {string} identifier The identifier.
+     */
+    getApimockIdFromCookie(headers: http.IncomingHttpHeaders): string {
+        return headers.cookie && (headers.cookie as string)
             .split(';')
             .map(cookie => {
                 const parts = cookie.split('=');
@@ -148,8 +171,8 @@ class Middleware {
                     value: decodeURI(parts.join('='))
                 };
             })
-            .find(cookie => cookie.key === 'apimockid');
-        return result !== undefined ? result.value : undefined;
+            .filter((cookie: { key: string, value: string }) => cookie.key === this.configuration.middleware.identifier)
+            .map((cookie: { key: string, value: string }) => cookie.value)[0];
     }
 }
 

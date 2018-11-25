@@ -50,6 +50,18 @@ const app = connect();
 app.use(ngApimock.middleware);
 ```
 
+#### Middleware configuration
+You can configure apimock with a configuration object.
+
+```javascript
+apimock.configure({
+    middleware:{
+        useHeader: true, // optional indicator to use a header to get the identifier. (defaults to false)
+        identifier: 'my-identifier' // optional name for the header or cookie to contain the identifier. (defaults to 'apimockid')
+    }
+});
+```
+
 Ng-apimock makes sure that parallel executed tests do not interfere with each other. Each session is fully isolated.  
 
 ## How to write mocks

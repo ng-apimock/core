@@ -25,6 +25,7 @@ import RecordHandler from './handlers/api/record.handler';
 import Istate from '../state/Istate';
 import GetPresetsHandler from './handlers/api/get-presets.handler';
 import SelectPresetHandler from './handlers/api/select-preset.handler';
+import {Configuration, DefaultConfiguration} from '../configuration';
 
 
 describe('Middleware', () => {
@@ -36,6 +37,8 @@ describe('Middleware', () => {
     let deleteVariableHandler: SinonStubbedInstance<DeleteVariableHandler>;
     let echoRequestHandler: SinonStubbedInstance<EchoRequestHandler>;
     let getApimockIdFn: SinonStub;
+    let getApimockIdFromHeaderFn: SinonStub;
+    let getApimockIdFromCookieFn: SinonStub;
     let getMatchingApplicableHandlerFn: SinonStub;
     let getMocksHandler: SinonStubbedInstance<GetMocksHandler>;
     let getPresetsHandler: SinonStubbedInstance<GetPresetsHandler>;
@@ -84,6 +87,7 @@ describe('Middleware', () => {
         selectPresetHandler = createStubInstance(SelectPresetHandler);
         updateMocksHandler = createStubInstance(UpdateMocksHandler);
 
+        container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
         container.bind('DeleteVariableHandler').toConstantValue(deleteVariableHandler);
         container.bind('EchoRequestHandler').toConstantValue(echoRequestHandler);
@@ -107,6 +111,8 @@ describe('Middleware', () => {
 
         middleware = container.get<Middleware>('Middleware');
         getApimockIdFn = stub(Middleware.prototype, 'getApimockId');
+        getApimockIdFromHeaderFn = stub(Middleware.prototype, 'getApimockIdFromHeader');
+        getApimockIdFromCookieFn = stub(Middleware.prototype, 'getApimockIdFromCookie');
         getMatchingApplicableHandlerFn = stub(Middleware.prototype, 'getMatchingApplicableHandler');
     });
 
@@ -345,12 +351,53 @@ describe('Middleware', () => {
         beforeEach(() => {
             getApimockIdFn.callThrough();
         });
+
+        describe('configuration use cookie', () => {
+            beforeEach(()=> {
+                middleware['configuration'].middleware.useHeader = false;
+                middleware.getApimockId({some: 'header'});
+            });
+
+            it('returns the apimockId from the cookie', () =>
+                assert.calledWith(getApimockIdFromCookieFn,{some: 'header'}));
+        });
+
+        describe('configuration use header', () => {
+            beforeEach(()=> {
+                middleware['configuration'].middleware.useHeader = true;
+                middleware.getApimockId({some: 'header'});
+            });
+
+            it('returns the apimockId from the header', () =>
+                assert.calledWith(getApimockIdFromHeaderFn,{some: 'header'}));
+        });
+    });
+
+    describe('getApimockIdFromHeader', () => {
+        beforeEach(() => {
+            middleware['configuration'].middleware.identifier = 'my-identifier';
+            getApimockIdFromHeaderFn.callThrough();
+        });
+        describe('apimockId header is present', () =>
+            it('returns the identifier', () =>
+                expect(middleware.getApimockIdFromHeader({ a: 'a', 'my-identifier': '123', c: 'c' })).toBe('123')));
+
+        describe('apimockId header is not present', () =>
+            it('returns undefined', () =>
+                expect(middleware.getApimockIdFromHeader({ a: 'a', 'no-matching-identifier': '123', c: 'c' })).toBe(undefined)));
+    });
+
+    describe('getApimockIdFromCookie', () => {
+        beforeEach(() => {
+            middleware['configuration'].middleware.identifier = 'my-identifier';
+            getApimockIdFromCookieFn.callThrough();
+        });
         describe('apimockId cookie is present', () =>
             it('returns the apimockId', () =>
-                expect(middleware.getApimockId({ cookie: 'a=a;apimockid=123;c=c' })).toBe('123')));
+                expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;my-identifier=123;c=c' })).toBe('123')));
 
         describe('apimockId cookie is not present', () =>
             it('returns undefined', () =>
-                expect(middleware.getApimockId({ cookie: 'a=a;b=b;c=c' })).toBe(undefined)));
+                expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;b=b;c=c' })).toBe(undefined)));
     });
 });
