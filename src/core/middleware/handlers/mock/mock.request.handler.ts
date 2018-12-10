@@ -32,26 +32,26 @@ class MockRequestHandler implements Handler {
 
             let headers = _response.headers;
             let chunk: Buffer | string;
-            if (this.isBinaryResponse(_response)) {
-                try {
+            try {
+                if (this.isBinaryResponse(_response)) {
                     chunk = fs.readFileSync(path.join(params.mock.path, _response.file));
-                } catch (e) {
-                    response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                    response.end(JSON.stringify(e, ['message']));
+                } else {
+                    const _variables: any = this.state.getVariables(params.id);
+                    chunk = this.interpolateResponseData(_response.data, _variables);
                 }
-            } else {
-                const _variables: any = this.state.getVariables(params.id);
-                chunk = this.interpolateResponseData(_response.data, _variables);
-            }
 
-            if (jsonCallbackName !== false) {
-                chunk = jsonCallbackName + '(' + chunk + ')';
-            }
+                if (jsonCallbackName !== false) {
+                    chunk = jsonCallbackName + '(' + chunk + ')';
+                }
 
-            setTimeout(() => {
-                response.writeHead(status, headers);
-                response.end(chunk);
-            }, delay);
+                setTimeout(() => {
+                    response.writeHead(status, headers);
+                    response.end(chunk);
+                }, delay);
+            } catch (e) {
+                response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                response.end(JSON.stringify(e, ['message']));
+            }
         } else {
             next();
         }

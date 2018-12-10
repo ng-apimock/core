@@ -87,6 +87,8 @@ describe('MockRequestHandler', () => {
                     clock.tick(1000);
                     assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
                     assert.calledWith(response.end, 'binary content');
+                    assert.callCount(response.writeHead, 1);
+                    assert.callCount(response.end, 1);
                 });
 
                 it('throws an error when the binary file cannot be read', () => {
@@ -121,6 +123,8 @@ describe('MockRequestHandler', () => {
                     clock.tick(1000);
                     assert.calledWith(response.writeHead, HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                     assert.calledWith(response.end, JSON.stringify({ message: 'Error' }));
+                    assert.callCount(response.writeHead, 1);
+                    assert.callCount(response.end, 1);
                 });
 
                 it('wraps the body in a json callback', () => {
@@ -139,9 +143,13 @@ describe('MockRequestHandler', () => {
                     clock.tick(1000);
                     assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
                     assert.calledWith(response.end, `callback(${'binary content'})`);
+                    assert.callCount(response.writeHead, 1);
+                    assert.callCount(response.end, 1);
                 });
 
                 afterEach(() => {
+                    response.end.reset();
+                    response.writeHead.reset();
                     state.getResponse.reset();
                     state.getVariables.reset();
                     state.getDelay.reset();
@@ -200,6 +208,8 @@ describe('MockRequestHandler', () => {
                     clock.tick(1000);
                     assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
                     assert.calledWith(response.end, 'interpolatedResponseData');
+                    assert.callCount(response.writeHead, 1);
+                    assert.callCount(response.end, 1);
                 });
 
                 it('wraps the body in a json callback', () => {
@@ -217,9 +227,13 @@ describe('MockRequestHandler', () => {
                     clock.tick(1000);
                     assert.calledWith(response.writeHead, mockResponse.status, mockResponse.headers);
                     assert.calledWith(response.end, `callback(${'interpolatedResponseData'})`);
+                    assert.callCount(response.writeHead, 1);
+                    assert.callCount(response.end, 1);
                 });
 
                 afterEach(() => {
+                    response.end.reset();
+                    response.writeHead.reset();
                     state.getResponse.reset();
                     state.getVariables.reset();
                     state.getDelay.reset();
