@@ -22,7 +22,6 @@ describe('DefaultsHandler', () => {
         nextFn = stub();
         request = createStubInstance(http.IncomingMessage);
         response = createStubInstance(http.ServerResponse);
-        response.end = response.end as SinonStub;
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('State').toConstantValue(state);
