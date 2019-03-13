@@ -4,4 +4,12 @@ export interface ProcessingOptions {
         mocks?: string;
         presets?: string;
     };
+    watch?: boolean;
+}
+
+export const DefaultProcessingOptions = {
+    patterns: {
+        presets: '**/*.preset.json',
+        mocks: '**/*.mock.json'
+    }
 }

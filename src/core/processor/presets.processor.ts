@@ -10,7 +10,6 @@ import {Preset} from '../preset/preset';
 /** Presets processor. */
 @injectable()
 export class PresetsProcessor {
-    private DEFAULT_PATTERN = '**/*.preset.json';
 
     /**
      * Constructor.
@@ -26,7 +25,7 @@ export class PresetsProcessor {
      */
     process(options: ProcessingOptions): void {
         let counter = 0;
-        const pattern = (options.patterns && options.patterns.presets) ? options.patterns.presets : this.DEFAULT_PATTERN;
+        const pattern = options.patterns.presets;
 
         glob.sync(pattern, {
             cwd: options.src,

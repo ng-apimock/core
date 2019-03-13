@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import {Container} from 'inversify';
 import * as sinon from 'sinon';
+import {assert, SinonStub, stub} from 'sinon';
 import {MocksProcessor} from './mocks.processor';
 import {Processor} from './processor';
 import {PresetsProcessor} from './presets.processor';
@@ -24,14 +25,23 @@ describe('MocksProcessor', () => {
     });
 
     describe('process', () => {
+        let getMergedOptionsFn: SinonStub;
+
         beforeAll(() => {
-            processor.process({ src: 'src' });
+            getMergedOptionsFn = stub(processor, <any>'getMergedOptions');
+
+            getMergedOptionsFn.callsFake((options) => options);
+
+            processor.process({src: 'src'});
         });
 
+        it('merges with the default options', () =>
+            assert.calledWith(getMergedOptionsFn, {src: 'src'}));
+
         it('processes the mocks', () =>
-            sinon.assert.calledWith(mocksProcessor.process, { src: 'src' }));
+            sinon.assert.calledWith(mocksProcessor.process, {src: 'src'}));
 
         it('processes the presets', () =>
-            sinon.assert.calledWith(presetsProcessor.process, { src: 'src' }));
+            sinon.assert.calledWith(presetsProcessor.process, {src: 'src'}));
     });
 });

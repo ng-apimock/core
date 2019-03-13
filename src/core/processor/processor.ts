@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
-import {ProcessingOptions} from './processing.options';
 import {MocksProcessor} from './mocks.processor';
 import {PresetsProcessor} from './presets.processor';
+import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()
@@ -24,7 +24,18 @@ export class Processor {
      * @param {ProcessingOptions} options The processing options.
      */
     process(options: ProcessingOptions): void {
-        this.mocksProcessor.process(options);
-        this.presetsProcessor.process(options);
+        const opts = this.getMergedOptions(options);
+
+        this.mocksProcessor.process(opts);
+        this.presetsProcessor.process(opts);
+    }
+
+    /**
+     * Gets the merged options.
+     * @param {ProcessingOptions} options The options.
+     * @returns {ProcessingOptions} mergedOptions The merged options.
+     */
+    private getMergedOptions(options: ProcessingOptions): ProcessingOptions {
+        return Object.assign({}, DefaultProcessingOptions, options);;
     }
 }

@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as sinon from 'sinon';
 import {State} from '../state/state';
 import {PresetsProcessor} from './presets.processor';
+import {DefaultProcessingOptions} from "./processing.options";
 
 describe('PresetsProcessor', () => {
     let consoleLogFn: sinon.SinonStub;
@@ -75,7 +76,7 @@ describe('PresetsProcessor', () => {
 
         describe('by default', () => {
             beforeAll(() => {
-                processor.process({ src: 'src' });
+                processor.process(Object.assign({}, DefaultProcessingOptions, { src: 'src' }));
             });
 
             it('processes each mock', () => {
@@ -87,11 +88,6 @@ describe('PresetsProcessor', () => {
                 sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'preset/happy.preset.json'));
                 sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'preset/unhappy.preset.json'));
                 sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'preset/duplicate.preset.json'));
-            });
-
-            it('overrides a duplicate preset', () => {
-                sinon.assert.calledWith(consoleWarnFn, `Preset with identifier 'happy.preset' already exists. Overwriting existing preset.`);
-                expect(state.presets[0].mocks['some'].delay).toBeUndefined();
             });
 
             it('processes unique presets', () =>
