@@ -4,9 +4,9 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import EchoRequestHandler from './echo.request.handler';
-import Mock from '../../../mock/mock';
-import State from '../../../state/state';
+import {EchoRequestHandler} from './echo.request.handler';
+import {Mock} from '../../../mock/mock';
+import {State} from '../../../state/state';
 import {HttpMethods} from '../../http';
 
 describe('EchoRequestHandler', () => {

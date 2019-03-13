@@ -5,8 +5,8 @@ import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
 import * as sinon from 'sinon';
-import State from '../state/state';
-import PresetsProcessor from './presets.processor';
+import {State} from '../state/state';
+import {PresetsProcessor} from './presets.processor';
 
 describe('PresetsProcessor', () => {
     let consoleLogFn: sinon.SinonStub;

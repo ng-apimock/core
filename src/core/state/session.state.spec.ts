@@ -1,4 +1,4 @@
-import SessionState from './session.state';
+import {SessionState} from './session.state';
 
 describe('SessionState', () => {
     let state: SessionState;

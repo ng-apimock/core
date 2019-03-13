@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import {Container} from 'inversify';
 import * as sinon from 'sinon';
-import MocksProcessor from './mocks.processor';
-import Processor from './processor';
-import PresetsProcessor from './presets.processor';
+import {MocksProcessor} from './mocks.processor';
+import {Processor} from './processor';
+import {PresetsProcessor} from './presets.processor';
 
 describe('MocksProcessor', () => {
     let container: Container;

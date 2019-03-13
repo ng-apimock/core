@@ -5,14 +5,14 @@ import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
 
-import Mock from '../mock/mock';
-import State from '../state/state';
+import {Mock} from '../mock/mock';
+import {State} from '../state/state';
 import {HttpHeaders, HttpStatusCode} from '../middleware/http';
-import ProcessingOptions from './processing.options';
+import {ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()
-class MocksProcessor {
+export class MocksProcessor {
     private DEFAULT_DELAY = 0;
     private DEFAULT_ECHO = false;
     private PASS_THROUGH = 'passThrough';
@@ -90,5 +90,3 @@ class MocksProcessor {
         console.log(`Processed ${counter} unique mocks.`);
     }
 }
-
-export default MocksProcessor;

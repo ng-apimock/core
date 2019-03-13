@@ -3,13 +3,13 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import State from '../../../state/state';
+import {State} from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
 /**  Pass throughs handler. */
 @injectable()
-class PassThroughsHandler implements ApplicableHandler {
+export class PassThroughsHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {State} state The state.
@@ -33,5 +33,3 @@ class PassThroughsHandler implements ApplicableHandler {
         return urlMatches && actionMatches;
     }
 }
-
-export default PassThroughsHandler;

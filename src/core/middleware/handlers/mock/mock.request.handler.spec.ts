@@ -5,10 +5,10 @@ import * as fs from 'fs-extra';
 import * as http from 'http';
 import {assert, createStubInstance, SinonFakeTimers, SinonStub, SinonStubbedInstance, stub, useFakeTimers} from 'sinon';
 
-import Mock from '../../../mock/mock';
-import MockRequestHandler from './mock.request.handler';
-import MockResponse from '../../../mock/mock.response';
-import State from '../../../state/state';
+import {Mock} from '../../../mock/mock';
+import {MockRequestHandler} from './mock.request.handler';
+import {MockResponse} from '../../../mock/mock.response';
+import {State} from '../../../state/state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('MockRequestHandler', () => {

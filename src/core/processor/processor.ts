@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
-import ProcessingOptions from './processing.options';
-import MocksProcessor from './mocks.processor';
-import PresetsProcessor from './presets.processor';
+import {ProcessingOptions} from './processing.options';
+import {MocksProcessor} from './mocks.processor';
+import {PresetsProcessor} from './presets.processor';
 
 /** Mocks processor. */
 @injectable()
-class Processor {
+export class Processor {
 
     /**
      * Constructor.
@@ -28,5 +28,3 @@ class Processor {
         this.presetsProcessor.process(options);
     }
 }
-
-export default Processor;

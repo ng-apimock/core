@@ -4,8 +4,8 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import DefaultsHandler from './defaults.handler';
-import State from '../../../state/state';
+import {DefaultsHandler} from './defaults.handler';
+import {State} from '../../../state/state';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
 describe('DefaultsHandler', () => {

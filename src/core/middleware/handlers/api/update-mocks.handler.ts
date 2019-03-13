@@ -3,14 +3,14 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import Mock from '../../../mock/mock';
-import State from '../../../state/state';
+import {Mock} from '../../../mock/mock';
+import {State} from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 /**  Update mocks handler. */
 @injectable()
-class UpdateMocksHandler implements ApplicableHandler {
+export class UpdateMocksHandler implements ApplicableHandler {
     private PASS_THROUGH = 'passThrough';
 
     /**
@@ -70,5 +70,3 @@ class UpdateMocksHandler implements ApplicableHandler {
         return urlMatches && methodMatches;
     }
 }
-
-export default UpdateMocksHandler;

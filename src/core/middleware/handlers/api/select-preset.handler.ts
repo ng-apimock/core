@@ -2,17 +2,17 @@ import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
-import State from '../../../state/state';
+import {State} from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import Preset from '../../../preset/preset';
-import Mock from '../../../mock/mock';
-import MockState from '../../../state/mock.state';
-import IState from '../../../state/Istate';
+import {Preset} from '../../../preset/preset';
+import {Mock} from '../../../mock/mock';
+import {MockState} from '../../../state/mock.state';
+import {IState} from '../../../state/Istate';
 
 /**  Select preset handler. */
 @injectable()
-class SelectPresetHandler implements ApplicableHandler {
+export class SelectPresetHandler implements ApplicableHandler {
     private DEFAULT_DELAY = 0;
     private DEFAULT_ECHO = false;
 
@@ -102,5 +102,3 @@ class SelectPresetHandler implements ApplicableHandler {
         }
     }
 }
-
-export default SelectPresetHandler;

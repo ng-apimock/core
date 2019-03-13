@@ -1,7 +1,7 @@
 /** Preset. */
-import MockState from '../state/mock.state';
+import {MockState} from '../state/mock.state';
 
-interface Preset {
+export interface Preset {
     // the name of the preset
     name: string;
     // the mocks state
@@ -9,5 +9,3 @@ interface Preset {
     // the variables state
     variables: { [key: string]: string; };
 }
-
-export default Preset;

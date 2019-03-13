@@ -3,13 +3,13 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import Mock from '../../../mock/mock';
-import State from '../../../state/state';
+import {Mock} from '../../../mock/mock';
+import {State} from '../../../state/state';
 import {Handler} from '../handler';
 
 /**  Handler for a echoing a request. */
 @injectable()
-class EchoRequestHandler implements Handler {
+export class EchoRequestHandler implements Handler {
     /**
      * Constructor.
      * @param {State} state The state.
@@ -27,5 +27,3 @@ class EchoRequestHandler implements Handler {
         }
     }
 }
-
-export default EchoRequestHandler;

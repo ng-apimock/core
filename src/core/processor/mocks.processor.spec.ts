@@ -5,10 +5,10 @@ import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
 import * as sinon from 'sinon';
-import State from '../state/state';
+import {State} from '../state/state';
 import {HttpHeaders} from '../middleware/http';
-import MocksProcessor from './mocks.processor';
-import GlobalState from '../state/global.state';
+import {MocksProcessor} from './mocks.processor';
+import {GlobalState} from '../state/global.state';
 
 describe('MocksProcessor', () => {
     let consoleLogFn: sinon.SinonStub;

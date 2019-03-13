@@ -3,9 +3,9 @@ import {Container} from 'inversify';
 
 import * as sinon from 'sinon';
 
-import State from './state';
-import SessionState from './session.state';
-import IState from './Istate';
+import {State} from './state';
+import {SessionState} from './session.state';
+import {IState} from './Istate';
 
 describe('State', () => {
     let container: Container;

@@ -4,8 +4,8 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import State from '../../../state/state';
-import PassThroughsHandler from './pass-throughs.handler';
+import {State} from '../../../state/state';
+import {PassThroughsHandler} from './pass-throughs.handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
 describe('PassThroughsHandler', () => {

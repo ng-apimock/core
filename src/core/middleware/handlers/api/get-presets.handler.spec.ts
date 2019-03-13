@@ -4,8 +4,8 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import GetPresetsHandler from './get-presets.handler';
-import State from '../../../state/state';
+import {GetPresetsHandler} from './get-presets.handler';
+import {State} from '../../../state/state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('GetPresetsHandler', () => {

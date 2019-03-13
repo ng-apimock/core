@@ -1,4 +1,4 @@
-import GlobalState from './global.state';
+import {GlobalState} from './global.state';
 
 describe('GlobalState', () => {
     let state: GlobalState;

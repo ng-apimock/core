@@ -1,9 +1,9 @@
-import Istate from './Istate';
-import Recording from './recording';
-import MockState from './mock.state';
+import {IState} from './Istate';
+import {Recording} from './recording';
+import {MockState} from './mock.state';
 
 /** Session state. */
-class SessionState implements Istate {
+export class SessionState implements IState {
     readonly _identifier: string;
     readonly _mocks: { [identifier: string]: MockState };
     readonly _variables: { [key: string]: string; };
@@ -42,5 +42,3 @@ class SessionState implements Istate {
         return this._recordings;
     }
 }
-
-export default SessionState;

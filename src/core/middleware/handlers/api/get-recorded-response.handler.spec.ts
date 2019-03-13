@@ -8,7 +8,7 @@ import * as path from 'path';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import GetRecordedResponseHandler from './get-recorded-response.handler';
+import {GetRecordedResponseHandler} from './get-recorded-response.handler';
 
 describe('GetRecordedResponseHandler', () => {
     let container: Container;

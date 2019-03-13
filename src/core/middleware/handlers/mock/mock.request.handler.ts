@@ -6,15 +6,15 @@ import * as http from 'http';
 import * as path from 'path';
 import * as url from 'url';
 
-import Mock from '../../../mock/mock';
-import MockResponse from '../../../mock/mock.response';
-import State from '../../../state/state';
+import {Mock} from '../../../mock/mock';
+import {MockResponse} from '../../../mock/mock.response';
+import {State} from '../../../state/state';
 import {Handler} from '../handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
 /**  Handler for a mock request. */
 @injectable()
-class MockRequestHandler implements Handler {
+export class MockRequestHandler implements Handler {
     /**
      * Constructor.
      * @param {State} state The state.
@@ -94,5 +94,3 @@ class MockRequestHandler implements Handler {
         return !parsedUrl.query || !parsedUrl.query.callback ? false : parsedUrl.query.callback;
     }
 }
-
-export default MockRequestHandler;

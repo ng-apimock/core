@@ -16,12 +16,12 @@ import {
 } from 'sinon';
 import * as uuid from 'uuid';
 
-import RecordResponseHandler from './record.response.handler';
-import State from '../../../state/state';
-import Mock from '../../../mock/mock';
+import {RecordResponseHandler} from './record.response.handler';
+import {State} from '../../../state/state';
+import {Mock} from '../../../mock/mock';
 import {HttpMethods, HttpStatusCode} from '../../http';
-import Recording from '../../../state/recording';
-import Istate from '../../../state/Istate';
+import {Recording} from '../../../state/recording';
+import {IState} from '../../../state/Istate';
 
 describe('RecordResponseHandler', () => {
     let clock: SinonFakeTimers;
@@ -30,7 +30,7 @@ describe('RecordResponseHandler', () => {
     let fsWriteFileSyncFn: SinonStub;
     let state: SinonStubbedInstance<State>;
     let nextFn: SinonStub;
-    let matchingState: Istate;
+    let matchingState: IState;
     let mock: Mock;
     let now: Date;
     let recordFn: SinonStub;

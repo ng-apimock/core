@@ -11,7 +11,7 @@ import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 /**  Handler for a recording a response. */
 @injectable()
-class GetRecordedResponseHandler implements ApplicableHandler {
+export class GetRecordedResponseHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {string} baseUrl The base url.
@@ -35,5 +35,3 @@ class GetRecordedResponseHandler implements ApplicableHandler {
     }
 
 }
-
-export default GetRecordedResponseHandler;

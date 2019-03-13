@@ -3,13 +3,13 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import State from '../../../state/state';
+import {State} from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 /**  Get mocks handler. */
 @injectable()
-class GetMocksHandler implements ApplicableHandler {
+export class GetMocksHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {State} state The state.
@@ -41,5 +41,3 @@ class GetMocksHandler implements ApplicableHandler {
         return urlMatches && methodMatches;
     }
 }
-
-export default GetMocksHandler;

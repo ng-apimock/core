@@ -8,16 +8,16 @@ import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
 
-import Mock from '../../../mock/mock';
-import State from '../../../state/state';
+import {Mock} from '../../../mock/mock';
+import {State} from '../../../state/state';
 import {Handler} from '../handler';
-import Recording from '../../../state/recording';
+import {Recording} from '../../../state/recording';
 import {HttpMethods} from '../../http';
 
 
 /**  Handler for a recording a response. */
 @injectable()
-class RecordResponseHandler implements Handler {
+export class RecordResponseHandler implements Handler {
     APPLICABLE_MIMETYPES = ['application/json', 'application/xml'];
     RESPONSE_ENCODING = 'base64';
 
@@ -109,5 +109,3 @@ class RecordResponseHandler implements Handler {
         recordings[name].push(recording);
     }
 }
-
-export default RecordResponseHandler;

@@ -1,7 +1,7 @@
 import {IncomingHttpHeaders, OutgoingHttpHeaders} from 'http';
 
 /** An actual http response recording.*/
-interface Recording {
+export interface Recording {
     request: {
         url: string;
         method: string;
@@ -16,5 +16,3 @@ interface Recording {
     };
     datetime: number;
 }
-
-export default Recording;

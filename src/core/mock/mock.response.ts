@@ -1,5 +1,5 @@
 /** Mock response. */
-interface MockResponse {
+export interface MockResponse {
     // response status code (default: 200)
     status?: number;
     // response data
@@ -13,5 +13,3 @@ interface MockResponse {
     // indicates this response is the default response
     default?: boolean;
 }
-
-export default MockResponse;
