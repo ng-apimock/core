@@ -1,5 +1,5 @@
 /** Mock response. */
-interface MockRequest {
+export interface MockRequest {
     // the url
     url: string;
     // the http method (GET, POST, PUT, DELETE)
@@ -9,5 +9,3 @@ interface MockRequest {
     // body
     headers?: { [key: string]: string };
 }
-
-export default MockRequest;

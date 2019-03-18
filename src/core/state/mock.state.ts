@@ -1,8 +1,6 @@
 /** Mock state. */
-interface MockState {
+export interface MockState {
     scenario?: string;
     delay?: number;
     echo?: boolean;
 }
-
-export default MockState;

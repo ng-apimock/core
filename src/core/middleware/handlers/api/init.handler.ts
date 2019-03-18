@@ -3,13 +3,13 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import State from '../../../state/state';
+import {State} from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 /**  Init handler. */
 @injectable()
-class InitHandler implements ApplicableHandler {
+export class InitHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {State} state The state.
@@ -32,5 +32,3 @@ class InitHandler implements ApplicableHandler {
         return urlMatches && methodMatches;
     }
 }
-
-export default InitHandler;

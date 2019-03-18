@@ -5,18 +5,17 @@ import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
 
-import Mock from '../mock/mock';
-import State from '../state/state';
+import {Mock} from '../mock/mock';
+import {State} from '../state/state';
 import {HttpHeaders, HttpStatusCode} from '../middleware/http';
-import ProcessingOptions from './processing.options';
+import {ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()
-class MocksProcessor {
+export class MocksProcessor {
     private DEFAULT_DELAY = 0;
     private DEFAULT_ECHO = false;
     private PASS_THROUGH = 'passThrough';
-    private DEFAULT_PATTERN = '**/*.mock.json';
 
     /**
      * Constructor.
@@ -32,7 +31,8 @@ class MocksProcessor {
      */
     process(options: ProcessingOptions): void {
         let counter = 0;
-        const pattern = (options.patterns && options.patterns.mocks) ? options.patterns.mocks : this.DEFAULT_PATTERN;
+        const pattern = options.patterns.mocks;
+
         glob.sync(pattern, {
             cwd: options.src,
             root: '/'
@@ -90,5 +90,3 @@ class MocksProcessor {
         console.log(`Processed ${counter} unique mocks.`);
     }
 }
-
-export default MocksProcessor;

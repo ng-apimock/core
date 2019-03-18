@@ -3,31 +3,31 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import DefaultsHandler from './handlers/api/defaults.handler';
-import EchoRequestHandler from './handlers/mock/echo.request.handler';
-import Mock from '../mock/mock';
-import MockRequestHandler from './handlers/mock/mock.request.handler';
-import State from '../state/state';
-import RecordResponseHandler from './handlers/mock/record.response.handler';
-import UpdateMocksHandler from './handlers/api/update-mocks.handler';
-import SetVariableHandler from './handlers/api/set-variable.handler';
-import GetMocksHandler from './handlers/api/get-mocks.handler';
-import GetVariablesHandler from './handlers/api/get-variables.handler';
-import DeleteVariableHandler from './handlers/api/delete-variable.handler';
-import PassThroughsHandler from './handlers/api/pass-throughs.handler';
-import InitHandler from './handlers/api/init.handler';
+import {DefaultsHandler} from './handlers/api/defaults.handler';
+import {EchoRequestHandler} from './handlers/mock/echo.request.handler';
+import {Mock} from '../mock/mock';
+import {MockRequestHandler} from './handlers/mock/mock.request.handler';
+import {State} from '../state/state';
+import {RecordResponseHandler} from './handlers/mock/record.response.handler';
+import {UpdateMocksHandler} from './handlers/api/update-mocks.handler';
+import {SetVariableHandler} from './handlers/api/set-variable.handler';
+import {GetMocksHandler} from './handlers/api/get-mocks.handler';
+import {GetVariablesHandler} from './handlers/api/get-variables.handler';
+import {DeleteVariableHandler} from './handlers/api/delete-variable.handler';
+import {PassThroughsHandler} from './handlers/api/pass-throughs.handler';
+import {InitHandler} from './handlers/api/init.handler';
 import {ApplicableHandler} from './handlers/handler';
-import GetRecordingsHandler from './handlers/api/get-recordings.handler';
-import GetRecordedResponseHandler from './handlers/api/get-recorded-response.handler';
-import RecordHandler from './handlers/api/record.handler';
+import {GetRecordingsHandler} from './handlers/api/get-recordings.handler';
+import {GetRecordedResponseHandler} from './handlers/api/get-recorded-response.handler';
+import {RecordHandler} from './handlers/api/record.handler';
 import {NextHandleFunction} from 'connect';
-import GetPresetsHandler from './handlers/api/get-presets.handler';
-import SelectPresetHandler from './handlers/api/select-preset.handler';
+import {GetPresetsHandler} from './handlers/api/get-presets.handler';
+import {SelectPresetHandler} from './handlers/api/select-preset.handler';
 import {Configuration} from '../configuration';
 
 /** Middleware. */
 @injectable()
-class Middleware {
+export class Middleware {
     private handlers: ApplicableHandler[];
 
     /**
@@ -90,8 +90,8 @@ class Middleware {
 
     /**
      * Apimock Middleware.
-     * @param {"http".IncomingMessage} request The request.
-     * @param {"http".ServerResponse} response The response.
+     * @param {http.IncomingMessage} request The request.
+     * @param {http.ServerResponse} response The response.
      * @param {Function} next The next callback function.
      */
     middleware(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
@@ -100,7 +100,7 @@ class Middleware {
             const body = (request as any).body;
             const handler = this.getMatchingApplicableHandler(request, body);
             if (handler !== undefined) {
-                handler.handle(request, response, next, { id: apimockId, body: body });
+                handler.handle(request, response, next, {id: apimockId, body: body});
             } else {
                 const matchingMock: Mock = this.apimockState.getMatchingMock(request.url, request.method, request.headers, body);
                 if (matchingMock !== undefined) {
@@ -117,7 +117,7 @@ class Middleware {
                             body: body
                         });
                     } else {
-                        this.mockRequestHandler.handle(request, response, next, { id: apimockId, mock: matchingMock });
+                        this.mockRequestHandler.handle(request, response, next, {id: apimockId, mock: matchingMock});
                     }
                 } else {
                     next();
@@ -128,7 +128,7 @@ class Middleware {
 
     /**
      * Get the applicable handler.
-     * @param {"http".IncomingMessage} request The request.
+     * @param {http.IncomingMessage} request The request.
      * @param body The body.
      * @return {ApplicableHandler} handler The applicable handler.
      */
@@ -175,5 +175,3 @@ class Middleware {
             .map((cookie: { key: string, value: string }) => cookie.value)[0];
     }
 }
-
-export default Middleware;

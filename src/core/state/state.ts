@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import {injectable} from 'inversify';
 
-import GlobalState from './global.state';
-import Mock from '../mock/mock';
-import MockResponse from '../mock/mock.response';
-import SessionState from './session.state';
-import Istate from './Istate';
+import {GlobalState} from './global.state';
+import {Mock} from '../mock/mock';
+import {MockResponse} from '../mock/mock.response';
+import {SessionState} from './session.state';
+import {IState} from './Istate';
 import {IncomingHttpHeaders} from 'http';
-import Preset from '../preset/preset';
-import MockState from './mock.state';
+import {Preset} from '../preset/preset';
+import {MockState} from './mock.state';
 
 const DEFAULT_DELAY = 0;
 const DEFAULT_ECHO = false;
@@ -16,7 +16,7 @@ const PASS_THROUGH = 'passThrough';
 
 /** The state. */
 @injectable()
-class State {
+export class State {
     readonly _mocks: Mock[];
     readonly _presets: Preset[];
     readonly _defaults: { [identifier: string]: MockState };
@@ -38,22 +38,22 @@ class State {
     }
 
     /** Gets the presets. */
-    get presets():Preset[] {
+    get presets(): Preset[] {
         return this._presets;
     }
 
     /** Gets the defaults. */
-    get defaults():{ [identifier: string]: MockState } {
+    get defaults(): { [identifier: string]: MockState } {
         return this._defaults;
     }
 
     /** Gets the global state. */
-    get global():GlobalState {
+    get global(): GlobalState {
         return this._global;
     }
 
     /** Gets the session states. */
-    get sessions():SessionState[] {
+    get sessions(): SessionState[] {
         return this._sessions;
     }
 
@@ -62,8 +62,8 @@ class State {
      * @param {string} id The apimock id.
      * @return {Istate} state The matching state.
      */
-    getMatchingState(id: string): Istate {
-        let state: Istate = this.global;
+    getMatchingState(id: string): IState {
+        let state: IState = this.global;
         if (id) {
             state = this.sessions.find((session: SessionState) => session.identifier === id);
             if (state === undefined) {
@@ -183,7 +183,7 @@ class State {
      * @param {string} id The apimock id.
      */
     setToDefaults(id: string): void {
-        const state: Istate = this.getMatchingState(id);
+        const state: IState = this.getMatchingState(id);
         Object.keys(state.mocks).forEach((mockName) => {
             state.mocks[mockName] = JSON.parse(JSON.stringify(this.defaults[mockName]));
         });
@@ -194,12 +194,10 @@ class State {
      * @param {string} id The apimock id.
      */
     setToPassThroughs(id: string): void {
-        const state: Istate = this.getMatchingState(id);
+        const state: IState = this.getMatchingState(id);
         Object.keys(state.mocks).forEach((mockName) => {
             state.mocks[mockName].scenario = PASS_THROUGH;
         });
     }
 
 }
-
-export default State;

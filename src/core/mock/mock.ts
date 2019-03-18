@@ -1,8 +1,8 @@
-import MockResponse from './mock.response';
-import MockRequest from './mock.request';
+import {MockResponse} from './mock.response';
+import {MockRequest} from './mock.request';
 
 /** Mock. */
-interface Mock {
+export interface Mock {
     // the name of the mock
     name: string;
     // type of response object either
@@ -16,5 +16,3 @@ interface Mock {
     // delay
     delay?: number;
 }
-
-export default Mock;

@@ -16,12 +16,12 @@ import {
 } from 'sinon';
 import * as uuid from 'uuid';
 
-import RecordResponseHandler from './record.response.handler';
-import State from '../../../state/state';
-import Mock from '../../../mock/mock';
+import {RecordResponseHandler} from './record.response.handler';
+import {State} from '../../../state/state';
+import {Mock} from '../../../mock/mock';
 import {HttpMethods, HttpStatusCode} from '../../http';
-import Recording from '../../../state/recording';
-import Istate from '../../../state/Istate';
+import {Recording} from '../../../state/recording';
+import {IState} from '../../../state/Istate';
 
 describe('RecordResponseHandler', () => {
     let clock: SinonFakeTimers;
@@ -30,7 +30,7 @@ describe('RecordResponseHandler', () => {
     let fsWriteFileSyncFn: SinonStub;
     let state: SinonStubbedInstance<State>;
     let nextFn: SinonStub;
-    let matchingState: Istate;
+    let matchingState: IState;
     let mock: Mock;
     let now: Date;
     let recordFn: SinonStub;
@@ -82,10 +82,10 @@ describe('RecordResponseHandler', () => {
                 fetchResponseFn.resolves({
                     buffer: responseBufferFn, headers: { raw: responseHeadersRawFn }, status: 200
                 });
-                recordResponseHandler.handle(request, response, nextFn, {
+                recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
                     mock: mock,
-                    body: '{"x":"x"}'
+                    body: `{'x':'x'}`
                 });
             });
 
@@ -118,16 +118,16 @@ describe('RecordResponseHandler', () => {
             });
 
             it('on request data record', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {
+                await recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
                     mock: mock,
-                    body: '{"x":"x"}'
+                    body: `{'x':'x'}`
                 });
                 assert.calledWith(recordFn, 'apimockId', 'some', match(async (actual: Recording) => {
                     await expect(actual.request.url).toBe('/some/api');
                     await expect(actual.request.method).toBe(HttpMethods.GET);
                     await expect(actual.request.headers).toEqual({ host: 'localhost:8888', record: 'true' });
-                    await expect(actual.request.body).toBe(JSON.stringify({ x: 'x' }) as any);
+                    await expect(actual.request.body).toBe(`{'x':'x'}` as any);
 
                     await expect(actual.response.data).toBe('the-data');
                     await expect(actual.response.status).toBe(HttpStatusCode.OK);
@@ -137,10 +137,10 @@ describe('RecordResponseHandler', () => {
             });
 
             it('returns the response', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {
+                await recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
                     mock: mock,
-                    body: '{"x":"x"}'
+                    body: `{'x':'x'}`
                 });
                 assert.calledWith(response.writeHead, HttpStatusCode.OK, { 'Content-Type': 'application/pdf' });
                 assert.calledWith(response.end, 'the-data');
@@ -163,10 +163,10 @@ describe('RecordResponseHandler', () => {
 
             it('returns the error response', async () => {
                 try {
-                    await recordResponseHandler.handle(request, response, nextFn, {
+                    await recordResponseHandler.handle(request, response as any, nextFn, {
                         id: 'apimockId',
                         mock: mock,
-                        body: '{"x":"x"}'
+                        body: `{'x':'x'}`
                     });
                     await rejectedPromise;
                 } catch (err) {
@@ -242,7 +242,7 @@ describe('RecordResponseHandler', () => {
                 expect(actual.request.headers).toEqual({ host: 'localhost:8888' });
                 expect(actual.request.body).toEqual({ 'some-key': 'some-value' });
                 // updates the data
-                expect(actual.response.data).toBe('{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}');
+                expect(actual.response.data).toBe(`{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}`);
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
                 expect(actual.response.headers).toEqual({ 'Content-Type': '...' });
             });

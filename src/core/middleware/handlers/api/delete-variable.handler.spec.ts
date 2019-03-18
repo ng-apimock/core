@@ -4,15 +4,15 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import DeleteVariableHandler from './delete-variable.handler';
-import State from '../../../state/state';
-import Istate from '../../../state/Istate';
+import {DeleteVariableHandler} from './delete-variable.handler';
+import {State} from '../../../state/state';
+import {IState} from '../../../state/Istate';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('DeleteVariableHandler', () => {
     let container: Container;
     let handler: DeleteVariableHandler;
-    let matchingState: Istate;
+    let matchingState: IState;
     let state: SinonStubbedInstance<State>;
     let nextFn: SinonStub;
     let request: SinonStubbedInstance<http.IncomingMessage>;

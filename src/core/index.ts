@@ -1,6 +1,6 @@
 import container from './ioc-container';
-import Processor from './processor/processor';
-import Middleware from './middleware/middleware';
+import {Processor} from './processor/processor';
+import {Middleware} from './middleware/middleware';
 import * as http from 'http';
 import {Converter} from './convert';
 import {Configuration, DefaultConfiguration, MiddlewareConfiguration} from './configuration';

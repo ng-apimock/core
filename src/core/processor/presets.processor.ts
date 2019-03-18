@@ -1,16 +1,15 @@
 import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
-import State from '../state/state';
-import ProcessingOptions from './processing.options';
+import {State} from '../state/state';
+import {ProcessingOptions} from './processing.options';
 import * as glob from 'glob';
-import * as path from "path";
+import * as path from 'path';
 import * as fs from 'fs-extra';
-import Preset from '../preset/preset';
+import {Preset} from '../preset/preset';
 
 /** Presets processor. */
 @injectable()
-class PresetsProcessor {
-    private DEFAULT_PATTERN = '**/*.preset.json';
+export class PresetsProcessor {
 
     /**
      * Constructor.
@@ -26,7 +25,7 @@ class PresetsProcessor {
      */
     process(options: ProcessingOptions): void {
         let counter = 0;
-        const pattern = (options.patterns && options.patterns.presets) ? options.patterns.presets : this.DEFAULT_PATTERN;
+        const pattern = options.patterns.presets;
 
         glob.sync(pattern, {
             cwd: options.src,
@@ -49,5 +48,3 @@ class PresetsProcessor {
         console.log(`Processed ${counter} unique presets.`);
     }
 }
-
-export default PresetsProcessor;

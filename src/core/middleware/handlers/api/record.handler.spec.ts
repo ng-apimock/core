@@ -4,15 +4,15 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import State from '../../../state/state';
-import RecordHandler from './record.handler';
+import {State} from '../../../state/state';
+import {RecordHandler} from './record.handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
-import Istate from '../../../state/Istate';
+import {IState} from '../../../state/Istate';
 
 describe('RecordHandler', () => {
     let container: Container;
     let handler: RecordHandler;
-    let matchingState: Istate;
+    let matchingState: IState;
     let state: SinonStubbedInstance<State>;
     let nextFn: SinonStub;
     let request: SinonStubbedInstance<http.IncomingMessage>;
@@ -47,7 +47,7 @@ describe('RecordHandler', () => {
         });
 
         it('sets the recording indicator', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId', body: { record: true } });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: { record: true } });
 
             expect(matchingState.record).toBe(true);
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);

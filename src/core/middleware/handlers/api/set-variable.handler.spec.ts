@@ -4,15 +4,15 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import State from '../../../state/state';
-import SetVariableHandler from './set-variable.handler';
-import Istate from '../../../state/Istate';
+import {State} from '../../../state/state';
+import {SetVariableHandler} from './set-variable.handler';
+import {IState} from '../../../state/Istate';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('SetVariableHandler', () => {
     let container: Container;
     let handler: SetVariableHandler;
-    let matchingState: Istate;
+    let matchingState: IState;
     let state: SinonStubbedInstance<State>;
     let nextFn: SinonStub;
     let request: SinonStubbedInstance<http.IncomingMessage>;
@@ -50,7 +50,7 @@ describe('SetVariableHandler', () => {
 
         it('sets the variable', () => {
             const body = { 'four': 'fourth' } as any;
-            handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.called(response.end);
             expect(matchingState.variables['four']).toBe('fourth');
@@ -58,7 +58,7 @@ describe('SetVariableHandler', () => {
 
         it('sets the variables', () => {
             const body = { 'five': 'fifth', 'six': 'sixth' } as any;
-            handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.called(response.end);
             expect(matchingState.variables['five']).toBe('fifth');
@@ -67,7 +67,7 @@ describe('SetVariableHandler', () => {
 
         it('throw error if no key value pair is present', () => {
             const body = {} as any;
-            handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
             assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.calledWith(response.end, `{"message":"A variable should have a key and value"}`);
         });

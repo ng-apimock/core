@@ -1,12 +1,13 @@
 import 'reflect-metadata';
+import * as chokidar from 'chokidar';
 import {inject, injectable} from 'inversify';
-import ProcessingOptions from './processing.options';
-import MocksProcessor from './mocks.processor';
-import PresetsProcessor from './presets.processor';
+import {MocksProcessor} from './mocks.processor';
+import {PresetsProcessor} from './presets.processor';
+import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()
-class Processor {
+export class Processor {
 
     /**
      * Constructor.
@@ -24,9 +25,30 @@ class Processor {
      * @param {ProcessingOptions} options The processing options.
      */
     process(options: ProcessingOptions): void {
-        this.mocksProcessor.process(options);
-        this.presetsProcessor.process(options);
+        const opts = this.getMergedOptions(options);
+
+        this.mocksProcessor.process(opts);
+        this.presetsProcessor.process(opts);
+
+        chokidar.watch(`${opts.src}/${opts.patterns.mocks}`, {
+            ignoreInitial: true,
+            usePolling: true,
+            interval: 2000
+        }).on('all', () => this.mocksProcessor.process(opts));
+
+        chokidar.watch(`${opts.src}/${opts.patterns.presets}`, {
+            ignoreInitial: true,
+            usePolling: true,
+            interval: 2000
+        }).on('all', () => this.presetsProcessor.process(opts));
+    }
+
+    /**
+     * Gets the merged options.
+     * @param {ProcessingOptions} options The options.
+     * @returns {ProcessingOptions} mergedOptions The merged options.
+     */
+    private getMergedOptions(options: ProcessingOptions): ProcessingOptions {
+        return Object.assign({}, DefaultProcessingOptions, options);
     }
 }
-
-export default Processor;

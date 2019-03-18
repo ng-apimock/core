@@ -4,15 +4,15 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import SelectPresetHandler from './select-preset.handler';
-import State from '../../../state/state';
-import Istate from '../../../state/Istate';
+import {SelectPresetHandler} from './select-preset.handler';
+import {State} from '../../../state/state';
+import {IState} from '../../../state/Istate';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 describe('SelectPresetHandler', () => {
     let container: Container;
     let handler: SelectPresetHandler;
-    let matchingState: Istate;
+    let matchingState: IState;
     let state: SinonStubbedInstance<State>;
     let nextFn: SinonStub;
     let request: SinonStubbedInstance<http.IncomingMessage>;
@@ -95,7 +95,7 @@ describe('SelectPresetHandler', () => {
         describe('valid preset data', () => {
             beforeEach(() => {
                 const body = { name: 'valid' };
-                handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
+                handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
             });
 
             it('sets the mocks', () => {
@@ -121,7 +121,7 @@ describe('SelectPresetHandler', () => {
         describe('invalid preset data', () => {
             beforeEach(() => {
                 const body = { name: 'invalid' };
-                handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
+                handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
             });
 
             it('throws an error when the scenario does not match', () => {
@@ -133,7 +133,7 @@ describe('SelectPresetHandler', () => {
         describe('no matching preset', () => {
             beforeEach(() => {
                 const body = { name: 'no-match' };
-                handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
+                handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
             });
 
             it('throws an error when the preset does not match', () => {

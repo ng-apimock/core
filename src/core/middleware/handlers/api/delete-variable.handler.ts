@@ -3,13 +3,13 @@ import {inject, injectable} from 'inversify';
 
 import * as http from 'http';
 
-import State from '../../../state/state';
+import {State} from '../../../state/state';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
 
 /**  Delete variable handler. */
 @injectable()
-class DeleteVariableHandler implements ApplicableHandler {
+export class DeleteVariableHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {State} state The state.
@@ -37,5 +37,3 @@ class DeleteVariableHandler implements ApplicableHandler {
         return urlMatches && methodMatches;
     }
 }
-
-export default DeleteVariableHandler;

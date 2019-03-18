@@ -8,7 +8,7 @@ import * as path from 'path';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import GetRecordedResponseHandler from './get-recorded-response.handler';
+import {GetRecordedResponseHandler} from './get-recorded-response.handler';
 
 describe('GetRecordedResponseHandler', () => {
     let container: Container;
@@ -34,7 +34,7 @@ describe('GetRecordedResponseHandler', () => {
 
     describe('handle', () =>
         it('returns the recorded response', () => {
-            handler.handle(request as any, response, nextFn);
+            handler.handle(request as any, response as any, nextFn);
 
             assert.calledWith(fsReadFileSyncFn, path.join(os.tmpdir(), 'some.pdf'));
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);

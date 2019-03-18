@@ -31,7 +31,8 @@ ngApimock.processor.process({
     patterns: {
         mocks: '**/*.mock.json', // optional, defaults to **/*.mock.json,
         presets: '**/*.preset.json' // optional, defaults to **/*.preset.json
-    } 
+    },
+    watch: true // optional, defaults to false
 });
 ```
 

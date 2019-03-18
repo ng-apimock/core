@@ -4,8 +4,8 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import State from '../../../state/state';
-import PassThroughsHandler from './pass-throughs.handler';
+import {State} from '../../../state/state';
+import {PassThroughsHandler} from './pass-throughs.handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 
 describe('PassThroughsHandler', () => {
@@ -32,7 +32,7 @@ describe('PassThroughsHandler', () => {
 
     describe('handle', () =>
         it('sets the passThroughs', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId' });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             assert.calledWith(state.setToPassThroughs, 'apimockId');
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);

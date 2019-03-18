@@ -4,9 +4,9 @@ import {Container} from 'inversify';
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 
-import EchoRequestHandler from './echo.request.handler';
-import Mock from '../../../mock/mock';
-import State from '../../../state/state';
+import {EchoRequestHandler} from './echo.request.handler';
+import {Mock} from '../../../mock/mock';
+import {State} from '../../../state/state';
 import {HttpMethods} from '../../http';
 
 describe('EchoRequestHandler', () => {
@@ -37,7 +37,7 @@ describe('EchoRequestHandler', () => {
             it('console.logs the request', () => {
                 state.getEcho.returns(true);
 
-                echoRequestHandler.handle(request as any, response, nextFn, {
+                echoRequestHandler.handle(request as any, response as any, nextFn, {
                     id: 'apimockId', mock: {
                         name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
                     } as Mock, body: { x: 'x' }
@@ -57,7 +57,7 @@ describe('EchoRequestHandler', () => {
             it('does not console.logs the request', () => {
                 state.getEcho.returns(false);
 
-                echoRequestHandler.handle(request as any, response, nextFn, {
+                echoRequestHandler.handle(request as any, response as any, nextFn, {
                     id: 'apimockId', mock: {
                         name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
                     } as Mock, body: { x: 'x' }

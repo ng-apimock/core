@@ -1,9 +1,9 @@
-import IState from './Istate';
-import Recording from './recording';
-import MockState from './mock.state';
+import {IState} from './Istate';
+import {Recording} from './recording';
+import {MockState} from './mock.state';
 
 /** Global state. */
-class GlobalState implements IState {
+export class GlobalState implements IState {
     readonly _mocks: { [identifier: string]: MockState };
     readonly _variables: { [key: string]: string; };
     readonly _recordings: { [identifier: string]: Recording[] };
@@ -32,5 +32,3 @@ class GlobalState implements IState {
         return this._recordings;
     }
 }
-
-export default GlobalState;
