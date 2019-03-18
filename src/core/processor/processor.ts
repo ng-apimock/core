@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import * as chokidar from 'chokidar';
 import {inject, injectable} from 'inversify';
 import {MocksProcessor} from './mocks.processor';
 import {PresetsProcessor} from './presets.processor';
@@ -28,6 +29,18 @@ export class Processor {
 
         this.mocksProcessor.process(opts);
         this.presetsProcessor.process(opts);
+
+        chokidar.watch(`${opts.src}/${opts.patterns.mocks}`, {
+            ignoreInitial: true,
+            usePolling: true,
+            interval: 2000
+        }).on('all', () => this.mocksProcessor.process(opts));
+
+        chokidar.watch(`${opts.src}/${opts.patterns.presets}`, {
+            ignoreInitial: true,
+            usePolling: true,
+            interval: 2000
+        }).on('all', () => this.presetsProcessor.process(opts));
     }
 
     /**

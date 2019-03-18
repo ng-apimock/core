@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import {Container} from 'inversify';
-import * as sinon from 'sinon';
-import {assert, SinonStub, stub} from 'sinon';
+
+import * as chokidar from 'chokidar';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 import {MocksProcessor} from './mocks.processor';
 import {Processor} from './processor';
 import {PresetsProcessor} from './presets.processor';
@@ -14,8 +15,8 @@ describe('MocksProcessor', () => {
 
     beforeAll(() => {
         container = new Container();
-        mocksProcessor = sinon.createStubInstance(MocksProcessor);
-        presetsProcessor = sinon.createStubInstance(PresetsProcessor);
+        mocksProcessor = createStubInstance(MocksProcessor);
+        presetsProcessor = createStubInstance(PresetsProcessor);
 
         container.bind('MocksProcessor').toConstantValue(mocksProcessor);
         container.bind('PresetsProcessor').toConstantValue(presetsProcessor);
@@ -25,23 +26,93 @@ describe('MocksProcessor', () => {
     });
 
     describe('process', () => {
+        let chokidarWatchFn: SinonStub;
+        let fsWatcher: SinonStubbedInstance<chokidar.FSWatcher>;
         let getMergedOptionsFn: SinonStub;
 
-        beforeAll(() => {
+        beforeEach(() => {
+            fsWatcher = createStubInstance(chokidar.FSWatcher);
+
+            chokidarWatchFn = stub(chokidar, <any>'watch');
             getMergedOptionsFn = stub(processor, <any>'getMergedOptions');
 
+            chokidarWatchFn.returns(fsWatcher);
             getMergedOptionsFn.callsFake((options) => options);
 
-            processor.process({src: 'src'});
+            processor.process({
+                src: 'src', patterns: {
+                    mocks: 'mocks-pattern',
+                    presets: 'presets-pattern'
+                }
+            });
         });
 
         it('merges with the default options', () =>
-            assert.calledWith(getMergedOptionsFn, {src: 'src'}));
+            assert.calledWith(getMergedOptionsFn, {
+                src: 'src', patterns: {
+                    mocks: 'mocks-pattern',
+                    presets: 'presets-pattern'
+                }
+            }));
 
         it('processes the mocks', () =>
-            sinon.assert.calledWith(mocksProcessor.process, {src: 'src'}));
+            assert.calledWith(mocksProcessor.process, {
+                src: 'src', patterns: {
+                    mocks: 'mocks-pattern',
+                    presets: 'presets-pattern'
+                }
+            }));
 
         it('processes the presets', () =>
-            sinon.assert.calledWith(presetsProcessor.process, {src: 'src'}));
+            assert.calledWith(presetsProcessor.process, {
+                src: 'src', patterns: {
+                    mocks: 'mocks-pattern',
+                    presets: 'presets-pattern'
+                }
+            }));
+
+        it('watches for mock changes',async () => {
+            assert.calledWith(chokidarWatchFn, 'src/mocks-pattern', {
+                ignoreInitial: true,
+                usePolling: true,
+                interval: 2000
+            });
+
+            assert.calledWith(fsWatcher.on, 'all');
+            assert.callCount(mocksProcessor.process, 1);
+
+            const onAllCall = fsWatcher.on.getCall(0);
+
+            expect(onAllCall.args[0]).toBe('all');
+            await onAllCall.callArg(1); // call the callback function.
+
+            assert.callCount(mocksProcessor.process, 2);
+        });
+
+        it('watches for preset changes',async () => {
+            assert.calledWith(chokidarWatchFn, 'src/presets-pattern', {
+                ignoreInitial: true,
+                usePolling: true,
+                interval: 2000
+            });
+
+            assert.calledWith(fsWatcher.on, 'all');
+            assert.callCount(presetsProcessor.process, 1);
+
+            const onAllCall = fsWatcher.on.getCall(1);
+
+            expect(onAllCall.args[0]).toBe('all');
+            await onAllCall.callArg(1); // call the callback function.
+
+            assert.callCount(presetsProcessor.process, 2);
+        });
+
+
+        afterEach(() => {
+            mocksProcessor.process.reset();
+            presetsProcessor.process.reset();
+            chokidarWatchFn.restore();
+            getMergedOptionsFn.restore();
+        });
     });
 });
