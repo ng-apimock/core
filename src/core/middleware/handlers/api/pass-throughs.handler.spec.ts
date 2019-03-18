@@ -32,7 +32,7 @@ describe('PassThroughsHandler', () => {
 
     describe('handle', () =>
         it('sets the passThroughs', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId' });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             assert.calledWith(state.setToPassThroughs, 'apimockId');
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);

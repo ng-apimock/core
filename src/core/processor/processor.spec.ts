@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import {Container} from 'inversify';
 
 import * as chokidar from 'chokidar';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
+import {assert, createStubInstance, match, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 import {MocksProcessor} from './mocks.processor';
 import {Processor} from './processor';
 import {PresetsProcessor} from './presets.processor';
@@ -71,14 +71,14 @@ describe('MocksProcessor', () => {
                 }
             }));
 
-        it('watches for mock changes',async () => {
+        it('watches for mock changes', async () => {
             assert.calledWith(chokidarWatchFn, 'src/mocks-pattern', {
                 ignoreInitial: true,
                 usePolling: true,
                 interval: 2000
             });
 
-            assert.calledWith(fsWatcher.on, 'all');
+            assert.calledWith(fsWatcher.on, 'all', match.any);
             assert.callCount(mocksProcessor.process, 1);
 
             const onAllCall = fsWatcher.on.getCall(0);
@@ -89,14 +89,14 @@ describe('MocksProcessor', () => {
             assert.callCount(mocksProcessor.process, 2);
         });
 
-        it('watches for preset changes',async () => {
+        it('watches for preset changes', async () => {
             assert.calledWith(chokidarWatchFn, 'src/presets-pattern', {
                 ignoreInitial: true,
                 usePolling: true,
                 interval: 2000
             });
 
-            assert.calledWith(fsWatcher.on, 'all');
+            assert.calledWith(fsWatcher.on, 'all', match.any);
             assert.callCount(presetsProcessor.process, 1);
 
             const onAllCall = fsWatcher.on.getCall(1);

@@ -32,7 +32,7 @@ describe('InitHandler', () => {
 
     describe('handle', () =>
         it('ends the response', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId' });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.called(response.end);
         }));

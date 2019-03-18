@@ -52,7 +52,7 @@ describe('GetPresetsHandler', () => {
         });
 
         it('gets the presets', () => {
-            handler.handle(request as any, response, nextFn);
+            handler.handle(request as any, response as any, nextFn);
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.calledWith(response.end, JSON.stringify({
                 presets: [{

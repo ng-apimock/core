@@ -82,7 +82,7 @@ describe('RecordResponseHandler', () => {
                 fetchResponseFn.resolves({
                     buffer: responseBufferFn, headers: { raw: responseHeadersRawFn }, status: 200
                 });
-                recordResponseHandler.handle(request, response, nextFn, {
+                recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
                     mock: mock,
                     body: `{'x':'x'}`
@@ -118,7 +118,7 @@ describe('RecordResponseHandler', () => {
             });
 
             it('on request data record', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {
+                await recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
                     mock: mock,
                     body: `{'x':'x'}`
@@ -137,7 +137,7 @@ describe('RecordResponseHandler', () => {
             });
 
             it('returns the response', async () => {
-                await recordResponseHandler.handle(request, response, nextFn, {
+                await recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
                     mock: mock,
                     body: `{'x':'x'}`
@@ -163,7 +163,7 @@ describe('RecordResponseHandler', () => {
 
             it('returns the error response', async () => {
                 try {
-                    await recordResponseHandler.handle(request, response, nextFn, {
+                    await recordResponseHandler.handle(request, response as any, nextFn, {
                         id: 'apimockId',
                         mock: mock,
                         body: `{'x':'x'}`

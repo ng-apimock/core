@@ -62,7 +62,7 @@ describe('UpdateMocksHandler', () => {
 
         it('sets the echo', () => {
             const body = {name: 'two', echo: true};
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
 
             expect(matchingState.mocks[body.name].echo).toBe(true);
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
@@ -71,7 +71,7 @@ describe('UpdateMocksHandler', () => {
 
         it('sets the delay', () => {
             const body = {name: 'two', delay: 2000};
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
 
             expect(matchingState.mocks[body.name].delay).toBe(2000);
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
@@ -80,7 +80,7 @@ describe('UpdateMocksHandler', () => {
 
         it('selects a mocks', () => {
             const body = {name: 'two', scenario: 'thing'};
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
 
             expect(matchingState.mocks[body.name].scenario).toBe('thing');
             expect(matchingState.mocks[body.name].delay).toBe(1000);
@@ -90,7 +90,7 @@ describe('UpdateMocksHandler', () => {
 
         it('selects passThrough', () => {
             const body = {name: 'two', scenario: 'passThrough'};
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
 
             expect(matchingState.mocks[body.name].scenario).toBe('passThrough');
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
@@ -99,7 +99,7 @@ describe('UpdateMocksHandler', () => {
 
         it('throw error if scenario does not exist', () => {
             const body = {name: 'two', scenario: 'non-existing'};
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
 
             expect(matchingState.mocks[body.name].scenario).toEqual(({
                 'one': {scenario: 'some', delay: 0, echo: true},
@@ -111,7 +111,7 @@ describe('UpdateMocksHandler', () => {
 
         it('throw error if mock does not exist', () => {
             const body = {name: 'non-existing', scenario: 'non-existing'};
-            handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
 
             assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.calledWith(response.end, `{"message":"No mock matching name ['${body.name}'] found"}`);

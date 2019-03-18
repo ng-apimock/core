@@ -60,7 +60,7 @@ describe('GetRecordingsHandler', () => {
         });
 
         it('gets the recordings', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId' });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.calledWith(response.end, JSON.stringify({
                 recordings: { 'some': [] },

@@ -57,7 +57,7 @@ describe("MockRequestHandler", () => {
                 });
 
                 it("reads the binary content and returns it as response", () => {
-                    mockRequestHandler.handle(request as any, response, nextFn, {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, {
                         id: "apimockId", mock: {
                             path: "path/to",
                             name: "some",
@@ -93,7 +93,7 @@ describe("MockRequestHandler", () => {
 
                 it("throws an error when the binary file cannot be read", () => {
                     fsReadFileSyncFn.throwsException();
-                    mockRequestHandler.handle(request as any, response, nextFn, {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, {
                         id: "apimockId", mock: {
                             path: "path/to",
                             name: "some",
@@ -129,7 +129,7 @@ describe("MockRequestHandler", () => {
 
                 it("wraps the body in a json callback", () => {
                     getJsonCallbackNameFn.returns("callback");
-                    mockRequestHandler.handle(request as any, response, nextFn, {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, {
                         id: "apimockId", mock: {
                             name: "some",
                             path: "path/to",
@@ -178,7 +178,7 @@ describe("MockRequestHandler", () => {
                 });
 
                 it("interpolates the data and returns it as response", () => {
-                    mockRequestHandler.handle(request as any, response, nextFn, {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, {
                         id: "apimockId", mock: {
                             name: "some",
                             request: {
@@ -214,7 +214,7 @@ describe("MockRequestHandler", () => {
 
                 it("wraps the body in a json callback", () => {
                     getJsonCallbackNameFn.returns("callback");
-                    mockRequestHandler.handle(request as any, response, nextFn, {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, {
                         id: "apimockId", mock: {
                             name: "some",
                             request: {
@@ -249,7 +249,7 @@ describe("MockRequestHandler", () => {
             it("calls next()", () => {
                 state.getResponse.returns(undefined);
 
-                mockRequestHandler.handle(request as any, response, nextFn, {
+                mockRequestHandler.handle(request as any, response as any, nextFn, {
                     id: "apimockId", mock: {
                         name: "some",
                         request: {

@@ -47,7 +47,7 @@ describe('RecordHandler', () => {
         });
 
         it('sets the recording indicator', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId', body: { record: true } });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: { record: true } });
 
             expect(matchingState.record).toBe(true);
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);

@@ -49,7 +49,7 @@ describe('GetVariablesHandler', () => {
         });
 
         it('gets the variables', () => {
-            handler.handle(request as any, response, nextFn, { id: 'apimockId' });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.called(response.end);
             expect(Object.keys(matchingState.variables).length).toBe(3);
