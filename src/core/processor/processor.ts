@@ -49,6 +49,6 @@ export class Processor {
      * @returns {ProcessingOptions} mergedOptions The merged options.
      */
     private getMergedOptions(options: ProcessingOptions): ProcessingOptions {
-        return Object.assign({}, DefaultProcessingOptions, options);;
+        return Object.assign({}, DefaultProcessingOptions, options);
     }
 }

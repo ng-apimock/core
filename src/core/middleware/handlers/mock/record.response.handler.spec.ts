@@ -85,7 +85,7 @@ describe('RecordResponseHandler', () => {
                 recordResponseHandler.handle(request, response, nextFn, {
                     id: 'apimockId',
                     mock: mock,
-                    body: '{"x":"x"}'
+                    body: `{'x':'x'}`
                 });
             });
 
@@ -121,7 +121,7 @@ describe('RecordResponseHandler', () => {
                 await recordResponseHandler.handle(request, response, nextFn, {
                     id: 'apimockId',
                     mock: mock,
-                    body: '{"x":"x"}'
+                    body: `{'x':'x'}`
                 });
                 assert.calledWith(recordFn, 'apimockId', 'some', match(async (actual: Recording) => {
                     await expect(actual.request.url).toBe('/some/api');
@@ -140,7 +140,7 @@ describe('RecordResponseHandler', () => {
                 await recordResponseHandler.handle(request, response, nextFn, {
                     id: 'apimockId',
                     mock: mock,
-                    body: '{"x":"x"}'
+                    body: `{'x':'x'}`
                 });
                 assert.calledWith(response.writeHead, HttpStatusCode.OK, { 'Content-Type': 'application/pdf' });
                 assert.calledWith(response.end, 'the-data');
@@ -166,7 +166,7 @@ describe('RecordResponseHandler', () => {
                     await recordResponseHandler.handle(request, response, nextFn, {
                         id: 'apimockId',
                         mock: mock,
-                        body: '{"x":"x"}'
+                        body: `{'x':'x'}`
                     });
                     await rejectedPromise;
                 } catch (err) {
@@ -242,7 +242,7 @@ describe('RecordResponseHandler', () => {
                 expect(actual.request.headers).toEqual({ host: 'localhost:8888' });
                 expect(actual.request.body).toEqual({ 'some-key': 'some-value' });
                 // updates the data
-                expect(actual.response.data).toBe('{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}');
+                expect(actual.response.data).toBe(`{'apimockFileLocation':'baseUrl/recordings/generated-uuid.pdf'}`);
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
                 expect(actual.response.headers).toEqual({ 'Content-Type': '...' });
             });

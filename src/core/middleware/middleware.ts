@@ -90,8 +90,8 @@ export class Middleware {
 
     /**
      * Apimock Middleware.
-     * @param {"http".IncomingMessage} request The request.
-     * @param {"http".ServerResponse} response The response.
+     * @param {http.IncomingMessage} request The request.
+     * @param {http.ServerResponse} response The response.
      * @param {Function} next The next callback function.
      */
     middleware(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
@@ -128,7 +128,7 @@ export class Middleware {
 
     /**
      * Get the applicable handler.
-     * @param {"http".IncomingMessage} request The request.
+     * @param {http.IncomingMessage} request The request.
      * @param body The body.
      * @return {ApplicableHandler} handler The applicable handler.
      */

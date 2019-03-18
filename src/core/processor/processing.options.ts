@@ -12,4 +12,4 @@ export const DefaultProcessingOptions = {
         presets: '**/*.preset.json',
         mocks: '**/*.mock.json'
     }
-}
+};

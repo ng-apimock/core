@@ -122,7 +122,7 @@ describe('Middleware', () => {
                 getApimockIdFn.returns('apimockId');
                 getMatchingApplicableHandlerFn.returns(applicableHandler);
                 request.headers = { 'some': 'header' };
-                request.body = { "x": "x" };
+                request.body = { 'x': 'x' };
 
                 middleware.middleware(request, response, nextFn);
 
@@ -168,7 +168,7 @@ describe('Middleware', () => {
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
-                    request.body = { "x": "x" };
+                    request.body = { 'x': 'x' };
 
                     middleware.middleware(request, response, nextFn);
 
@@ -221,7 +221,7 @@ describe('Middleware', () => {
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
-                    request.body = { "x": "x" };
+                    request.body = { 'x': 'x' };
                 });
 
                 describe('record header is present', () => {
@@ -282,7 +282,7 @@ describe('Middleware', () => {
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
                     request.headers = { 'some': 'header' };
-                    request.body = { "x": "x" };
+                    request.body = { 'x': 'x' };
 
                     middleware.middleware(request, response, nextFn);
 
@@ -313,7 +313,7 @@ describe('Middleware', () => {
                 getMatchingApplicableHandlerFn.returns(undefined);
                 state.getMatchingMock.returns(undefined);
                 request.headers = { 'some': 'header' };
-                request.body = { "x": "x" };
+                request.body = { 'x': 'x' };
 
                 middleware.middleware(request, response, nextFn);
 

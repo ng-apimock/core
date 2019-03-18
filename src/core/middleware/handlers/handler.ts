@@ -4,8 +4,8 @@ import * as http from 'http';
 export interface Handler {
     /**
      * Takes care of the request.
-     * @param {"http".IncomingMessage} request The http request.
-     * @param {"http".ServerResponse} response The http response.
+     * @param {http.IncomingMessage} request The http request.
+     * @param {http.ServerResponse} response The http response.
      * @param {Function} next The next middleware.
      * @param {object} params The parameters.
      */
@@ -17,7 +17,7 @@ export interface Handler {
 export interface ApplicableHandler extends Handler {
     /**
      * Indicates if the given request is applicable.
-     * @param {"http".IncomingMessage} request The request.
+     * @param {http.IncomingMessage} request The request.
      * @param body The body.
      * @return {boolean} indicator The indicator.
      */

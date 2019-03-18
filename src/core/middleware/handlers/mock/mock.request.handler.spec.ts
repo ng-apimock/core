@@ -291,7 +291,7 @@ describe('MockRequestHandler', () => {
             expect(mockRequestHandler.interpolateResponseData({
                 x: 'x is %%x%%',
                 y: 'y is %%y%%'
-            }, { x: 'XXX' })).toBe('{"x":"x is XXX","y":"y is %%y%%"}'));
+            }, { x: 'XXX' })).toBe(`{'x':'x is XXX','y':'y is %%y%%'}`));
 
     });
 

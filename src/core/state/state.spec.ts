@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {Container} from 'inversify';
 
-import * as sinon from 'sinon';
+import {stub} from 'sinon';
 
 import {State} from './state';
 import {SessionState} from './session.state';
@@ -15,22 +15,22 @@ describe('State', () => {
     beforeAll(() => {
         container = new Container();
         state = new State();
-        stateGetMatchingStateFn = sinon.stub(State.prototype, <any>'getMatchingState');
+        stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
         (state as any)._mocks = [];
         state.mocks.push(...[{
-            name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
+            name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
         }, {
             name: 'advanced', request: {
                 url: 'some/api', method: 'POST',
-                headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
-                body: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' }
-            }, responses: { three: {}, four: {} }
+                headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
+                body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+            }, responses: {three: {}, four: {}}
         }]);
     });
 
     describe('getMatchingState', () => {
         beforeEach(() => {
-            state.global.mocks['some'] = { scenario: 'thing', echo: true, delay: 0 };
+            state.global.mocks['some'] = {scenario: 'thing', echo: true, delay: 0};
             state.global.variables['some'] = 'some';
             (state as any)._sessions = [];
             stateGetMatchingStateFn.callThrough();
@@ -47,7 +47,7 @@ describe('State', () => {
 
                 expect((matchingState as SessionState).identifier).toBe('someId');
                 expect(Object.keys(matchingState.mocks).length).toBe(1);
-                expect(matchingState.mocks['some']).toEqual({ scenario: 'thing', echo: true, delay: 0 });
+                expect(matchingState.mocks['some']).toEqual({scenario: 'thing', echo: true, delay: 0});
                 expect(Object.keys(matchingState.variables).length).toBe(1);
                 expect(matchingState.variables['some']).toBe('some');
             })
@@ -56,7 +56,7 @@ describe('State', () => {
         describe('session matches the id', () => {
             let sessionState: SessionState;
             beforeEach(() => {
-                sessionState = new SessionState('someId', {},{});
+                sessionState = new SessionState('someId', {}, {});
                 state.sessions.push(sessionState);
             });
             it('returns the matching SessionState', () => {
@@ -77,45 +77,45 @@ describe('State', () => {
                 expect(state.getMatchingMock('no/match', 'P2OST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, { number: 123, identifier: 'abcd' })).toBeUndefined()));
+                }, {number: 123, identifier: 'abcd'})).toBeUndefined()));
 
         describe('method does not match', () =>
             it('returns undefined', () =>
                 expect(state.getMatchingMock('some/api', 'PUT', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, { number: 123, identifier: 'abcd' })).toBeUndefined()));
+                }, {number: 123, identifier: 'abcd'})).toBeUndefined()));
 
         describe('headers does not match', () =>
             it('returns undefined', () =>
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'public'
-                }, { number: 123, identifier: 'abcd' })).toBeUndefined()));
+                }, {number: 123, identifier: 'abcd'})).toBeUndefined()));
 
         describe('body does not match', () =>
             it('returns undefined', () =>
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, { number: 123, identifier: 'ab' })).toBeUndefined()));
+                }, {number: 123, identifier: 'ab'})).toBeUndefined()));
 
         describe('request matches', () =>
             it('returns the matching mock', () => {
                 // match simple mock - only url and method
                 expect(state.getMatchingMock('some/api', 'GET', {}, {})).toEqual({
-                    name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
+                    name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
                 });
                 // match advanced mock - url, method, headers, body
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, { number: 123, identifier: 'abcd' })).toEqual({
+                }, {number: 123, identifier: 'abcd'})).toEqual({
                     name: 'advanced', request: {
                         url: 'some/api', method: 'POST',
-                        headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
-                        body: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' }
-                    }, responses: { three: {}, four: {} }
+                        headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
+                        body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+                    }, responses: {three: {}, four: {}}
                 });
             }));
     });
@@ -124,7 +124,7 @@ describe('State', () => {
         let matchingState: IState;
         beforeEach(() => {
             matchingState = {
-                mocks: { simple: { scenario: 'one', delay: 0, echo: false } },
+                mocks: {simple: {scenario: 'one', delay: 0, echo: false}},
                 variables: {},
                 recordings: {},
                 record: false
@@ -139,7 +139,7 @@ describe('State', () => {
         describe('matching mock', () =>
             it('returns the selected response', () =>
                 expect(state.getResponse('simple', 'id')).toEqual({
-                    name: 'simple', request: { url: 'some/api', method: 'GET', }, responses: { one: {}, two: {} }
+                    name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
                 }.responses['one'])));
 
         afterEach(() => {
@@ -151,7 +151,7 @@ describe('State', () => {
         let matchingState: IState;
         beforeEach(() => {
             matchingState = {
-                mocks: { simple: { scenario: 'one', delay: 1000, echo: false } },
+                mocks: {simple: {scenario: 'one', delay: 1000, echo: false}},
                 variables: {},
                 recordings: {},
                 record: false
@@ -176,7 +176,7 @@ describe('State', () => {
         let matchingState: IState;
         beforeEach(() => {
             matchingState = {
-                mocks: { simple: { scenario: 'one', delay: 1000, echo: true } },
+                mocks: {simple: {scenario: 'one', delay: 1000, echo: true}},
                 variables: {},
                 recordings: {},
                 record: false
@@ -202,7 +202,7 @@ describe('State', () => {
         beforeEach(() => {
             matchingState = {
                 mocks: {},
-                variables: { this: 'this', that: 'that' },
+                variables: {this: 'this', that: 'that'},
                 recordings: {},
                 record: false
             };
@@ -224,16 +224,16 @@ describe('State', () => {
         beforeEach(() => {
             matchingState = {
                 mocks: {
-                    simple: { scenario: 'one', delay: 1000, echo: true },
-                    advanced: { scenario: 'three', delay: 3000, echo: false }
+                    simple: {scenario: 'one', delay: 1000, echo: true},
+                    advanced: {scenario: 'three', delay: 3000, echo: false}
                 },
                 variables: {},
                 recordings: {},
                 record: false
             };
 
-            state.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
-            state.defaults['advanced'] = { scenario: 'four', delay: 4000, echo: true };
+            state.defaults['simple'] = {scenario: 'two', delay: 2000, echo: false};
+            state.defaults['advanced'] = {scenario: 'four', delay: 4000, echo: true};
         });
 
         it('sets the state to defaults', () => {
@@ -271,16 +271,16 @@ describe('State', () => {
         beforeEach(() => {
             matchingState = {
                 mocks: {
-                    simple: { scenario: 'one', delay: 1000, echo: true },
-                    advanced: { scenario: 'three', delay: 3000, echo: false }
+                    simple: {scenario: 'one', delay: 1000, echo: true},
+                    advanced: {scenario: 'three', delay: 3000, echo: false}
                 },
                 variables: {},
                 recordings: {},
                 record: false
             };
 
-            state.defaults['simple'] = { scenario: 'two', delay: 2000, echo: false };
-            state.defaults['advanced'] = { scenario: 'four', delay: 4000, echo: true };
+            state.defaults['simple'] = {scenario: 'two', delay: 2000, echo: false};
+            state.defaults['advanced'] = {scenario: 'four', delay: 4000, echo: true};
         });
 
         it('sets the state to defaults', () => {

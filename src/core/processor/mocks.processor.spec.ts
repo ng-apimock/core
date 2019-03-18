@@ -4,35 +4,35 @@ import {Container} from 'inversify';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
-import * as sinon from 'sinon';
+import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 import {State} from '../state/state';
 import {HttpHeaders} from '../middleware/http';
 import {MocksProcessor} from './mocks.processor';
 import {GlobalState} from '../state/global.state';
-import {DefaultProcessingOptions} from "./processing.options";
+import {DefaultProcessingOptions} from './processing.options';
 
 describe('MocksProcessor', () => {
-    let consoleLogFn: sinon.SinonStub;
-    let consoleWarnFn: sinon.SinonStub;
+    let consoleLogFn: SinonStub;
+    let consoleWarnFn: SinonStub;
     let container: Container;
-    let doneFn: sinon.SinonStub;
-    let fsReadJsonSyncFn: sinon.SinonStub;
-    let globSyncFn: sinon.SinonStub;
-    let state: sinon.SinonStubbedInstance<State>;
+    let doneFn: SinonStub;
+    let fsReadJsonSyncFn: SinonStub;
+    let globSyncFn: SinonStub;
+    let state: SinonStubbedInstance<State>;
     let processor: MocksProcessor;
 
     beforeAll(() => {
         container = new Container();
-        doneFn = sinon.stub();
-        state = sinon.createStubInstance(State);
+        doneFn = stub();
+        state = createStubInstance(State);
 
         container.bind('State').toConstantValue(state);
         container.bind('MocksProcessor').to(MocksProcessor);
 
-        consoleWarnFn = sinon.stub(console, 'warn');
-        consoleLogFn = sinon.stub(console, 'log');
-        fsReadJsonSyncFn = sinon.stub(fs, 'readJsonSync');
-        globSyncFn = sinon.stub(glob, 'sync');
+        consoleWarnFn = stub(console, 'warn');
+        consoleLogFn = stub(console, 'log');
+        fsReadJsonSyncFn = stub(fs, 'readJsonSync');
+        globSyncFn = stub(glob, 'sync');
 
         processor = container.get<MocksProcessor>('MocksProcessor');
     });
@@ -98,15 +98,15 @@ describe('MocksProcessor', () => {
             });
 
             it('processes each mock', () => {
-                sinon.assert.calledWith(globSyncFn,
+                assert.calledWith(globSyncFn,
                     '**/*.mock.json', {
                         cwd: 'src', root: '/'
                     }
                 );
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-json-request.mock.json'));
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-binary-request.mock.json'));
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/full-request.mock.json'));
-                sinon.assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/duplicate-request.mock.json'));
+                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-json-request.mock.json'));
+                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-binary-request.mock.json'));
+                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/full-request.mock.json'));
+                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/duplicate-request.mock.json'));
             });
 
             it('sets the defaults', () =>
@@ -161,7 +161,7 @@ describe('MocksProcessor', () => {
             });
 
             it('processes unique mocks', () =>
-                sinon.assert.calledWith(consoleLogFn, `Processed 3 unique mocks.`));
+                assert.calledWith(consoleLogFn, `Processed 3 unique mocks.`));
 
             afterAll(() => {
                 consoleLogFn.reset();
@@ -177,7 +177,7 @@ describe('MocksProcessor', () => {
                 processor.process({src: 'src', patterns: {mocks: '**/*.mymock.json'}});
             });
             it('processes each mock', () => {
-                sinon.assert.calledWith(globSyncFn,
+                assert.calledWith(globSyncFn,
                     '**/*.mymock.json', {
                         cwd: 'src', root: '/'
                     }

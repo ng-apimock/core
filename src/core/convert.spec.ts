@@ -56,8 +56,8 @@ describe('Converter', () => {
 
             it('converts old mock.json', () => {
                 assert.calledWith(fsOutputJsonSyncFn, path.join(process.cwd(), 'destination', 'mock', 'old.mock.json'), {
-                    name: "old.mock",
-                    request: { method: "GET", url: "old/mock" },
+                    name: 'old.mock',
+                    request: { method: 'GET', url: 'old/mock' },
                     responses: {
                         'old-json-response': {}
                     }
@@ -66,8 +66,8 @@ describe('Converter', () => {
 
             it('does not convert new mock.json', () => {
                 assert.calledWith(fsOutputJsonSyncFn, path.join(process.cwd(), 'destination', 'mock', 'new.mock.json'), {
-                    name: "new.mock",
-                    request: { method: "GET", url: "new/mock" },
+                    name: 'new.mock',
+                    request: { method: 'GET', url: 'new/mock' },
                     responses: {
                         'new-json-response': {}
                     }

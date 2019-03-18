@@ -69,7 +69,7 @@ describe('SetVariableHandler', () => {
             const body = {} as any;
             handler.handle(request as any, response, nextFn, { id: 'apimockId', body: body });
             assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            assert.calledWith(response.end, `{"message":"A variable should have a key and value"}`);
+            assert.calledWith(response.end, `{'message':'A variable should have a key and value'}`);
         });
 
         afterEach(() => {
