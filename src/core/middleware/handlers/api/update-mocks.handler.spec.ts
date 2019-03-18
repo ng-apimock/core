@@ -106,7 +106,7 @@ describe('UpdateMocksHandler', () => {
                 'two': {scenario: 'thing', delay: 1000, echo: false}
             } as any)[body.name].scenario);
             assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            assert.calledWith(response.end, `{'message':'No scenario matching ['${body.scenario}'] found'}`);
+            assert.calledWith(response.end, `{"message":"No scenario matching ['${body.scenario}'] found"}`);
         });
 
         it('throw error if mock does not exist', () => {
@@ -114,7 +114,7 @@ describe('UpdateMocksHandler', () => {
             handler.handle(request as any, response, nextFn, {id: 'apimockId', body: body});
 
             assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            assert.calledWith(response.end, `{'message':'No mock matching name ['${body.name}'] found'}`);
+            assert.calledWith(response.end, `{"message":"No mock matching name ['${body.name}'] found"}`);
         });
 
         afterEach(() => {

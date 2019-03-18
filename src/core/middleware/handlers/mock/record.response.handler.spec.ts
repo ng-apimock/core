@@ -127,7 +127,7 @@ describe('RecordResponseHandler', () => {
                     await expect(actual.request.url).toBe('/some/api');
                     await expect(actual.request.method).toBe(HttpMethods.GET);
                     await expect(actual.request.headers).toEqual({ host: 'localhost:8888', record: 'true' });
-                    await expect(actual.request.body).toBe(JSON.stringify({ x: 'x' }) as any);
+                    await expect(actual.request.body).toBe(`{'x':'x'}` as any);
 
                     await expect(actual.response.data).toBe('the-data');
                     await expect(actual.response.status).toBe(HttpStatusCode.OK);
@@ -242,7 +242,7 @@ describe('RecordResponseHandler', () => {
                 expect(actual.request.headers).toEqual({ host: 'localhost:8888' });
                 expect(actual.request.body).toEqual({ 'some-key': 'some-value' });
                 // updates the data
-                expect(actual.response.data).toBe(`{'apimockFileLocation':'baseUrl/recordings/generated-uuid.pdf'}`);
+                expect(actual.response.data).toBe(`{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}`);
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
                 expect(actual.response.headers).toEqual({ 'Content-Type': '...' });
             });
