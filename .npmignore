@@ -3,6 +3,7 @@ src
 
 # test
 **/*.spec.*
+jasmine.json
 
 # configs
 tsconfig.json
@@ -10,6 +11,7 @@ tslint.json
 
 # idea
 .idea
+*.iml
 
 # ci
 .circleci
