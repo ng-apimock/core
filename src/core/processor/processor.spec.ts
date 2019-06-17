@@ -38,75 +38,106 @@ describe('MocksProcessor', () => {
 
             chokidarWatchFn.returns(fsWatcher);
             getMergedOptionsFn.callsFake((options) => options);
+        });
 
-            processor.process({
-                src: 'src', patterns: {
-                    mocks: 'mocks-pattern',
-                    presets: 'presets-pattern'
-                }
+        describe('default', () => {
+            beforeEach(()=> {
+                processor.process({
+                    src: 'src', patterns: {
+                        mocks: 'mocks-pattern',
+                        presets: 'presets-pattern'
+                    }
+                });
+            });
+
+            it('merges with the default options', () =>
+                assert.calledWith(getMergedOptionsFn, {
+                    src: 'src', patterns: {
+                        mocks: 'mocks-pattern',
+                        presets: 'presets-pattern'
+                    }
+                }));
+
+            it('processes the mocks', () =>
+                assert.calledWith(mocksProcessor.process, {
+                    src: 'src', patterns: {
+                        mocks: 'mocks-pattern',
+                        presets: 'presets-pattern'
+                    }
+                }));
+
+            it('processes the presets', () =>
+                assert.calledWith(presetsProcessor.process, {
+                    src: 'src', patterns: {
+                        mocks: 'mocks-pattern',
+                        presets: 'presets-pattern'
+                    }
+                }));
+
+            it('does not watch for mock changes', async () => {
+                assert.neverCalledWith(chokidarWatchFn,'src/mocks-pattern', {
+                    ignoreInitial: true,
+                    usePolling: true,
+                    interval: 2000
+                });
+            });
+
+            it('does not watch for preset changes', async () => {
+                assert.neverCalledWith(chokidarWatchFn,'src/presets-pattern', {
+                    ignoreInitial: true,
+                    usePolling: true,
+                    interval: 2000
+                });
             });
         });
 
-        it('merges with the default options', () =>
-            assert.calledWith(getMergedOptionsFn, {
-                src: 'src', patterns: {
-                    mocks: 'mocks-pattern',
-                    presets: 'presets-pattern'
-                }
-            }));
-
-        it('processes the mocks', () =>
-            assert.calledWith(mocksProcessor.process, {
-                src: 'src', patterns: {
-                    mocks: 'mocks-pattern',
-                    presets: 'presets-pattern'
-                }
-            }));
-
-        it('processes the presets', () =>
-            assert.calledWith(presetsProcessor.process, {
-                src: 'src', patterns: {
-                    mocks: 'mocks-pattern',
-                    presets: 'presets-pattern'
-                }
-            }));
-
-        it('watches for mock changes', async () => {
-            assert.calledWith(chokidarWatchFn, 'src/mocks-pattern', {
-                ignoreInitial: true,
-                usePolling: true,
-                interval: 2000
+        describe('watch', () => {
+            beforeEach(()=> {
+                processor.process({
+                    src: 'src', patterns: {
+                        mocks: 'mocks-pattern',
+                        presets: 'presets-pattern'
+                    },
+                    watch: true
+                });
             });
 
-            assert.calledWith(fsWatcher.on, 'all', match.any);
-            assert.callCount(mocksProcessor.process, 1);
+            it('watches for mock changes', async () => {
+                assert.calledWith(chokidarWatchFn, 'src/mocks-pattern', {
+                    ignoreInitial: true,
+                    usePolling: true,
+                    interval: 2000
+                });
 
-            const onAllCall = fsWatcher.on.getCall(0);
+                assert.calledWith(fsWatcher.on, 'all', match.any);
+                assert.callCount(mocksProcessor.process, 1);
 
-            expect(onAllCall.args[0]).toBe('all');
-            await onAllCall.callArg(1); // call the callback function.
+                const onAllCall = fsWatcher.on.getCall(0);
 
-            assert.callCount(mocksProcessor.process, 2);
-        });
+                expect(onAllCall.args[0]).toBe('all');
+                await onAllCall.callArg(1); // call the callback function.
 
-        it('watches for preset changes', async () => {
-            assert.calledWith(chokidarWatchFn, 'src/presets-pattern', {
-                ignoreInitial: true,
-                usePolling: true,
-                interval: 2000
+                assert.callCount(mocksProcessor.process, 2);
             });
 
-            assert.calledWith(fsWatcher.on, 'all', match.any);
-            assert.callCount(presetsProcessor.process, 1);
+            it('watches for preset changes', async () => {
+                assert.calledWith(chokidarWatchFn, 'src/presets-pattern', {
+                    ignoreInitial: true,
+                    usePolling: true,
+                    interval: 2000
+                });
 
-            const onAllCall = fsWatcher.on.getCall(1);
+                assert.calledWith(fsWatcher.on, 'all', match.any);
+                assert.callCount(presetsProcessor.process, 1);
 
-            expect(onAllCall.args[0]).toBe('all');
-            await onAllCall.callArg(1); // call the callback function.
+                const onAllCall = fsWatcher.on.getCall(1);
 
-            assert.callCount(presetsProcessor.process, 2);
+                expect(onAllCall.args[0]).toBe('all');
+                await onAllCall.callArg(1); // call the callback function.
+
+                assert.callCount(presetsProcessor.process, 2);
+            });
         });
-
 
         afterEach(() => {
             mocksProcessor.process.reset();
