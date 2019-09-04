@@ -79,13 +79,20 @@ export class MockRequestHandler implements Handler {
      * @param variables The variables.
      * @return updatedData The updated data.
      */
-    interpolateResponseData(data: any, variables: { [key: string]: string }): string {
+    interpolateResponseData(data: any, variables: { [key: string]: any }): string {
         let _data: string;
 
         _data = JSON.stringify(data);
         Object.keys(variables).forEach((key) => {
             if (variables.hasOwnProperty(key)) {
-                _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), variables[key]);
+                if(typeof variables[key] === 'string') {
+                    _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), variables[key]);
+                } else {
+                    // 1. replace object assignments ie. "x": "%%my-key%%"
+                    _data = _data.replace(new RegExp(`"%%${key}%%"`, 'g'), variables[key]);
+                    // 2. replace within a string ie. "x": "the following text %%my-key%% is replaced
+                    _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), variables[key]);
+                }
             }
         });
         return _data;
