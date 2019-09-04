@@ -1,62 +1,62 @@
 {
-  "name": "@ng-apimock/core",
-  "description": "ng-apimock core module",
-  "version": "1.0.21",
-  "homepage": "https://github.com/ng-apimock/core#readme",
-  "author": {
-    "name": "Mischa Dasberg",
-    "email": "mischa@dasberg.nl"
-  },
-  "main": "dist/index.js",
-  "scripts": {
-    "precompile": "rimraf dist",
-    "compile": "tsc",
-    "lint": "tslint -p tsconfig.json",
-    "test": "jasmine-ts --config=jasmine.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ng-apimock/core.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ng-apimock/core/issues"
-  },
-  "license": "MIT",
-  "keywords": [
-    "apimock",
-    "ng-apimock",
-    "http",
-    "api"
-  ],
-  "devDependencies": {
-      "@types/body-parser": "1.17.1",
-    "@types/chokidar": "2.1.3",
-      "@types/fs-extra": "8.0.0",
-    "@types/glob": "7.1.1",
-      "@types/jasmine": "3.4.0",
-      "@types/node": "12.7.4",
-      "@types/node-fetch": "2.5.0",
-    "@types/sinon": "7.0.13",
-    "@types/url-join": "4.0.0",
-      "@types/uuid": "3.4.5",
-    "jasmine": "3.4.0",
-    "jasmine-ts": "0.3.0",
-      "rimraf": "3.0.0",
-      "sinon": "7.4.2",
-    "ts-node": "8.3.0",
-      "tslint": "5.19.0",
-    "tslint-eslint-rules": "5.4.0",
-      "typescript": "3.6.2",
-    "vrsource-tslint-rules": "6.0.0"
-  },
-  "dependencies": {
-    "body-parser": "1.19.0",
-      "chokidar": "3.0.2",
-      "fs-extra": "8.1.0",
-    "glob": "7.1.4",
-    "inversify": "5.0.1",
-    "node-fetch": "2.6.0",
-    "reflect-metadata": "0.1.13",
-      "uuid": "3.3.3"
-  }
+    "name": "@ng-apimock/core",
+    "description": "ng-apimock core module",
+    "version": "1.0.21",
+    "homepage": "https://github.com/ng-apimock/core#readme",
+    "author": {
+        "name": "Mischa Dasberg",
+        "email": "mischa@dasberg.nl"
+    },
+    "main": "dist/index.js",
+    "scripts": {
+        "precompile": "rimraf dist",
+        "compile": "tsc",
+        "lint": "tslint -p tsconfig.json",
+        "test": "jasmine-ts --config=jasmine.json"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ng-apimock/core.git"
+    },
+    "bugs": {
+        "url": "https://github.com/ng-apimock/core/issues"
+    },
+    "license": "MIT",
+    "keywords": [
+        "apimock",
+        "ng-apimock",
+        "http",
+        "api"
+    ],
+    "devDependencies": {
+        "@types/body-parser": "1.17.1",
+        "@types/chokidar": "2.1.3",
+        "@types/fs-extra": "8.0.0",
+        "@types/glob": "7.1.1",
+        "@types/jasmine": "3.4.0",
+        "@types/node": "12.7.4",
+        "@types/node-fetch": "2.5.0",
+        "@types/sinon": "7.0.13",
+        "@types/url-join": "4.0.0",
+        "@types/uuid": "3.4.5",
+        "jasmine": "3.4.0",
+        "jasmine-ts": "0.3.0",
+        "rimraf": "3.0.0",
+        "sinon": "7.4.2",
+        "ts-node": "8.3.0",
+        "tslint": "5.19.0",
+        "tslint-eslint-rules": "5.4.0",
+        "typescript": "3.6.2",
+        "vrsource-tslint-rules": "6.0.0"
+    },
+    "dependencies": {
+        "body-parser": "1.19.0",
+        "chokidar": "3.0.2",
+        "fs-extra": "8.1.0",
+        "glob": "7.1.4",
+        "inversify": "5.0.1",
+        "node-fetch": "2.6.0",
+        "reflect-metadata": "0.1.13",
+        "uuid": "3.3.3"
+    }
 }

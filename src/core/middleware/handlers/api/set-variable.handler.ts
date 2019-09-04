@@ -18,7 +18,7 @@ export class SetVariableHandler implements ApplicableHandler {
 
     /** {@inheritDoc}.*/
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
-        id: string, body: { [key: string]: string }
+        id: string, body: { [key: string]: any }
     }): void {
         const state = this.state.getMatchingState(params.id);
         const body = params.body;
