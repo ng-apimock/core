@@ -1,14 +1,11 @@
-import 'reflect-metadata';
-import {inject, injectable} from 'inversify';
-
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
-
-import {Mock} from '../mock/mock';
-import {State} from '../state/state';
+import {inject, injectable} from 'inversify';
 import {HttpHeaders, HttpStatusCode} from '../middleware/http';
+import {Mock} from '../mock/mock';
 import {ProcessingOptions} from './processing.options';
+import {State} from '../state/state';
 
 /** Mocks processor. */
 @injectable()

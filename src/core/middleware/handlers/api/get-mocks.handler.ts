@@ -1,22 +1,19 @@
-import 'reflect-metadata';
-import {inject, injectable} from 'inversify';
-
 import * as http from 'http';
-
-import {State} from '../../../state/state';
+import {inject, injectable} from 'inversify';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import {State} from '../../../state/state';
 
 /**  Get mocks handler. */
 @injectable()
 export class GetMocksHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {State} state The state.
      * @param {string} baseUrl The base url.
+     * @param {State} state The state.
      */
-    constructor(@inject('State') private state: State,
-                @inject('BaseUrl') private baseUrl: string) {
+    constructor(@inject('BaseUrl') private baseUrl: string,
+                @inject('State') private state: State) {
     }
 
     /** {@inheritDoc}.*/
@@ -24,11 +21,10 @@ export class GetMocksHandler implements ApplicableHandler {
         const state = this.state.getMatchingState(params.id);
         const result: any = {
             state: state.mocks,
-            mocks: this.state.mocks.map((mock) => ({
-                name: mock.name,
-                request: mock.request,
-                responses: Object.keys(mock.responses)
-            }))
+            mocks: this.state.mocks
+                .map((mock) => ({
+                    name: mock.name, request: mock.request, responses: Object.keys(mock.responses)
+                }))
         };
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end(JSON.stringify(result));

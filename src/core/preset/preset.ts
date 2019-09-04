@@ -1,6 +1,6 @@
-/** Preset. */
 import {MockState} from '../state/mock.state';
 
+/** Preset. */
 export interface Preset {
     // the name of the preset
     name: string;

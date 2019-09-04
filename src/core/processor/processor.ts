@@ -1,9 +1,8 @@
-import 'reflect-metadata';
 import * as chokidar from 'chokidar';
 import {inject, injectable} from 'inversify';
+import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
 import {MocksProcessor} from './mocks.processor';
 import {PresetsProcessor} from './presets.processor';
-import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()

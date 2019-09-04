@@ -1,30 +1,30 @@
 import 'reflect-metadata';
-import {Container} from 'inversify';
+import * as bodyParser from 'body-parser';
 
+import {Configuration, DefaultConfiguration} from './configuration';
+import {Container} from 'inversify';
 import {DefaultsHandler} from './middleware/handlers/api/defaults.handler';
 import {DeleteVariableHandler} from './middleware/handlers/api/delete-variable.handler';
 import {EchoRequestHandler} from './middleware/handlers/mock/echo.request.handler';
 import {GetMocksHandler} from './middleware/handlers/api/get-mocks.handler';
 import {GetPresetsHandler} from './middleware/handlers/api/get-presets.handler';
+import {GetRecordingsHandler} from './middleware/handlers/api/get-recordings.handler';
+import {GetRecordedResponseHandler} from './middleware/handlers/api/get-recorded-response.handler';
 import {GetVariablesHandler} from './middleware/handlers/api/get-variables.handler';
 import {InitHandler} from './middleware/handlers/api/init.handler';
 import {Middleware} from './middleware/middleware';
 import {MockRequestHandler} from './middleware/handlers/mock/mock.request.handler';
 import {MocksProcessor} from './processor/mocks.processor';
+import {NextHandleFunction} from 'connect';
 import {PresetsProcessor} from './processor/presets.processor';
 import {Processor} from './processor/processor';
 import {PassThroughsHandler} from './middleware/handlers/api/pass-throughs.handler';
+import {RecordHandler} from './middleware/handlers/api/record.handler';
 import {RecordResponseHandler} from './middleware/handlers/mock/record.response.handler';
 import {SelectPresetHandler} from './middleware/handlers/api/select-preset.handler';
 import {SetVariableHandler} from './middleware/handlers/api/set-variable.handler';
 import {State} from './state/state';
 import {UpdateMocksHandler} from './middleware/handlers/api/update-mocks.handler';
-import {GetRecordingsHandler} from './middleware/handlers/api/get-recordings.handler';
-import {GetRecordedResponseHandler} from './middleware/handlers/api/get-recorded-response.handler';
-import {RecordHandler} from './middleware/handlers/api/record.handler';
-import * as bodyParser from 'body-parser';
-import {NextHandleFunction} from 'connect';
-import {Configuration, DefaultConfiguration} from './configuration';
 
 // IOC configuration
 const container = new Container();

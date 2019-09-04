@@ -1,22 +1,19 @@
-import 'reflect-metadata';
-import {inject, injectable} from 'inversify';
-
 import * as http from 'http';
-
-import {State} from '../../../state/state';
+import {inject, injectable} from 'inversify';
 import {ApplicableHandler} from '../handler';
 import {HttpHeaders, HttpStatusCode} from '../../http';
+import {State} from '../../../state/state';
 
 /**  Pass throughs handler. */
 @injectable()
 export class PassThroughsHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {State} state The state.
      * @param {string} baseUrl The base url.
+     * @param {State} state The state.
      */
-    constructor(@inject('State') private state: State,
-                @inject('BaseUrl') private baseUrl: string) {
+    constructor(@inject('BaseUrl') private baseUrl: string,
+                @inject('State') private state: State) {
     }
 
     /** {@inheritDoc}.*/

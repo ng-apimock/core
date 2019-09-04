@@ -1,14 +1,13 @@
 import 'reflect-metadata';
 import {injectable} from 'inversify';
-
 import {GlobalState} from './global.state';
+import {IncomingHttpHeaders} from 'http';
+import {IState} from './Istate';
 import {Mock} from '../mock/mock';
 import {MockResponse} from '../mock/mock.response';
-import {SessionState} from './session.state';
-import {IState} from './Istate';
-import {IncomingHttpHeaders} from 'http';
-import {Preset} from '../preset/preset';
 import {MockState} from './mock.state';
+import {Preset} from '../preset/preset';
+import {SessionState} from './session.state';
 
 const DEFAULT_DELAY = 0;
 const DEFAULT_ECHO = false;

@@ -1,39 +1,38 @@
-import 'reflect-metadata';
-import {Container} from 'inversify';
-
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-
-import {State} from '../../../state/state';
-import {RecordHandler} from './record.handler';
+import {Container} from 'inversify';
 import {HttpHeaders, HttpStatusCode} from '../../http';
 import {IState} from '../../../state/Istate';
+import {RecordHandler} from './record.handler';
+import {State} from '../../../state/state';
 
 describe('RecordHandler', () => {
     let container: Container;
     let handler: RecordHandler;
     let matchingState: IState;
     let state: SinonStubbedInstance<State>;
-    let nextFn: SinonStub;
-    let request: SinonStubbedInstance<http.IncomingMessage>;
-    let response: SinonStubbedInstance<http.ServerResponse>;
 
-    beforeAll(() => {
+    beforeEach(() => {
         container = new Container();
         state = createStubInstance(State);
-        nextFn = stub();
-        request = createStubInstance(http.IncomingMessage);
-        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
-        container.bind('State').toConstantValue(state);
         container.bind('RecordHandler').to(RecordHandler);
+        container.bind('State').toConstantValue(state);
 
         handler = container.get<RecordHandler>('RecordHandler');
     });
 
     describe('handle', () => {
+        let nextFn: SinonStub;
+        let request: SinonStubbedInstance<http.IncomingMessage>;
+        let response: SinonStubbedInstance<http.ServerResponse>;
+
         beforeEach(() => {
+            nextFn = stub();
+            request = createStubInstance(http.IncomingMessage);
+            response = createStubInstance(http.ServerResponse);
+
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
                     'one': { scenario: 'some', delay: 0, echo: true },
@@ -56,6 +55,12 @@ describe('RecordHandler', () => {
     });
 
     describe('isApplicable', () => {
+        let request: SinonStubbedInstance<http.IncomingMessage>;
+
+        beforeEach(() => {
+            request = createStubInstance(http.IncomingMessage);
+        });
+
         it('indicates applicable when url and action match', () => {
             request.url = `${'/base-url'}/actions`;
             expect(handler.isApplicable(request as any, { action: 'record' })).toBe(true);

@@ -1,9 +1,7 @@
-import 'reflect-metadata';
-import {Container} from 'inversify';
-
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
+import {Container} from 'inversify';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 import {State} from '../state/state';
 import {HttpHeaders} from '../middleware/http';
@@ -12,33 +10,35 @@ import {GlobalState} from '../state/global.state';
 import {DefaultProcessingOptions} from './processing.options';
 
 describe('MocksProcessor', () => {
-    let consoleLogFn: SinonStub;
-    let consoleWarnFn: SinonStub;
     let container: Container;
-    let doneFn: SinonStub;
-    let fsReadJsonSyncFn: SinonStub;
-    let globSyncFn: SinonStub;
     let state: SinonStubbedInstance<State>;
     let processor: MocksProcessor;
 
-    beforeAll(() => {
+    beforeEach(() => {
         container = new Container();
-        doneFn = stub();
         state = createStubInstance(State);
 
         container.bind('State').toConstantValue(state);
         container.bind('MocksProcessor').to(MocksProcessor);
 
-        consoleWarnFn = stub(console, 'warn');
-        consoleLogFn = stub(console, 'log');
-        fsReadJsonSyncFn = stub(fs, 'readJsonSync');
-        globSyncFn = stub(glob, 'sync');
-
         processor = container.get<MocksProcessor>('MocksProcessor');
     });
 
     describe('process', () => {
-        beforeAll(() => {
+        let consoleLogFn: SinonStub;
+        let consoleWarnFn: SinonStub;
+        let doneFn: SinonStub;
+        let fsReadJsonSyncFn: SinonStub;
+        let globSyncFn: SinonStub;
+
+        beforeEach(() => {
+            doneFn = stub();
+
+            consoleWarnFn = stub(console, 'warn');
+            consoleLogFn = stub(console, 'log');
+            fsReadJsonSyncFn = stub(fs, 'readJsonSync');
+            globSyncFn = stub(glob, 'sync');
+
             (state as any)._mocks = [];
             (state as any)._defaults = {};
             (state as any)._global = new GlobalState();
@@ -92,17 +92,27 @@ describe('MocksProcessor', () => {
             });
         });
 
+        afterEach(() => {
+            consoleLogFn.restore();
+            consoleWarnFn.restore();
+            fsReadJsonSyncFn.restore();
+            globSyncFn.restore();
+        });
+
         describe('by default', () => {
-            beforeAll(() => {
+            beforeEach(() => {
                 processor.process(Object.assign({}, DefaultProcessingOptions, {src: 'src'}));
             });
 
+            afterEach(() => {
+                consoleLogFn.reset();
+                consoleWarnFn.reset();
+                fsReadJsonSyncFn.reset();
+                globSyncFn.reset();
+            });
+
             it('processes each mock', () => {
-                assert.calledWith(globSyncFn,
-                    '**/*.mock.json', {
-                        cwd: 'src', root: '/'
-                    }
-                );
+                assert.calledWith(globSyncFn,'**/*.mock.json', {cwd: 'src', root: '/'});
                 assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-json-request.mock.json'));
                 assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-binary-request.mock.json'));
                 assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/full-request.mock.json'));
@@ -162,17 +172,10 @@ describe('MocksProcessor', () => {
 
             it('processes unique mocks', () =>
                 assert.calledWith(consoleLogFn, `Processed 3 unique mocks.`));
-
-            afterAll(() => {
-                consoleLogFn.reset();
-                consoleWarnFn.reset();
-                fsReadJsonSyncFn.reset();
-                globSyncFn.reset();
-            });
         });
 
         describe('with full processing options', () => {
-            beforeAll(() => {
+            beforeEach(() => {
                 globSyncFn.returns([]);
                 processor.process({src: 'src', patterns: {mocks: '**/*.mymock.json'}});
             });
@@ -184,12 +187,5 @@ describe('MocksProcessor', () => {
                 );
             });
         });
-    });
-
-    afterAll(() => {
-        consoleLogFn.restore();
-        consoleWarnFn.restore();
-        fsReadJsonSyncFn.restore();
-        globSyncFn.restore();
     });
 });

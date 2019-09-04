@@ -1,16 +1,13 @@
-import 'reflect-metadata';
-import {inject, injectable} from 'inversify';
-
 import * as fs from 'fs-extra';
 import * as http from 'http';
 import * as path from 'path';
 import * as url from 'url';
-
+import {inject, injectable} from 'inversify';
+import {Handler} from '../handler';
+import {HttpHeaders, HttpStatusCode} from '../../http';
 import {Mock} from '../../../mock/mock';
 import {MockResponse} from '../../../mock/mock.response';
 import {State} from '../../../state/state';
-import {Handler} from '../handler';
-import {HttpHeaders, HttpStatusCode} from '../../http';
 
 /**  Handler for a mock request. */
 @injectable()
@@ -58,6 +55,16 @@ export class MockRequestHandler implements Handler {
     }
 
     /**
+     * Get the JSONP callback name.
+     * @param request The request.
+     * @returns {string|boolean} callbackName Either the name or false.
+     */
+    getJsonCallbackName(request: http.IncomingMessage): string | boolean {
+        const parsedUrl: any = url.parse(request.url, true);
+        return !parsedUrl.query || !parsedUrl.query.callback ? false : parsedUrl.query.callback;
+    }
+
+    /**
      * Indicates if the given response is a binary response.
      * @param response The response
      * @return {boolean} indicator The indicator.
@@ -82,15 +89,5 @@ export class MockRequestHandler implements Handler {
             }
         });
         return _data;
-    }
-
-    /**
-     * Get the JSONP callback name.
-     * @param request The request.
-     * @returns {string|boolean} callbackName Either the name or false.
-     */
-    getJsonCallbackName(request: http.IncomingMessage): string | boolean {
-        const parsedUrl: any = url.parse(request.url, true);
-        return !parsedUrl.query || !parsedUrl.query.callback ? false : parsedUrl.query.callback;
     }
 }

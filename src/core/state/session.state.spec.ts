@@ -4,7 +4,7 @@ describe('SessionState', () => {
     let state: SessionState;
 
     describe('constructor', () => {
-        beforeAll(() => {
+        beforeEach(() => {
             state = new SessionState('id', {}, {});
         });
 

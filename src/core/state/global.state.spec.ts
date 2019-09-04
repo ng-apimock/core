@@ -4,7 +4,7 @@ describe('GlobalState', () => {
     let state: GlobalState;
 
     describe('constructor', () => {
-        beforeAll(() => {
+        beforeEach(() => {
             state = new GlobalState();
         });
 

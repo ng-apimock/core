@@ -1,19 +1,15 @@
-import 'reflect-metadata';
-import {inject, injectable} from 'inversify';
-
 import * as fs from 'fs-extra';
-import fetch, {Request} from 'node-fetch';
 import * as http from 'http';
 import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
-
-import {Mock} from '../../../mock/mock';
-import {State} from '../../../state/state';
+import fetch, {Request} from 'node-fetch';
+import {inject, injectable} from 'inversify';
 import {Handler} from '../handler';
-import {Recording} from '../../../state/recording';
 import {HttpMethods} from '../../http';
-
+import {Mock} from '../../../mock/mock';
+import {Recording} from '../../../state/recording';
+import {State} from '../../../state/state';
 
 /**  Handler for a recording a response. */
 @injectable()
@@ -23,11 +19,11 @@ export class RecordResponseHandler implements Handler {
 
     /**
      * Constructor.
-     * @param {State} state The state.
      * @param {string} baseUrl The base url.
+     * @param {State} state The state.
      */
-    constructor(@inject('State') private state: State,
-                @inject('BaseUrl') private baseUrl: string) {
+    constructor(@inject('BaseUrl') private baseUrl: string,
+                @inject('State') private state: State) {
     }
 
     /** {@inheritDoc}.*/
@@ -101,8 +97,8 @@ export class RecordResponseHandler implements Handler {
 
         if (this.APPLICABLE_MIMETYPES.indexOf(contentType) === -1) {
             const destination = `${uuid.v4()}.${contentType.substring(contentType.indexOf('/') + 1)}`;
-            fs.writeFileSync(path.join(os.tmpdir(), destination), new Buffer((recording.response.data as any).toString(this.RESPONSE_ENCODING), this.RESPONSE_ENCODING));
-            recording.response.data = JSON.stringify({ apimockFileLocation: `${this.baseUrl}/recordings/${destination}` });
+            fs.writeFileSync(path.join(os.tmpdir(), destination), new Buffer((recording.response.data as any).toString(this.RESPONSE_ENCODING), this.RESPONSE_ENCODING as any));
+            recording.response.data = JSON.stringify({apimockFileLocation: `${this.baseUrl}/recordings/${destination}`});
         } else {
             recording.response.data = recording.response.data.toString();
         }

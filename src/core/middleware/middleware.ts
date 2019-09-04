@@ -1,29 +1,26 @@
-import 'reflect-metadata';
-import {inject, injectable} from 'inversify';
-
 import * as http from 'http';
-
+import {inject, injectable} from 'inversify';
+import {ApplicableHandler} from './handlers/handler';
+import {Configuration} from '../configuration';
 import {DefaultsHandler} from './handlers/api/defaults.handler';
+import {DeleteVariableHandler} from './handlers/api/delete-variable.handler';
 import {EchoRequestHandler} from './handlers/mock/echo.request.handler';
+import {GetMocksHandler} from './handlers/api/get-mocks.handler';
+import {GetPresetsHandler} from './handlers/api/get-presets.handler';
+import {GetRecordingsHandler} from './handlers/api/get-recordings.handler';
+import {GetVariablesHandler} from './handlers/api/get-variables.handler';
+import {GetRecordedResponseHandler} from './handlers/api/get-recorded-response.handler';
+import {InitHandler} from './handlers/api/init.handler';
 import {Mock} from '../mock/mock';
 import {MockRequestHandler} from './handlers/mock/mock.request.handler';
-import {State} from '../state/state';
-import {RecordResponseHandler} from './handlers/mock/record.response.handler';
-import {UpdateMocksHandler} from './handlers/api/update-mocks.handler';
-import {SetVariableHandler} from './handlers/api/set-variable.handler';
-import {GetMocksHandler} from './handlers/api/get-mocks.handler';
-import {GetVariablesHandler} from './handlers/api/get-variables.handler';
-import {DeleteVariableHandler} from './handlers/api/delete-variable.handler';
-import {PassThroughsHandler} from './handlers/api/pass-throughs.handler';
-import {InitHandler} from './handlers/api/init.handler';
-import {ApplicableHandler} from './handlers/handler';
-import {GetRecordingsHandler} from './handlers/api/get-recordings.handler';
-import {GetRecordedResponseHandler} from './handlers/api/get-recorded-response.handler';
-import {RecordHandler} from './handlers/api/record.handler';
 import {NextHandleFunction} from 'connect';
-import {GetPresetsHandler} from './handlers/api/get-presets.handler';
+import {PassThroughsHandler} from './handlers/api/pass-throughs.handler';
+import {RecordHandler} from './handlers/api/record.handler';
+import {RecordResponseHandler} from './handlers/mock/record.response.handler';
 import {SelectPresetHandler} from './handlers/api/select-preset.handler';
-import {Configuration} from '../configuration';
+import {SetVariableHandler} from './handlers/api/set-variable.handler';
+import {State} from '../state/state';
+import {UpdateMocksHandler} from './handlers/api/update-mocks.handler';
 
 /** Middleware. */
 @injectable()
@@ -32,6 +29,7 @@ export class Middleware {
 
     /**
      * Constructor
+     * @param {Configuration} configuration The configuration object.
      * @param {DefaultsHandler} defaultsHandler The defaults handler.
      * @param {DeleteVariableHandler} deleteVariableHandler The delete variables handler.
      * @param {EchoRequestHandler} echoRequestHandler The echo request handler.
@@ -41,6 +39,7 @@ export class Middleware {
      * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
      * @param {GetVariablesHandler} getVariablesHandler The get variables handler.
      * @param {InitHandler} initHandler The init handler.
+     * @param {NextHandleFunction} JsonBodyParser The body parser that is responsible for making the body available.
      * @param {MockRequestHandler} mockRequestHandler The mock request handler.
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
      * @param {RecordHandler} recordHandler The record handler.
@@ -49,10 +48,9 @@ export class Middleware {
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
      * @param {State} apimockState The apimock state.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
-     * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
-     * @param {Configuration} configuration The configuration object.
      */
-    constructor(@inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
+    constructor(@inject('Configuration') private configuration: Configuration,
+                @inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
                 @inject('DeleteVariableHandler') private deleteVariableHandler: DeleteVariableHandler,
                 @inject('EchoRequestHandler') private echoRequestHandler: EchoRequestHandler,
                 @inject('GetMocksHandler') private getMocksHandler: GetMocksHandler,
@@ -61,6 +59,7 @@ export class Middleware {
                 @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
                 @inject('GetVariablesHandler') private getVariablesHandler: GetVariablesHandler,
                 @inject('InitHandler') private initHandler: InitHandler,
+                @inject('JsonBodyParser') private bodyParser: NextHandleFunction,
                 @inject('MockRequestHandler') private mockRequestHandler: MockRequestHandler,
                 @inject('PassThroughsHandler') private passThroughsHandler: PassThroughsHandler,
                 @inject('RecordHandler') private recordHandler: RecordHandler,
@@ -68,9 +67,7 @@ export class Middleware {
                 @inject('SelectPresetHandler') private selectPresetHandler: SelectPresetHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
                 @inject('State') private apimockState: State,
-                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
-                @inject('JsonBodyParser') private bodyParser: NextHandleFunction,
-                @inject('Configuration') private configuration: Configuration) {
+                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler) {
         this.handlers = [
             defaultsHandler,
             deleteVariableHandler,

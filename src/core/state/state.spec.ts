@@ -1,31 +1,20 @@
-import 'reflect-metadata';
-import {Container} from 'inversify';
-
 import {stub} from 'sinon';
-
-import {State} from './state';
-import {SessionState} from './session.state';
+import {Container} from 'inversify';
 import {IState} from './Istate';
+import {SessionState} from './session.state';
+import {State} from './state';
 
 describe('State', () => {
     let container: Container;
     let state: State;
-    let stateGetMatchingStateFn: sinon.SinonStub;
 
-    beforeAll(() => {
+    beforeEach(() => {
         container = new Container();
-        state = new State();
-        stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
+
+        container.bind('State').to(State);
+
+        state = container.get<State>('State');
         (state as any)._mocks = [];
-        state.mocks.push(...[{
-            name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
-        }, {
-            name: 'advanced', request: {
-                url: 'some/api', method: 'POST',
-                headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
-                body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
-            }, responses: {three: {}, four: {}}
-        }]);
     });
 
     describe('getMatchingState', () => {
@@ -33,7 +22,6 @@ describe('State', () => {
             state.global.mocks['some'] = {scenario: 'thing', echo: true, delay: 0};
             state.global.variables['some'] = 'some';
             (state as any)._sessions = [];
-            stateGetMatchingStateFn.callThrough();
         });
 
         describe('id === undefined', () =>
@@ -65,13 +53,21 @@ describe('State', () => {
                 expect(matchingState).toBe(sessionState);
             });
         });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
-        });
     });
 
     describe('getMatchingMock', () => {
+        beforeEach(() => {
+            state.mocks.push(...[{
+                name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
+            }, {
+                name: 'advanced', request: {
+                    url: 'some/api', method: 'POST',
+                    headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
+                    body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+                }, responses: {three: {}, four: {}}
+            }]);
+
+        });
         describe('url does not match', () =>
             it('returns undefined', () =>
                 expect(state.getMatchingMock('no/match', 'P2OST', {
@@ -121,8 +117,14 @@ describe('State', () => {
     });
 
     describe('getResponse', () => {
+        let stateGetMatchingStateFn: sinon.SinonStub;
         let matchingState: IState;
+
         beforeEach(() => {
+            state.mocks.push(...[{
+                name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
+            }]);
+            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
             matchingState = {
                 mocks: {simple: {scenario: 'one', delay: 0, echo: false}},
                 variables: {},
@@ -130,6 +132,10 @@ describe('State', () => {
                 record: false
             };
             stateGetMatchingStateFn.returns(matchingState);
+        });
+
+        afterEach(() => {
+            stateGetMatchingStateFn.restore();
         });
 
         describe('no matching mock', () =>
@@ -141,14 +147,12 @@ describe('State', () => {
                 expect(state.getResponse('simple', 'id')).toEqual({
                     name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
                 }.responses['one'])));
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
-        });
     });
 
     describe('getDelay', () => {
         let matchingState: IState;
+        let stateGetMatchingStateFn: sinon.SinonStub;
+
         beforeEach(() => {
             matchingState = {
                 mocks: {simple: {scenario: 'one', delay: 1000, echo: false}},
@@ -156,7 +160,12 @@ describe('State', () => {
                 recordings: {},
                 record: false
             };
+            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
             stateGetMatchingStateFn.returns(matchingState);
+        });
+
+        afterEach(() => {
+            stateGetMatchingStateFn.restore();
         });
 
         describe('no matching mock', () =>
@@ -166,14 +175,12 @@ describe('State', () => {
         describe('matching mock', () =>
             it('returns the selected delay', () =>
                 expect(state.getDelay('simple', 'id')).toBe(1000)));
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
-        });
     });
 
     describe('getEcho', () => {
         let matchingState: IState;
+        let stateGetMatchingStateFn: sinon.SinonStub;
+
         beforeEach(() => {
             matchingState = {
                 mocks: {simple: {scenario: 'one', delay: 1000, echo: true}},
@@ -181,7 +188,12 @@ describe('State', () => {
                 recordings: {},
                 record: false
             };
+            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
             stateGetMatchingStateFn.returns(matchingState);
+        });
+
+        afterEach(() => {
+            stateGetMatchingStateFn.restore();
         });
 
         describe('no matching mock', () =>
@@ -191,14 +203,12 @@ describe('State', () => {
         describe('matching mock', () =>
             it('returns the selected echo', () =>
                 expect(state.getEcho('simple', 'id')).toBe(true)));
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
-        });
     });
 
     describe('getVariables', () => {
         let matchingState: IState;
+        let stateGetMatchingStateFn: sinon.SinonStub;
+
         beforeEach(() => {
             matchingState = {
                 mocks: {},
@@ -206,21 +216,23 @@ describe('State', () => {
                 recordings: {},
                 record: false
             };
+            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
             stateGetMatchingStateFn.returns(matchingState);
+        });
+        afterEach(() => {
+            stateGetMatchingStateFn.restore();
         });
 
         it('returns the state variables', () => {
             const response = state.getVariables('id');
             expect(response).toBe(matchingState.variables);
         });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
-        });
     });
 
     describe('setToDefaults', () => {
         let matchingState: IState;
+        let stateGetMatchingStateFn: sinon.SinonStub;
+
         beforeEach(() => {
             matchingState = {
                 mocks: {
@@ -232,12 +244,18 @@ describe('State', () => {
                 record: false
             };
 
+            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
+            stateGetMatchingStateFn.returns(matchingState);
+
             state.defaults['simple'] = {scenario: 'two', delay: 2000, echo: false};
             state.defaults['advanced'] = {scenario: 'four', delay: 4000, echo: true};
         });
 
+        afterEach(() => {
+            stateGetMatchingStateFn.restore();
+        });
+
         it('sets the state to defaults', () => {
-            stateGetMatchingStateFn.returns(matchingState);
             let simpleMockState = matchingState.mocks['simple'];
             expect(simpleMockState.scenario).toBe('one');
             expect(simpleMockState.delay).toBeTruthy(1000);
@@ -260,14 +278,12 @@ describe('State', () => {
             expect(advancedMockState.delay).toBeTruthy(4000);
             expect(advancedMockState.echo).toBe(true);
         });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
-        });
     });
 
     describe('setToPassThroughs', () => {
         let matchingState: IState;
+        let stateGetMatchingStateFn: sinon.SinonStub;
+
         beforeEach(() => {
             matchingState = {
                 mocks: {
@@ -279,12 +295,18 @@ describe('State', () => {
                 record: false
             };
 
+            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
+            stateGetMatchingStateFn.returns(matchingState);
+
             state.defaults['simple'] = {scenario: 'two', delay: 2000, echo: false};
             state.defaults['advanced'] = {scenario: 'four', delay: 4000, echo: true};
         });
 
+        afterEach(() => {
+            stateGetMatchingStateFn.restore();
+        });
+
         it('sets the state to defaults', () => {
-            stateGetMatchingStateFn.returns(matchingState);
             let simpleMockState = matchingState.mocks['simple'];
             expect(simpleMockState.scenario).toBe('one');
             expect(simpleMockState.delay).toBeTruthy(1000);
@@ -306,10 +328,6 @@ describe('State', () => {
             expect(advancedMockState.scenario).toBe('passThrough');
             expect(advancedMockState.delay).toBeTruthy(3000);
             expect(advancedMockState.echo).toBe(false);
-        });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.reset();
         });
     });
 });

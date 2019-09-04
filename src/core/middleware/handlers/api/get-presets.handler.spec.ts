@@ -1,86 +1,66 @@
-import 'reflect-metadata';
-import {Container} from 'inversify';
-
 import * as http from 'http';
 import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-
+import {Container} from 'inversify';
 import {GetPresetsHandler} from './get-presets.handler';
-import {State} from '../../../state/state';
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import {State} from '../../../state/state';
 
 describe('GetPresetsHandler', () => {
     let container: Container;
     let handler: GetPresetsHandler;
     let state: SinonStubbedInstance<State>;
-    let nextFn: SinonStub;
-    let request: SinonStubbedInstance<http.IncomingMessage>;
-    let response: SinonStubbedInstance<http.ServerResponse>;
 
-    beforeAll(() => {
+    beforeEach(() => {
         container = new Container();
         state = createStubInstance(State);
-        nextFn = stub();
-        request = createStubInstance(http.IncomingMessage);
-        response = createStubInstance(http.ServerResponse);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
-        container.bind('State').toConstantValue(state);
         container.bind('GetPresetsHandler').to(GetPresetsHandler);
+        container.bind('State').toConstantValue(state);
 
         handler = container.get<GetPresetsHandler>('GetPresetsHandler');
     });
 
     describe('handle', () => {
+        let nextFn: SinonStub;
+        let request: SinonStubbedInstance<http.IncomingMessage>;
+        let response: SinonStubbedInstance<http.ServerResponse>;
+
         beforeEach(() => {
+            nextFn = stub();
+            request = createStubInstance(http.IncomingMessage);
+            response = createStubInstance(http.ServerResponse);
+
             (state as any)._presets = [];
             state.presets.push(...[{
                 name: 'one',
-                mocks: {
-                    'some': {
-                        scenario: 'success',
-                        delay: 2000,
-                        echo: true
-                    },
-                    'another': {
-                        scenario: 'failure'
-                    }
-                },
-                variables: {
-                    'today': 'some date'
-                }
+                mocks: {some: {scenario: 'success', delay: 2000, echo: true}, another: {scenario: 'failure'}},
+                variables: {today: 'some date'}
             }]);
         });
 
         it('gets the presets', () => {
             handler.handle(request as any, response as any, nextFn);
+
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            // @ts-ignore
             assert.calledWith(response.end, JSON.stringify({
                 presets: [{
                     name: 'one',
-                    mocks: {
-                        'some': {
-                            scenario: 'success',
-                            delay: 2000,
-                            echo: true
-                        },
-                        'another': {
-                            scenario: 'failure'
-                        }
-                    },
-                    variables: {
-                        'today': 'some date'
-                    }
+                    mocks: {some: {scenario: 'success', delay: 2000, echo: true}, another: {scenario: 'failure'}},
+                    variables: {today: 'some date'}
                 }]
             }));
-        });
-
-        afterEach(() => {
-            response.writeHead.reset();
-            response.end.reset();
         });
     });
 
     describe('isApplicable', () => {
+        let request: SinonStubbedInstance<http.IncomingMessage>;
+
+        beforeEach(() => {
+            request = createStubInstance(http.IncomingMessage);
+        });
+
         it('indicates applicable when url and method match', () => {
             request.url = `${'/base-url'}/presets`;
             request.method = HttpMethods.GET;
