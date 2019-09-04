@@ -38,7 +38,7 @@ describe('PassThroughsHandler', () => {
             assert.calledWith(state.setToPassThroughs, 'apimockId');
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             assert.called(response.end);
-        })
+        });
     });
 
     describe('isApplicable', () => {

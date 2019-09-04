@@ -83,7 +83,7 @@ describe('EchoRequestHandler', () => {
                     name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
                 } as Mock).name, 'apimockId');
                 assert.notCalled(consoleLogFn);
-            })
+            });
         });
     });
 });

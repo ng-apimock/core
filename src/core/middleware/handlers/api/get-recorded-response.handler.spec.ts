@@ -33,7 +33,7 @@ describe('GetRecordedResponseHandler', () => {
 
             request.url = 'some/url/to/some.pdf';
             fsReadFileSyncFn = stub(fs, 'readFileSync');
-            fsReadFileSyncFn.returns('file-content')
+            fsReadFileSyncFn.returns('file-content');
         });
 
         afterEach(()=> {
@@ -47,7 +47,7 @@ describe('GetRecordedResponseHandler', () => {
             assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
             // @ts-ignore
             assert.calledWith(response.end, 'file-content');
-        })
+        });
     });
 
     describe('isApplicable', () => {
