@@ -76,7 +76,7 @@ There are a couple of rules to follow.
   "name": "some mock", // the name of the mock
   "isArray": true, // optional, indicator that indicates if the response data is an array or object (for json response)
   "request": {
-    "url": "/items", // the request url
+    "url": "/items", // the regular express to match request urls
     "method": "GET", // the request method
     "body": {}, // optional, body object
     "headers": {} // optional, headers object
