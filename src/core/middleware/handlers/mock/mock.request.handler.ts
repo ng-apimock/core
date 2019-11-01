@@ -34,7 +34,8 @@ export class MockRequestHandler implements Handler {
                     chunk = fs.readFileSync(path.join(params.mock.path, _response.file));
                 } else {
                     const _variables: any = this.state.getVariables(params.id);
-                    chunk = this.interpolateResponseData(_response.data, _variables);
+                    const data = this.isJsonResponse(_response) ? JSON.stringify(_response.data) : _response.data;
+                    chunk = this.interpolateResponseData(data, _variables);
                 }
 
                 if (jsonCallbackName !== false) {
@@ -74,15 +75,24 @@ export class MockRequestHandler implements Handler {
     }
 
     /**
+     Indicates if the given response is a json response.
+     * @param response The response
+     * @return {boolean} indicator The indicator.
+     */
+    isJsonResponse(response: MockResponse): boolean {
+        return !response.headers['Content-type'] // default json
+            || response.headers['Content-type'] === 'application/json';
+    }
+
+    /**
      * Update the response data with the globally available variables.
      * @param data The data.
      * @param variables The variables.
      * @return updatedData The updated data.
      */
     interpolateResponseData(data: any, variables: { [key: string]: any }): string {
-        let _data: string;
+        let _data = data;
 
-        _data = JSON.stringify(data);
         Object.keys(variables).forEach((key) => {
             if (variables.hasOwnProperty(key)) {
                 if(typeof variables[key] === 'string') {
