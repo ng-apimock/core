@@ -187,7 +187,7 @@ describe('MockRequestHandler', () => {
                     assert.calledWith(state.getDelay, ({
                         name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
                     } as Mock).name, 'apimockId');
-                    assert.calledWith(interpolateResponseDataFn, mockResponse.data, variables);
+                    assert.calledWith(interpolateResponseDataFn, JSON.stringify(mockResponse.data), variables);
 
                     clock.tick(1000);
 
@@ -244,17 +244,17 @@ describe('MockRequestHandler', () => {
 
     describe('interpolateResponseData', () => {
         it('interpolates available variables', () =>
-            expect(mockRequestHandler.interpolateResponseData({
+            expect(mockRequestHandler.interpolateResponseData(JSON.stringify({
                 x: 'x is %%x%%',
                 y: 'y is %%y%%'
-            }, {x: 'XXX'})).toBe(`{"x":"x is XXX","y":"y is %%y%%"}`));
+            }), {x: 'XXX'})).toBe(`{"x":"x is XXX","y":"y is %%y%%"}`));
 
         it('interpolates a non string', () => {
-            expect(mockRequestHandler.interpolateResponseData({
+            expect(mockRequestHandler.interpolateResponseData(JSON.stringify({
                 x: '%%x%%',
                 xInString: 'the following %%x%% has been replaced',
                 y: '%%y%%'
-            }, {'x': 123, 'y': false})).toBe(`{"x":123,"xInString":"the following 123 has been replaced","y":false}`);
+            }), {'x': 123, 'y': false})).toBe(`{"x":123,"xInString":"the following 123 has been replaced","y":false}`);
         });
     });
 
