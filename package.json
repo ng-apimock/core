@@ -1,7 +1,7 @@
 {
     "name": "@ng-apimock/core",
     "description": "ng-apimock core module",
-    "version": "1.0.23",
+    "version": "1.0.24",
     "homepage": "https://github.com/ng-apimock/core#readme",
     "author": {
         "name": "Mischa Dasberg",
