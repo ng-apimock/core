@@ -31,7 +31,7 @@ export class Converter {
                 delete mock.method;
             }
 
-            fs.outputJsonSync(destination, mock);
+            fs.outputJsonSync(destination, mock, {spaces: 2});
             console.log(`'${source}' -> '${destination}`);
         });
     }
