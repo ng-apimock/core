@@ -65,6 +65,12 @@ describe('State', () => {
                 name: 'advanced', request: {
                     url: 'some/api', method: 'POST',
                     headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
+                    body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+                }, responses: {three: {}, four: {}}
+            }, {
+                name: 'advanced-nested', request: {
+                    url: 'some/api', method: 'POST',
+                    headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
                     body: {nested: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}}
                 }, responses: {three: {}, four: {}}
             }]);
@@ -72,10 +78,10 @@ describe('State', () => {
         });
         describe('url does not match', () => {
             it('returns undefined', () =>
-                expect(state.getMatchingMock('no/match', 'P2OST', {
+                expect(state.getMatchingMock('no/match', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, {number: 123, identifier: 'abcd'})).toBeUndefined());
+                }, {nested: {number: 123, identifier: 'abcd'}})).toBeUndefined());
         });
 
         describe('method does not match', () => {
@@ -83,7 +89,7 @@ describe('State', () => {
                 expect(state.getMatchingMock('some/api', 'PUT', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, {number: 123, identifier: 'abcd'})).toBeUndefined());
+                }, {nested: {number: 123, identifier: 'abcd'}})).toBeUndefined());
         });
 
         describe('headers does not match', () => {
@@ -91,15 +97,21 @@ describe('State', () => {
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'public'
-                }, {number: 123, identifier: 'abcd'})).toBeUndefined());
+                }, {nested: {number: 123, identifier: 'abcd'}})).toBeUndefined());
         });
 
         describe('body does not match', () => {
-            it('returns undefined', () =>
+            it('returns undefined', () => {
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, {number: 123, identifier: 'ab'})).toBeUndefined());
+                }, {number: 123, identifier: 'ab'})).toBeUndefined();
+
+                expect(state.getMatchingMock('some/api', 'POST', {
+                    'content-type': 'application/json',
+                    'cache-control': 'no-cache'
+                }, {nested: {number: 123, identifier: 'ab'}})).toBeUndefined();
+            });
         });
 
         describe('request matches', () => {
@@ -112,8 +124,19 @@ describe('State', () => {
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, {nested: {number: 123, identifier: 'abcd'}})).toEqual({
+                }, {number: 123, identifier: 'abcd'})).toEqual({
                     name: 'advanced', request: {
+                        url: 'some/api', method: 'POST',
+                        headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
+                        body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+                    }, responses: {three: {}, four: {}}
+                });
+                // match advanced-nested mock - url, method, headers, body
+                expect(state.getMatchingMock('some/api', 'POST', {
+                    'content-type': 'application/json',
+                    'cache-control': 'no-cache'
+                }, {nested: {number: 123, identifier: 'abcd'}})).toEqual({
+                    name: 'advanced-nested', request: {
                         url: 'some/api', method: 'POST',
                         headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
                         body: {nested: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}}

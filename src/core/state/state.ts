@@ -99,14 +99,28 @@ export class State {
 
             let matchBody = true;
             if (_mock.request.body !== undefined) {
-                matchBody = Object.keys(_mock.request.body).filter((key) => {
-                    const defined = body[key] !== undefined;
-                    const matched = new RegExp(_mock.request.body[key]).exec(body[key]) !== null;
-                    return !defined || !matched;
-                }).length === 0;
+                matchBody = this.matchesBody(_mock.request.body, body);
             }
 
             return matchUrl && matchMethod && matchHeaders && matchBody;
+        });
+    }
+
+    /**
+     * Recursively matches the body against the body matcher.
+     * @param {object} bodyMatcher The body matcher.
+     * @param {object} body The body.
+     * @return {boolean} indicator The indicator.
+     */
+    matchesBody(bodyMatcher: any, body: any): boolean {
+        return Object.keys(bodyMatcher).every((key) => {
+            if (typeof bodyMatcher[key] === 'object') {
+                return body[key] !== undefined ? this.matchesBody(bodyMatcher[key], body[key]) : false;
+            } else {
+                const defined = body[key] !== undefined;
+                const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
+                return defined && matched;
+            }
         });
     }
 
