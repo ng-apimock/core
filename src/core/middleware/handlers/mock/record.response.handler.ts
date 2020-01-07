@@ -97,7 +97,7 @@ export class RecordResponseHandler implements Handler {
 
         if (this.APPLICABLE_MIMETYPES.indexOf(contentType) === -1) {
             const destination = `${uuid.v4()}.${contentType.substring(contentType.indexOf('/') + 1)}`;
-            fs.writeFileSync(path.join(os.tmpdir(), destination), new Buffer((recording.response.data as any).toString(this.RESPONSE_ENCODING), this.RESPONSE_ENCODING as any));
+            fs.writeFileSync(path.join(os.tmpdir(), destination), Buffer.from((recording.response.data as any).toString(this.RESPONSE_ENCODING), this.RESPONSE_ENCODING as any));
             recording.response.data = JSON.stringify({apimockFileLocation: `${this.baseUrl}/recordings/${destination}`});
         } else {
             recording.response.data = recording.response.data.toString();
