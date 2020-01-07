@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as fs from 'fs-extra';
 import * as http from 'http';
 import * as os from 'os';

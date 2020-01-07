@@ -216,7 +216,7 @@ describe('MockRequestHandler', () => {
             });
         });
 
-        describe('no selected response', () =>
+        describe('no selected response', () => {
             it('calls next()', () => {
                 state.getResponse.returns(undefined);
 
@@ -239,7 +239,8 @@ describe('MockRequestHandler', () => {
                 } as Mock).name, 'apimockId');
                 assert.notCalled(state.getVariables);
                 assert.called(nextFn);
-            }));
+            });
+        });
     });
 
     describe('interpolateResponseData', () => {
@@ -259,12 +260,14 @@ describe('MockRequestHandler', () => {
     });
 
     describe('getJsonCallbackName', () => {
-        describe('no query param callback', () =>
+        describe('no query param callback', () => {
             it('returns false', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url'} as http.IncomingMessage)).toBe(false)));
+                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url'} as http.IncomingMessage)).toBe(false))
+        });
 
-        describe('query param callback', () =>
+        describe('query param callback', () => {
             it('returns the callback name', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url/?callback=callme'} as http.IncomingMessage)).toBe('callme')));
+                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url/?callback=callme'} as http.IncomingMessage)).toBe('callme'))
+        });
     });
 });

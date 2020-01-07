@@ -346,14 +346,14 @@ describe('Middleware', () => {
         });
 
         it('finds the applicable handler', () =>
-            expect(middleware.getMatchingApplicableHandler(request, { x: 'x' })).toEqual(getVariablesHandler));
+            expect(middleware.getMatchingApplicableHandler(request, {x: 'x'})).toEqual(getVariablesHandler));
     });
 
     describe('getApimockId', () => {
         let getApimockIdFromHeaderFn: SinonStub;
         let getApimockIdFromCookieFn: SinonStub;
 
-        beforeEach(()=> {
+        beforeEach(() => {
             getApimockIdFromCookieFn = stub(Middleware.prototype, 'getApimockIdFromCookie');
             getApimockIdFromHeaderFn = stub(Middleware.prototype, 'getApimockIdFromHeader');
         });
@@ -364,23 +364,23 @@ describe('Middleware', () => {
         });
 
         describe('configuration use cookie', () => {
-            beforeEach(()=> {
+            beforeEach(() => {
                 middleware['configuration'].middleware.useHeader = false;
                 middleware.getApimockId({some: 'header'});
             });
 
             it('returns the apimockId from the cookie', () =>
-                assert.calledWith(getApimockIdFromCookieFn,{some: 'header'}));
+                assert.calledWith(getApimockIdFromCookieFn, {some: 'header'}));
         });
 
         describe('configuration use header', () => {
-            beforeEach(()=> {
+            beforeEach(() => {
                 middleware['configuration'].middleware.useHeader = true;
                 middleware.getApimockId({some: 'header'});
             });
 
             it('returns the apimockId from the header', () =>
-                assert.calledWith(getApimockIdFromHeaderFn,{some: 'header'}));
+                assert.calledWith(getApimockIdFromHeaderFn, {some: 'header'}));
         });
     });
 
@@ -388,25 +388,33 @@ describe('Middleware', () => {
         beforeEach(() => {
             middleware['configuration'].middleware.identifier = 'my-identifier';
         });
-        describe('apimockId header is present', () =>
+        describe('apimockId header is present', () => {
             it('returns the identifier', () =>
-                expect(middleware.getApimockIdFromHeader({ a: 'a', 'my-identifier': '123', c: 'c' })).toBe('123')));
+                expect(middleware.getApimockIdFromHeader({a: 'a', 'my-identifier': '123', c: 'c'})).toBe('123'))
+        });
 
-        describe('apimockId header is not present', () =>
+        describe('apimockId header is not present', () => {
             it('returns undefined', () =>
-                expect(middleware.getApimockIdFromHeader({ a: 'a', 'no-matching-identifier': '123', c: 'c' })).toBe(undefined)));
+                expect(middleware.getApimockIdFromHeader({
+                    a: 'a',
+                    'no-matching-identifier': '123',
+                    c: 'c'
+                })).toBe(undefined))
+        });
     });
 
     describe('getApimockIdFromCookie', () => {
         beforeEach(() => {
             middleware['configuration'].middleware.identifier = 'my-identifier';
         });
-        describe('apimockId cookie is present', () =>
+        describe('apimockId cookie is present', () => {
             it('returns the apimockId', () =>
-                expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;my-identifier=123;c=c' })).toBe('123')));
+                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;my-identifier=123;c=c'})).toBe('123'))
+        });
 
-        describe('apimockId cookie is not present', () =>
+        describe('apimockId cookie is not present', () => {
             it('returns undefined', () =>
-                expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;b=b;c=c' })).toBe(undefined)));
+                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;b=b;c=c'})).toBe(undefined))
+        });
     });
 });
