@@ -63,7 +63,7 @@ describe('State', () => {
                 name: 'advanced', request: {
                     url: 'some/api', method: 'POST',
                     headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
-                    body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+                    body: {nested: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}}
                 }, responses: {three: {}, four: {}}
             }]);
 
@@ -96,7 +96,7 @@ describe('State', () => {
                     'cache-control': 'no-cache'
                 }, {number: 123, identifier: 'ab'})).toBeUndefined()));
 
-        describe('request matches', () =>
+        fdescribe('request matches', () =>
             it('returns the matching mock', () => {
                 // match simple mock - only url and method
                 expect(state.getMatchingMock('some/api', 'GET', {}, {})).toEqual({
@@ -106,11 +106,11 @@ describe('State', () => {
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
-                }, {number: 123, identifier: 'abcd'})).toEqual({
+                }, {nested: {number: 123, identifier: 'abcd'}})).toEqual({
                     name: 'advanced', request: {
                         url: 'some/api', method: 'POST',
                         headers: {'Content-Type': '.*/json', 'Cache-Control': 'no-cache'},
-                        body: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}
+                        body: {nested: {number: '\\d+', identifier: '^[a-zA-Z]{4}$'}}
                     }, responses: {three: {}, four: {}}
                 });
             }));
