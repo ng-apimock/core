@@ -12,7 +12,7 @@
         "precompile": "rimraf dist",
         "compile": "tsc",
         "lint": "tslint -p tsconfig.json",
-        "test": "jest --config=jest.config.js"
+        "test": "jest --config=jest.config.js -w 1"
     },
     "repository": {
         "type": "git",
