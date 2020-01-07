@@ -390,7 +390,7 @@ describe('Middleware', () => {
         });
         describe('apimockId header is present', () => {
             it('returns the identifier', () =>
-                expect(middleware.getApimockIdFromHeader({a: 'a', 'my-identifier': '123', c: 'c'})).toBe('123'))
+                expect(middleware.getApimockIdFromHeader({a: 'a', 'my-identifier': '123', c: 'c'})).toBe('123'));
         });
 
         describe('apimockId header is not present', () => {
@@ -399,7 +399,7 @@ describe('Middleware', () => {
                     a: 'a',
                     'no-matching-identifier': '123',
                     c: 'c'
-                })).toBe(undefined))
+                })).toBe(undefined));
         });
     });
 
@@ -409,12 +409,12 @@ describe('Middleware', () => {
         });
         describe('apimockId cookie is present', () => {
             it('returns the apimockId', () =>
-                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;my-identifier=123;c=c'})).toBe('123'))
+                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;my-identifier=123;c=c'})).toBe('123'));
         });
 
         describe('apimockId cookie is not present', () => {
             it('returns undefined', () =>
-                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;b=b;c=c'})).toBe(undefined))
+                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;b=b;c=c'})).toBe(undefined));
         });
     });
 });

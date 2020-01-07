@@ -262,12 +262,12 @@ describe('MockRequestHandler', () => {
     describe('getJsonCallbackName', () => {
         describe('no query param callback', () => {
             it('returns false', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url'} as http.IncomingMessage)).toBe(false))
+                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url'} as http.IncomingMessage)).toBe(false));
         });
 
         describe('query param callback', () => {
             it('returns the callback name', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url/?callback=callme'} as http.IncomingMessage)).toBe('callme'))
+                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url/?callback=callme'} as http.IncomingMessage)).toBe('callme'));
         });
     });
 });
