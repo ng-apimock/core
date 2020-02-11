@@ -51,6 +51,13 @@ const app = connect();
 app.use(ngApimock.middleware);
 ```
 
+#### Middleware body limit
+The default [bodyParser library](https://www.npmjs.com/package/body-parser#limit-3) that is used has a body limit is 100kb.
+In order to increase the limit you can set the limit like this:
+```javascript    
+app.use(bodyParser.json({limit: '10mb'});
+```
+
 #### Middleware configuration
 You can configure apimock with a configuration object.
 
