@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {Mock} from '../../../mock/mock';
-import {State} from '../../../state/state';
-import {HttpMethods} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { Mock } from '../../../mock/mock';
+import { State } from '../../../state/state';
+import { HttpMethods } from '../../http';
 
-import {EchoRequestHandler} from './echo.request.handler';
+import { EchoRequestHandler } from './echo.request.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('EchoRequestHandler', () => {
     let container: Container;
@@ -25,8 +25,8 @@ describe('EchoRequestHandler', () => {
     });
 
     describe('handle', () => {
-        let consoleLogFn: jest.Mock<Function>;
-        let nextFn: jest.Mock<Function>;
+        let consoleLogFn: jest.Mock;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -48,13 +48,15 @@ describe('EchoRequestHandler', () => {
 
             it('console.logs the request', () => {
                 echoRequestHandler.handle(request as any, response as any, nextFn, {
-                    id: 'apimockId', mock: {
-                        name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                    } as Mock, body: {x: 'x'}
+                    id: 'apimockId',
+                    mock: {
+                        name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
+                    } as Mock,
+                    body: { x: 'x' }
                 });
 
                 expect(state.getEcho).toHaveBeenCalledWith('some', 'apimockId');
-                expect(consoleLogFn).toHaveBeenCalledWith(`${HttpMethods.GET} request made on \'/some/url\' with body: \'${JSON.stringify({x: 'x'})}`);
+                expect(consoleLogFn).toHaveBeenCalledWith(`${HttpMethods.GET} request made on '/some/url' with body: '${JSON.stringify({ x: 'x' })}'`);
             });
         });
 
@@ -65,9 +67,11 @@ describe('EchoRequestHandler', () => {
 
             it('does not console.logs the request', () => {
                 echoRequestHandler.handle(request as any, response as any, nextFn, {
-                    id: 'apimockId', mock: {
-                        name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                    } as Mock, body: {x: 'x'}
+                    id: 'apimockId',
+                    mock: {
+                        name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
+                    } as Mock,
+                    body: { x: 'x' }
                 });
 
                 expect(state.getEcho).toHaveBeenCalledWith('some', 'apimockId');

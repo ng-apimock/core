@@ -1,5 +1,5 @@
-import {MockState} from './mock.state';
-import {Recording} from './recording';
+import { MockState } from './mock.state';
+import { Recording } from './recording';
 
 /** State. */
 export interface IState {

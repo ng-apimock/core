@@ -1,9 +1,9 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpStatusCode} from '../../http';
-import {ApplicableHandler} from '../handler';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Pass throughs handler. */
 @injectable()
@@ -17,14 +17,14 @@ export class PassThroughsHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
         this.state.setToPassThroughs(params.id);
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage, body: any): boolean {
         const urlMatches = request.url.startsWith(`${this.baseUrl}/actions`);
         const actionMatches = body !== undefined && body.action === 'passThroughs';

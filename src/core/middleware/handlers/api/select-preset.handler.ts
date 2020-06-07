@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import {Mock} from '../../../mock/mock';
-import {Preset} from '../../../preset/preset';
-import {IState} from '../../../state/Istate';
-import {MockState} from '../../../state/mock.state';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {ApplicableHandler} from '../handler';
+import { Mock } from '../../../mock/mock';
+import { Preset } from '../../../preset/preset';
+import { IState } from '../../../state/Istate';
+import { MockState } from '../../../state/mock.state';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Select preset handler. */
 @injectable()
@@ -24,12 +24,12 @@ export class SelectPresetHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { name: string }
     }): void {
         const state = this.state.getMatchingState(params.id);
-        const body = params.body;
+        const { body } = params;
         try {
             const presetName: string = body.name;
             const matchingPreset: Preset = this.state.presets.find((preset) => preset.name === presetName);
@@ -53,7 +53,7 @@ export class SelectPresetHandler implements ApplicableHandler {
         }
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.PUT;
         const urlMatches = request.url.startsWith(`${this.baseUrl}/presets`);

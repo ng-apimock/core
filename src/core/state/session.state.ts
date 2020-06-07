@@ -1,6 +1,6 @@
-import {IState} from './Istate';
-import {MockState} from './mock.state';
-import {Recording} from './recording';
+import { IState } from './Istate';
+import { MockState } from './mock.state';
+import { Recording } from './recording';
 
 /** Session state. */
 export class SessionState implements IState {
@@ -13,6 +13,8 @@ export class SessionState implements IState {
     /**
      * Constructor.
      * @param {string} identifier The session identifier.
+     * @param {Object} mocks The mocks.
+     * @param {Object} variables The variables.
      */
     constructor(identifier: string, mocks: { [identifier: string]: MockState }, variables: { [key: string]: string; }) {
         this._identifier = identifier;

@@ -1,15 +1,15 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {Mock} from '../../../mock/mock';
-import {MockResponse} from '../../../mock/mock.response';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { Mock } from '../../../mock/mock';
+import { MockResponse } from '../../../mock/mock.response';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {MockRequestHandler} from './mock.request.handler';
+import { MockRequestHandler } from './mock.request.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 jest.mock('fs-extra');
 jest.useFakeTimers();
@@ -30,10 +30,10 @@ describe('MockRequestHandler', () => {
     });
 
     describe('handle', () => {
-        let fsReadFileSyncFn: jest.Mock<string>;
+        let fsReadFileSyncFn: jest.Mock;
         let getJsonCallbackNameFn: jest.SpyInstance<string | boolean>;
         let interpolateResponseDataFn: jest.SpyInstance<string>;
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -68,10 +68,11 @@ describe('MockRequestHandler', () => {
 
                 it('reads the binary content and returns it as response', () => {
                     mockRequestHandler.handle(request as any, response as any, nextFn, {
-                        id: 'apimockId', mock: {
+                        id: 'apimockId',
+                        mock: {
                             path: 'path/to',
                             name: 'some',
-                            request: {method: HttpMethods.GET, url: '/some/url'}
+                            request: { method: HttpMethods.GET, url: '/some/url' }
                         } as Mock
                     });
 
@@ -92,10 +93,11 @@ describe('MockRequestHandler', () => {
                         throw new Error('Error');
                     });
                     mockRequestHandler.handle(request as any, response as any, nextFn, {
-                        id: 'apimockId', mock: {
+                        id: 'apimockId',
+                        mock: {
                             path: 'path/to',
                             name: 'some',
-                            request: {method: HttpMethods.GET, url: '/some/url'}
+                            request: { method: HttpMethods.GET, url: '/some/url' }
                         } as Mock
                     });
 
@@ -106,7 +108,7 @@ describe('MockRequestHandler', () => {
                     jest.runAllTimers();
 
                     expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                    expect(response.end).toHaveBeenCalledWith(JSON.stringify({message: 'Error'}));
+                    expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Error' }));
                     expect(response.writeHead).toHaveBeenCalledTimes(1);
                     expect(response.end).toHaveBeenCalledTimes(1);
                 });
@@ -114,10 +116,11 @@ describe('MockRequestHandler', () => {
                 it('wraps the body in a json callback', () => {
                     getJsonCallbackNameFn.mockReturnValue('callback');
                     mockRequestHandler.handle(request as any, response as any, nextFn, {
-                        id: 'apimockId', mock: {
+                        id: 'apimockId',
+                        mock: {
                             name: 'some',
                             path: 'path/to',
-                            request: {method: HttpMethods.GET, url: '/some/url'}
+                            request: { method: HttpMethods.GET, url: '/some/url' }
                         } as Mock
                     });
 
@@ -137,9 +140,10 @@ describe('MockRequestHandler', () => {
                 beforeEach(() => {
                     mockResponse = {
                         status: HttpStatusCode.OK,
-                        headers: HttpHeaders.CONTENT_TYPE_APPLICATION_JSON, data: {'a': 'a%%x%%'}
+                        headers: HttpHeaders.CONTENT_TYPE_APPLICATION_JSON,
+                        data: { a: 'a%%x%%' }
                     };
-                    variables = {x: 'x'};
+                    variables = { x: 'x' };
                     state.getResponse.mockReturnValue(mockResponse);
                     state.getVariables.mockReturnValue(variables);
                     state.getDelay.mockReturnValue(1000);
@@ -149,8 +153,9 @@ describe('MockRequestHandler', () => {
 
                 it('interpolates the data and returns it as response', () => {
                     mockRequestHandler.handle(request as any, response as any, nextFn, {
-                        id: 'apimockId', mock: {
-                            name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
+                        id: 'apimockId',
+                        mock: {
+                            name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
                         } as Mock
                     });
 
@@ -172,8 +177,9 @@ describe('MockRequestHandler', () => {
                 it('wraps the body in a json callback', () => {
                     getJsonCallbackNameFn.mockReturnValue('callback');
                     mockRequestHandler.handle(request as any, response as any, nextFn, {
-                        id: 'apimockId', mock: {
-                            name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
+                        id: 'apimockId',
+                        mock: {
+                            name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
                         } as Mock
                     });
 
@@ -192,7 +198,8 @@ describe('MockRequestHandler', () => {
                 state.getResponse.mockReturnValue(undefined);
 
                 mockRequestHandler.handle(request as any, response as any, nextFn, {
-                    id: 'apimockId', mock: {
+                    id: 'apimockId',
+                    mock: {
                         name: 'some',
                         request: {
                             method: HttpMethods.GET,
@@ -209,11 +216,10 @@ describe('MockRequestHandler', () => {
     });
 
     describe('interpolateResponseData', () => {
-        it('interpolates available variables', () =>
-            expect(mockRequestHandler.interpolateResponseData(JSON.stringify({
-                x: 'x is %%x%%',
-                y: 'y is %%y%%'
-            }), {x: 'XXX'})).toBe('{"x":"x is XXX","y":"y is %%y%%"}'));
+        it('interpolates available variables', () => expect(mockRequestHandler.interpolateResponseData(JSON.stringify({
+            x: 'x is %%x%%',
+            y: 'y is %%y%%'
+        }), { x: 'XXX' })).toBe('{"x":"x is XXX","y":"y is %%y%%"}'));
 
         it('interpolates a non string', () => {
             expect(mockRequestHandler.interpolateResponseData(JSON.stringify({
@@ -221,21 +227,19 @@ describe('MockRequestHandler', () => {
                 xInString: 'the following %%x%% has been replaced',
                 y: '%%y%%'
             }), {
-                'x': 123,
-                'y': false
+                x: 123,
+                y: false
             })).toBe('{"x":123,"xInString":"the following 123 has been replaced","y":false}');
         });
     });
 
     describe('getJsonCallbackName', () => {
         describe('no query param callback', () => {
-            it('returns false', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url'} as http.IncomingMessage)).toBe(false));
+            it('returns false', () => expect(mockRequestHandler.getJsonCallbackName({ url: 'some/url' } as http.IncomingMessage)).toBe(false));
         });
 
         describe('query param callback', () => {
-            it('returns the callback name', () =>
-                expect(mockRequestHandler.getJsonCallbackName({url: 'some/url/?callback=callme'} as http.IncomingMessage)).toBe('callme'));
+            it('returns the callback name', () => expect(mockRequestHandler.getJsonCallbackName({ url: 'some/url/?callback=callme' } as http.IncomingMessage)).toBe('callme'));
         });
     });
 });

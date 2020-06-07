@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {IState} from '../../../state/Istate';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { IState } from '../../../state/Istate';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {GetRecordingsHandler} from './get-recordings.handler';
+import { GetRecordingsHandler } from './get-recordings.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('GetRecordingsHandler', () => {
     let container: Container;
@@ -27,7 +27,7 @@ describe('GetRecordingsHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -42,33 +42,33 @@ describe('GetRecordingsHandler', () => {
             (state as any).mocks = [
                 {
                     name: 'one',
-                    request: {url: '/one', method: 'GET'},
-                    responses: {'some': {}, 'thing': {}}
+                    request: { url: '/one', method: 'GET' },
+                    responses: { some: {}, thing: {} }
                 },
                 {
                     name: 'two',
-                    request: {url: '/two', method: 'POST'},
-                    responses: {'some': {}, 'thing': {}}
+                    request: { url: '/two', method: 'POST' },
+                    responses: { some: {}, thing: {} }
                 }
             ];
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
-                    one: {scenario: 'some', delay: 0, echo: true},
-                    two: {scenario: 'thing', delay: 1000, echo: false}
+                    one: { scenario: 'some', delay: 0, echo: true },
+                    two: { scenario: 'thing', delay: 1000, echo: false }
                 })),
                 variables: {},
-                recordings: {'some': []},
+                recordings: { some: [] },
                 record: true
             };
             state.getMatchingState.mockReturnValue(matchingState);
         });
 
         it('gets the recordings', () => {
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(JSON.stringify({
-                recordings: {'some': []},
+                recordings: { some: [] },
                 record: true
             }));
         });

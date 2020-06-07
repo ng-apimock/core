@@ -1,14 +1,14 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 import * as path from 'path';
 import * as url from 'url';
 
-import {Mock} from '../../../mock/mock';
-import {MockResponse} from '../../../mock/mock.response';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpStatusCode} from '../../http';
-import {Handler} from '../handler';
+import { Mock } from '../../../mock/mock';
+import { MockResponse } from '../../../mock/mock.response';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpStatusCode } from '../../http';
+import { Handler } from '../handler';
 
 /**  Handler for a mock request. */
 @injectable()
@@ -20,15 +20,15 @@ export class MockRequestHandler implements Handler {
     constructor(@inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string, mock: Mock }): void {
         const _response: MockResponse = this.state.getResponse(params.mock.name, params.id);
         if (_response !== undefined) {
-            const status: number = _response.status;
+            const { status } = _response;
             const delay: number = this.state.getDelay(params.mock.name, params.id);
             const jsonCallbackName = this.getJsonCallbackName(request);
 
-            let headers = _response.headers;
+            const { headers } = _response;
             let chunk: Buffer | string;
             try {
                 if (this.isBinaryResponse(_response)) {
@@ -40,7 +40,7 @@ export class MockRequestHandler implements Handler {
                 }
 
                 if (jsonCallbackName !== false) {
-                    chunk = jsonCallbackName + '(' + chunk + ')';
+                    chunk = `${jsonCallbackName}(${chunk})`;
                 }
 
                 setTimeout(() => {

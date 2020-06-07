@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {IState} from '../../../state/Istate';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { IState } from '../../../state/Istate';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {SetVariableHandler} from './set-variable.handler';
+import { SetVariableHandler } from './set-variable.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('SetVariableHandler', () => {
     let container: Container;
@@ -27,7 +27,7 @@ describe('SetVariableHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -52,27 +52,27 @@ describe('SetVariableHandler', () => {
         });
 
         it('sets the variable', () => {
-            const body = {'four': 'fourth'} as any;
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
+            const body = { four: 'fourth' } as any;
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
-            expect(matchingState.variables['four']).toBe('fourth');
+            expect(matchingState.variables.four).toBe('fourth');
         });
 
         it('sets the variables', () => {
-            const body = {'five': 'fifth', 'six': 'sixth'} as any;
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
+            const body = { five: 'fifth', six: 'sixth' } as any;
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
-            expect(matchingState.variables['five']).toBe('fifth');
-            expect(matchingState.variables['six']).toBe('sixth');
+            expect(matchingState.variables.five).toBe('fifth');
+            expect(matchingState.variables.six).toBe('sixth');
         });
 
         it('throw error if no key value pair is present', () => {
             const body = {} as any;
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId', body: body});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith('{"message":"A variable should have a key and value"}');

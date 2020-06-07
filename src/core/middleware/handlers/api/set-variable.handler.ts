@@ -1,9 +1,9 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {ApplicableHandler} from '../handler';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Handler for a variables. */
 @injectable()
@@ -17,12 +17,12 @@ export class SetVariableHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { [key: string]: any }
     }): void {
         const state = this.state.getMatchingState(params.id);
-        const body = params.body;
+        const { body } = params;
         try {
             if (Object.keys(body).length > 0) {
                 Object.keys(body).forEach((key) => {
@@ -39,7 +39,7 @@ export class SetVariableHandler implements ApplicableHandler {
         }
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.PUT;
         const urlMatches = request.url.startsWith(`${this.baseUrl}/variables`);

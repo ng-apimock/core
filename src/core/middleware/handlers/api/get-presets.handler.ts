@@ -1,9 +1,9 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {ApplicableHandler} from '../handler';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Get presets handler. */
 @injectable()
@@ -17,7 +17,7 @@ export class GetPresetsHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
         const result: any = {
             presets: this.state.presets
@@ -26,7 +26,7 @@ export class GetPresetsHandler implements ApplicableHandler {
         response.end(JSON.stringify(result));
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const urlMatches = request.url.startsWith(`${this.baseUrl}/presets`);
         const methodMatches = request.method === HttpMethods.GET;

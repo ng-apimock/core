@@ -10,9 +10,9 @@ export class Converter {
      * @param {string} destinationDirectory The destination directory.
      * @param {string} pattern The pattern.
      */
-    convert(sourceDirectory: string, destinationDirectory: string, pattern: string = '**/*.mock.json'): void {
+    convert(sourceDirectory: string, destinationDirectory: string, pattern = '**/*.mock.json'): void {
         console.log('>> Converting mocks');
-        glob.sync(pattern, {cwd: sourceDirectory}).forEach((file) => {
+        glob.sync(pattern, { cwd: sourceDirectory }).forEach((file) => {
             const source = path.join(sourceDirectory, file);
             const destination = path.join(process.cwd(), destinationDirectory, file);
             const mock = fs.readJsonSync(source);
@@ -31,7 +31,7 @@ export class Converter {
                 delete mock.method;
             }
 
-            fs.outputJsonSync(destination, mock, {spaces: 2});
+            fs.outputJsonSync(destination, mock, { spaces: 2 });
             console.log(`'${source}' -> '${destination}`);
         });
     }

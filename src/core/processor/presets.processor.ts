@@ -1,17 +1,16 @@
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 import * as path from 'path';
 
-import {Preset} from '../preset/preset';
-import {State} from '../state/state';
+import { Preset } from '../preset/preset';
+import { State } from '../state/state';
 
-import {ProcessingOptions} from './processing.options';
+import { ProcessingOptions } from './processing.options';
 
 /** Presets processor. */
 @injectable()
 export class PresetsProcessor {
-
     /**
      * Constructor.
      * @param {State} state The state.

@@ -1,9 +1,9 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {ApplicableHandler} from '../handler';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Get mocks handler. */
 @injectable()
@@ -17,7 +17,7 @@ export class GetMocksHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
         const state = this.state.getMatchingState(params.id);
         const result: any = {
@@ -31,7 +31,7 @@ export class GetMocksHandler implements ApplicableHandler {
         response.end(JSON.stringify(result));
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const urlMatches = request.url.startsWith(`${this.baseUrl}/mocks`);
         const methodMatches = request.method === HttpMethods.GET;

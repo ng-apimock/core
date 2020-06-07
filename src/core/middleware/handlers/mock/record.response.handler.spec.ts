@@ -1,19 +1,19 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
 
-import {Mock} from '../../../mock/mock';
-import {IState} from '../../../state/Istate';
-import {Recording} from '../../../state/recording';
-import {State} from '../../../state/state';
-import {HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { Mock } from '../../../mock/mock';
+import { IState } from '../../../state/Istate';
+import { Recording } from '../../../state/recording';
+import { State } from '../../../state/state';
+import { HttpMethods, HttpStatusCode } from '../../http';
 
-import {RecordResponseHandler} from './record.response.handler';
+import { RecordResponseHandler } from './record.response.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 jest.mock('fs-extra');
 jest.mock('uuid');
@@ -35,7 +35,7 @@ describe('RecordResponseHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -55,7 +55,7 @@ describe('RecordResponseHandler', () => {
 
             request.url = '/some/api';
             request.method = HttpMethods.GET;
-            request.headers = {host: 'localhost:8888'};
+            request.headers = { host: 'localhost:8888' };
             responseBufferFn = jest.fn();
             responseHeadersRawFn = jest.fn();
             responseHeadersGetFn = jest.fn();
@@ -64,15 +64,14 @@ describe('RecordResponseHandler', () => {
             fetchResponseFn = jest.spyOn(recordResponseHandler, 'fetchResponse');
 
             responseBufferFn.mockReturnValue('the-data');
-            responseHeadersRawFn.mockReturnValue({'Content-Type': 'application/pdf'});
+            responseHeadersRawFn.mockReturnValue({ 'Content-Type': 'application/pdf' });
         });
 
         describe('by default', () => {
             beforeEach(() => {
                 fetchResponseFn.mockResolvedValue({
-                    buffer: responseBufferFn, headers: {raw: responseHeadersRawFn}, status: 200
+                    buffer: responseBufferFn, headers: { raw: responseHeadersRawFn }, status: 200
                 });
-
             });
 
             describe('method GET', () => {
@@ -81,13 +80,12 @@ describe('RecordResponseHandler', () => {
 
                     recordResponseHandler.handle(request, response as any, nextFn, {
                         id: 'apimockId',
-                        mock: {name: 'some'} as Mock,
-                        body: JSON.stringify({x: 'x'})
+                        mock: { name: 'some' } as Mock,
+                        body: JSON.stringify({ x: 'x' })
                     });
                 });
 
-                it('sets the record header to true', () =>
-                    expect(request.headers.record).toBe('true'));
+                it('sets the record header to true', () => expect(request.headers.record).toBe('true'));
 
                 it('calls the api without body', async () => {
                     expect(fetchResponseFn).toHaveBeenCalled();
@@ -106,13 +104,12 @@ describe('RecordResponseHandler', () => {
 
                     recordResponseHandler.handle(request, response as any, nextFn, {
                         id: 'apimockId',
-                        mock: {name: 'some'} as Mock,
-                        body: JSON.stringify({x: 'x'})
+                        mock: { name: 'some' } as Mock,
+                        body: JSON.stringify({ x: 'x' })
                     });
                 });
 
-                it('sets the record header to true', () =>
-                    expect(request.headers.record).toBe('true'));
+                it('sets the record header to true', () => expect(request.headers.record).toBe('true'));
 
                 it('calls the api without body', async () => {
                     expect(fetchResponseFn).toHaveBeenCalled();
@@ -131,13 +128,12 @@ describe('RecordResponseHandler', () => {
 
                     recordResponseHandler.handle(request, response as any, nextFn, {
                         id: 'apimockId',
-                        mock: {name: 'some'} as Mock,
-                        body: {x: 'x'}
+                        mock: { name: 'some' } as Mock,
+                        body: { x: 'x' }
                     });
                 });
 
-                it('sets the record header to true', () =>
-                    expect(request.headers.record).toBe('true'));
+                it('sets the record header to true', () => expect(request.headers.record).toBe('true'));
 
                 it('calls the api without body', async () => {
                     expect(fetchResponseFn).toHaveBeenCalled();
@@ -156,16 +152,15 @@ describe('RecordResponseHandler', () => {
                 responseHeadersGetFn.mockReturnValue('application/pdf');
                 fetchResponseFn.mockResolvedValue({
                     buffer: responseBufferFn,
-                    headers: {raw: responseHeadersRawFn, get: responseHeadersGetFn},
+                    headers: { raw: responseHeadersRawFn, get: responseHeadersGetFn },
                     status: 200
                 });
-                recordFn.mockImplementation(() => {
-                });
+                recordFn.mockImplementation(() => {});
 
                 await recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
-                    mock: {name: 'some'} as Mock,
-                    body: JSON.stringify({x: 'x'})
+                    mock: { name: 'some' } as Mock,
+                    body: JSON.stringify({ x: 'x' })
                 });
             });
 
@@ -176,15 +171,15 @@ describe('RecordResponseHandler', () => {
                 expect(actualRequest.request.method).toBe(HttpMethods.GET);
                 expect(actualRequest.request.headers.host).toBe('localhost:8888');
                 expect(actualRequest.request.headers.record).toBe('true');
-                expect(actualRequest.request.body).toBe(JSON.stringify({x: 'x'}));
+                expect(actualRequest.request.body).toBe(JSON.stringify({ x: 'x' }));
 
                 expect(actualRequest.response.data).toBe('the-data');
                 expect(actualRequest.response.status).toBe(HttpStatusCode.OK);
-                expect(actualRequest.response.headers).toEqual({'Content-Type': 'application/pdf'});
+                expect(actualRequest.response.headers).toEqual({ 'Content-Type': 'application/pdf' });
             });
 
             it('returns the response', async () => {
-                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, {'Content-Type': 'application/pdf'});
+                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, { 'Content-Type': 'application/pdf' });
                 expect(response.end).toHaveBeenCalledWith('the-data');
             });
         });
@@ -192,14 +187,14 @@ describe('RecordResponseHandler', () => {
         describe('on unsuccessful api call', () => {
             let rejectedPromise: Promise<any>;
             beforeEach(() => {
-                fetchResponseFn.mockRejectedValue({message: 'oops'});
+                fetchResponseFn.mockRejectedValue({ message: 'oops' });
             });
 
             it('returns the error response', async () => {
                 await recordResponseHandler.handle(request, response as any, nextFn, {
                     id: 'apimockId',
-                    mock: {name: 'some'} as Mock,
-                    body: JSON.stringify({x: 'x'})
+                    mock: { name: 'some' } as Mock,
+                    body: JSON.stringify({ x: 'x' })
                 });
                 expect(response.end).toHaveBeenCalledWith('oops');
             });
@@ -226,13 +221,13 @@ describe('RecordResponseHandler', () => {
                 request: {
                     url: '/some/url',
                     method: HttpMethods.GET,
-                    headers: {host: 'localhost:8888'},
-                    body: {'some-key': 'some-value'}
+                    headers: { host: 'localhost:8888' },
+                    body: { 'some-key': 'some-value' }
                 },
                 response: {
                     data: 'the-data',
                     status: HttpStatusCode.OK,
-                    headers: {'Content-Type': '...'},
+                    headers: { 'Content-Type': '...' },
                     contentType: '...'
                 },
                 datetime: new Date().getTime()
@@ -250,14 +245,14 @@ describe('RecordResponseHandler', () => {
             });
 
             it('stores the recording', () => {
-                const actual = matchingState.recordings['identifier'][0];
+                const actual = matchingState.recordings.identifier[0];
                 expect(actual.request.url).toBe('/some/url');
                 expect(actual.request.method).toBe(HttpMethods.GET);
-                expect(actual.request.headers).toEqual({host: 'localhost:8888'});
-                expect(actual.request.body).toEqual({'some-key': 'some-value'});
+                expect(actual.request.headers).toEqual({ host: 'localhost:8888' });
+                expect(actual.request.body).toEqual({ 'some-key': 'some-value' });
                 expect(actual.response.data).toBe('the-data');
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
-                expect(actual.response.headers).toEqual({'Content-Type': '...'});
+                expect(actual.response.headers).toEqual({ 'Content-Type': '...' });
             });
         });
 
@@ -269,16 +264,16 @@ describe('RecordResponseHandler', () => {
             });
 
             it('stores the recording', () => {
-                const actual = matchingState.recordings['identifier'][0];
+                const actual = matchingState.recordings.identifier[0];
                 expect(actual.request.url).toBe('/some/url');
                 expect(actual.request.method).toBe(HttpMethods.GET);
-                expect(actual.request.headers).toEqual({host: 'localhost:8888'});
-                expect(actual.request.body).toEqual({'some-key': 'some-value'});
+                expect(actual.request.headers).toEqual({ host: 'localhost:8888' });
+                expect(actual.request.body).toEqual({ 'some-key': 'some-value' });
 
                 // updates the data
                 expect(actual.response.data).toBe('{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}');
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
-                expect(actual.response.headers).toEqual({'Content-Type': '...'});
+                expect(actual.response.headers).toEqual({ 'Content-Type': '...' });
             });
 
             it('saves the data', () => {

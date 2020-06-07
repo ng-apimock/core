@@ -1,11 +1,11 @@
 import * as chokidar from 'chokidar';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {MocksProcessor} from './mocks.processor';
-import {PresetsProcessor} from './presets.processor';
-import {Processor} from './processor';
+import { createSpyObj } from 'jest-createspyobj';
+import { MocksProcessor } from './mocks.processor';
+import { PresetsProcessor } from './presets.processor';
+import { Processor } from './processor';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 jest.mock('fs-extra');
 jest.mock('chokidar');
@@ -46,24 +46,21 @@ describe('MocksProcessor', () => {
         describe('default', () => {
             beforeEach(() => {
                 processor.process({
-                    src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
+                    src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
                 });
             });
 
-            it('merges with the default options', () =>
-                expect(getMergedOptionsFn).toHaveBeenCalledWith({
-                    src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
-                }));
+            it('merges with the default options', () => expect(getMergedOptionsFn).toHaveBeenCalledWith({
+                src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+            }));
 
-            it('processes the mocks', () =>
-                expect(mocksProcessor.process).toHaveBeenCalledWith({
-                    src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
-                }));
+            it('processes the mocks', () => expect(mocksProcessor.process).toHaveBeenCalledWith({
+                src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+            }));
 
-            it('processes the presets', () =>
-                expect(presetsProcessor.process).toHaveBeenCalledWith({
-                    src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
-                }));
+            it('processes the presets', () => expect(presetsProcessor.process).toHaveBeenCalledWith({
+                src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+            }));
 
             it('does not watch for mock changes', async () => {
                 expect(chokidarWatchFn).not.toHaveBeenCalledWith('src/mocks-pattern', {
@@ -81,7 +78,8 @@ describe('MocksProcessor', () => {
         describe('watch', () => {
             beforeEach(() => {
                 processor.process({
-                    src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'},
+                    src: 'src',
+                    patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' },
                     watch: true
                 });
             });

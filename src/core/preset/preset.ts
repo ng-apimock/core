@@ -1,4 +1,4 @@
-import {MockState} from '../state/mock.state';
+import { MockState } from '../state/mock.state';
 
 /** Preset. */
 export interface Preset {

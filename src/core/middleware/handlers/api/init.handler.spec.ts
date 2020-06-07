@@ -1,12 +1,12 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {InitHandler} from './init.handler';
+import { InitHandler } from './init.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('InitHandler', () => {
     let container: Container;
@@ -25,7 +25,7 @@ describe('InitHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -39,10 +39,10 @@ describe('InitHandler', () => {
         });
 
         it('ends the response', () => {
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            expect(response.end).toHaveBeenCalled;
+            expect(response.end).toHaveBeenCalled();
         });
     });
 

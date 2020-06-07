@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {IState} from '../../../state/Istate';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { IState } from '../../../state/Istate';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {GetVariablesHandler} from './get-variables.handler';
+import { GetVariablesHandler } from './get-variables.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('GetVariablesHandler', () => {
     let container: Container;
@@ -27,7 +27,7 @@ describe('GetVariablesHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -54,11 +54,11 @@ describe('GetVariablesHandler', () => {
         });
 
         it('gets the variables', () => {
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(JSON.stringify({
-                state: {one: 'first', two: 'second', three: 'third'}
+                state: { one: 'first', two: 'second', three: 'third' }
             }));
         });
     });

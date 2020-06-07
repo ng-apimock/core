@@ -1,31 +1,31 @@
 import 'reflect-metadata';
 
 import * as bodyParser from 'body-parser';
-import {NextHandleFunction} from 'connect';
-import {Container} from 'inversify';
+import { NextHandleFunction } from 'connect';
+import { Container } from 'inversify';
 
-import {Configuration, DefaultConfiguration} from './configuration';
-import {DefaultsHandler} from './middleware/handlers/api/defaults.handler';
-import {DeleteVariableHandler} from './middleware/handlers/api/delete-variable.handler';
-import {GetMocksHandler} from './middleware/handlers/api/get-mocks.handler';
-import {GetPresetsHandler} from './middleware/handlers/api/get-presets.handler';
-import {GetRecordedResponseHandler} from './middleware/handlers/api/get-recorded-response.handler';
-import {GetRecordingsHandler} from './middleware/handlers/api/get-recordings.handler';
-import {GetVariablesHandler} from './middleware/handlers/api/get-variables.handler';
-import {InitHandler} from './middleware/handlers/api/init.handler';
-import {PassThroughsHandler} from './middleware/handlers/api/pass-throughs.handler';
-import {RecordHandler} from './middleware/handlers/api/record.handler';
-import {SelectPresetHandler} from './middleware/handlers/api/select-preset.handler';
-import {SetVariableHandler} from './middleware/handlers/api/set-variable.handler';
-import {UpdateMocksHandler} from './middleware/handlers/api/update-mocks.handler';
-import {EchoRequestHandler} from './middleware/handlers/mock/echo.request.handler';
-import {MockRequestHandler} from './middleware/handlers/mock/mock.request.handler';
-import {RecordResponseHandler} from './middleware/handlers/mock/record.response.handler';
-import {Middleware} from './middleware/middleware';
-import {MocksProcessor} from './processor/mocks.processor';
-import {PresetsProcessor} from './processor/presets.processor';
-import {Processor} from './processor/processor';
-import {State} from './state/state';
+import { Configuration, DefaultConfiguration } from './configuration';
+import { DefaultsHandler } from './middleware/handlers/api/defaults.handler';
+import { DeleteVariableHandler } from './middleware/handlers/api/delete-variable.handler';
+import { GetMocksHandler } from './middleware/handlers/api/get-mocks.handler';
+import { GetPresetsHandler } from './middleware/handlers/api/get-presets.handler';
+import { GetRecordedResponseHandler } from './middleware/handlers/api/get-recorded-response.handler';
+import { GetRecordingsHandler } from './middleware/handlers/api/get-recordings.handler';
+import { GetVariablesHandler } from './middleware/handlers/api/get-variables.handler';
+import { InitHandler } from './middleware/handlers/api/init.handler';
+import { PassThroughsHandler } from './middleware/handlers/api/pass-throughs.handler';
+import { RecordHandler } from './middleware/handlers/api/record.handler';
+import { SelectPresetHandler } from './middleware/handlers/api/select-preset.handler';
+import { SetVariableHandler } from './middleware/handlers/api/set-variable.handler';
+import { UpdateMocksHandler } from './middleware/handlers/api/update-mocks.handler';
+import { EchoRequestHandler } from './middleware/handlers/mock/echo.request.handler';
+import { MockRequestHandler } from './middleware/handlers/mock/mock.request.handler';
+import { RecordResponseHandler } from './middleware/handlers/mock/record.response.handler';
+import { Middleware } from './middleware/middleware';
+import { MocksProcessor } from './processor/mocks.processor';
+import { PresetsProcessor } from './processor/presets.processor';
+import { Processor } from './processor/processor';
+import { State } from './state/state';
 
 // IOC configuration
 const container = new Container();

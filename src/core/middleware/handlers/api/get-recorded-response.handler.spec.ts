@@ -2,13 +2,13 @@ import 'reflect-metadata';
 
 import * as fs from 'fs-extra';
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
 
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {GetRecordedResponseHandler} from './get-recorded-response.handler';
+import { GetRecordedResponseHandler } from './get-recorded-response.handler';
 
 jest.mock('fs-extra');
 
@@ -26,8 +26,8 @@ describe('GetRecordedResponseHandler', () => {
     });
 
     describe('handle', () => {
-        let fsReadFileSyncFn: jest.Mock<string>;
-        let nextFn: jest.Mock<Function>;
+        let fsReadFileSyncFn: jest.Mock;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 

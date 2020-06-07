@@ -1,13 +1,13 @@
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 import * as path from 'path';
 
-import {HttpHeaders, HttpStatusCode} from '../middleware/http';
-import {Mock} from '../mock/mock';
-import {State} from '../state/state';
+import { HttpHeaders, HttpStatusCode } from '../middleware/http';
+import { Mock } from '../mock/mock';
+import { State } from '../state/state';
 
-import {ProcessingOptions} from './processing.options';
+import { ProcessingOptions } from './processing.options';
 
 /** Mocks processor. */
 @injectable()
@@ -60,14 +60,14 @@ export class MocksProcessor {
                     response.data = mock.isArray ? [] : {};
                 }
                 if (response.headers === undefined) {
-                    response.headers = response.file !== undefined ?
-                        HttpHeaders.CONTENT_TYPE_BINARY :
-                        HttpHeaders.CONTENT_TYPE_APPLICATION_JSON;
+                    response.headers = response.file !== undefined
+                        ? HttpHeaders.CONTENT_TYPE_BINARY
+                        : HttpHeaders.CONTENT_TYPE_APPLICATION_JSON;
                 }
                 return response;
             });
 
-            const _default = Object.keys(mock.responses).find(key => !!mock.responses[key]['default']);
+            const _default = Object.keys(mock.responses).find((key) => !!mock.responses[key].default);
             let state = {
                 scenario: this.PASS_THROUGH,
                 echo: this.DEFAULT_ECHO,

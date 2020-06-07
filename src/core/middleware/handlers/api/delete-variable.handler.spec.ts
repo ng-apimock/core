@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {IState} from '../../../state/Istate';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { IState } from '../../../state/Istate';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {DeleteVariableHandler} from './delete-variable.handler';
+import { DeleteVariableHandler } from './delete-variable.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('DeleteVariableHandler', () => {
     let container: Container;
@@ -27,7 +27,7 @@ describe('DeleteVariableHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -56,7 +56,7 @@ describe('DeleteVariableHandler', () => {
         it('deletes the variable', () => {
             expect(Object.keys(matchingState.variables).length).toBe(3);
 
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(Object.keys(matchingState.variables).length).toBe(2);
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);

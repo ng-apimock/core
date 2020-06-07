@@ -1,12 +1,12 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {GetPresetsHandler} from './get-presets.handler';
+import { GetPresetsHandler } from './get-presets.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('GetPresetsHandler', () => {
     let container: Container;
@@ -25,7 +25,7 @@ describe('GetPresetsHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -40,10 +40,10 @@ describe('GetPresetsHandler', () => {
             (state as any).presets = [{
                 name: 'one',
                 mocks: {
-                    some: {scenario: 'success', delay: 2000, echo: true},
-                    another: {scenario: 'failure'}
+                    some: { scenario: 'success', delay: 2000, echo: true },
+                    another: { scenario: 'failure' }
                 },
-                variables: {today: 'some date'}
+                variables: { today: 'some date' }
             }];
         });
 
@@ -55,10 +55,10 @@ describe('GetPresetsHandler', () => {
                 presets: [{
                     name: 'one',
                     mocks: {
-                        some: {scenario: 'success', delay: 2000, echo: true},
-                        another: {scenario: 'failure'}
+                        some: { scenario: 'success', delay: 2000, echo: true },
+                        another: { scenario: 'failure' }
                     },
-                    variables: {today: 'some date'}
+                    variables: { today: 'some date' }
                 }]
             }));
         });

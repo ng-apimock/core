@@ -1,12 +1,12 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpStatusCode } from '../../http';
 
-import {PassThroughsHandler} from './pass-throughs.handler';
+import { PassThroughsHandler } from './pass-throughs.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('PassThroughsHandler', () => {
     let container: Container;
@@ -25,7 +25,7 @@ describe('PassThroughsHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -39,7 +39,7 @@ describe('PassThroughsHandler', () => {
         });
 
         it('sets the passThroughs', () => {
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(state.setToPassThroughs).toHaveBeenCalledWith('apimockId');
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
@@ -56,15 +56,15 @@ describe('PassThroughsHandler', () => {
 
         it('indicates applicable when url and action match', () => {
             request.url = `${'/base-url'}/actions`;
-            expect(handler.isApplicable(request as any, {action: 'passThroughs'})).toBe(true);
+            expect(handler.isApplicable(request as any, { action: 'passThroughs' })).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
             request.url = `${'/base-url'}/actions`;
-            expect(handler.isApplicable(request as any, {action: 'NO-MATCHING-ACTION'})).toBe(false);
+            expect(handler.isApplicable(request as any, { action: 'NO-MATCHING-ACTION' })).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
             request.url = `${'/base-url'}/no-match`;
-            expect(handler.isApplicable(request as any, {action: 'passThroughs'})).toBe(false);
+            expect(handler.isApplicable(request as any, { action: 'passThroughs' })).toBe(false);
         });
     });
 });

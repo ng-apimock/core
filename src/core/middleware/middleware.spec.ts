@@ -1,31 +1,31 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {Configuration, DefaultConfiguration} from '../configuration';
-import {IState} from '../state/Istate';
-import {State} from '../state/state';
+import { createSpyObj } from 'jest-createspyobj';
+import { Configuration, DefaultConfiguration } from '../configuration';
+import { IState } from '../state/Istate';
+import { State } from '../state/state';
 
-import {DefaultsHandler} from './handlers/api/defaults.handler';
-import {DeleteVariableHandler} from './handlers/api/delete-variable.handler';
-import {GetMocksHandler} from './handlers/api/get-mocks.handler';
-import {GetPresetsHandler} from './handlers/api/get-presets.handler';
-import {GetRecordedResponseHandler} from './handlers/api/get-recorded-response.handler';
-import {GetRecordingsHandler} from './handlers/api/get-recordings.handler';
-import {GetVariablesHandler} from './handlers/api/get-variables.handler';
-import {InitHandler} from './handlers/api/init.handler';
-import {PassThroughsHandler} from './handlers/api/pass-throughs.handler';
-import {RecordHandler} from './handlers/api/record.handler';
-import {SelectPresetHandler} from './handlers/api/select-preset.handler';
-import {SetVariableHandler} from './handlers/api/set-variable.handler';
-import {UpdateMocksHandler} from './handlers/api/update-mocks.handler';
-import {ApplicableHandler} from './handlers/handler';
-import {EchoRequestHandler} from './handlers/mock/echo.request.handler';
-import {MockRequestHandler} from './handlers/mock/mock.request.handler';
-import {RecordResponseHandler} from './handlers/mock/record.response.handler';
-import {HttpMethods} from './http';
-import {Middleware} from './middleware';
+import { DefaultsHandler } from './handlers/api/defaults.handler';
+import { DeleteVariableHandler } from './handlers/api/delete-variable.handler';
+import { GetMocksHandler } from './handlers/api/get-mocks.handler';
+import { GetPresetsHandler } from './handlers/api/get-presets.handler';
+import { GetRecordedResponseHandler } from './handlers/api/get-recorded-response.handler';
+import { GetRecordingsHandler } from './handlers/api/get-recordings.handler';
+import { GetVariablesHandler } from './handlers/api/get-variables.handler';
+import { InitHandler } from './handlers/api/init.handler';
+import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
+import { RecordHandler } from './handlers/api/record.handler';
+import { SelectPresetHandler } from './handlers/api/select-preset.handler';
+import { SetVariableHandler } from './handlers/api/set-variable.handler';
+import { UpdateMocksHandler } from './handlers/api/update-mocks.handler';
+import { ApplicableHandler } from './handlers/handler';
+import { EchoRequestHandler } from './handlers/mock/echo.request.handler';
+import { MockRequestHandler } from './handlers/mock/mock.request.handler';
+import { RecordResponseHandler } from './handlers/mock/record.response.handler';
+import { HttpMethods } from './http';
+import { Middleware } from './middleware';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('Middleware', () => {
     let container: Container;
@@ -44,7 +44,7 @@ describe('Middleware', () => {
     let recordResponseHandler: RecordResponseHandler;
     let recordHandler: RecordHandler;
     let getRecordedResponseHandler: GetRecordedResponseHandler;
-    let jsonBodyParser: jest.Mock<Function>;
+    let jsonBodyParser: jest.Mock;
     let setVariableHandler: SetVariableHandler;
     let selectPresetHandler: SelectPresetHandler;
     let updateMocksHandler: UpdateMocksHandler;
@@ -96,12 +96,12 @@ describe('Middleware', () => {
 
     describe('middleware', () => {
         let applicableHandler: ApplicableHandler;
-        let applicableHandlerHandleFn: jest.Mock<Function>;
-        let applicableHandlerIsApplicableFn: jest.Mock<boolean>;
+        let applicableHandlerHandleFn: jest.Mock;
+        let applicableHandlerIsApplicableFn: jest.Mock;
         let getApimockIdFn: jest.SpyInstance<string>;
         let getMatchingApplicableHandlerFn: jest.SpyInstance<ApplicableHandler>;
         let matchingState: IState;
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -125,24 +125,21 @@ describe('Middleware', () => {
         describe('matching applicable handler', () => {
             beforeEach(() => {
                 getMatchingApplicableHandlerFn.mockReturnValue(applicableHandler);
-                request.headers = {'some': 'header'};
-                (request as any).body = {'x': 'x'};
+                request.headers = { some: 'header' };
+                (request as any).body = { x: 'x' };
 
                 middleware.middleware(request, response, nextFn);
 
                 jsonBodyParser.mock.calls[0][2]();
             });
 
-            it('gets the apimock id', () =>
-                expect(getApimockIdFn).toHaveBeenCalled());
+            it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
 
-            it('gets the matching applicable handler', () =>
-                expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, {x: 'x'}));
+            it('gets the matching applicable handler', () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
 
-            it('calls the handler.handle', () =>
-                expect(applicableHandlerHandleFn).toHaveBeenCalledWith(request, response, nextFn, {
-                    id: 'apimockId', body: {x: 'x'}
-                }));
+            it('calls the handler.handle', () => expect(applicableHandlerHandleFn).toHaveBeenCalledWith(request, response, nextFn, {
+                id: 'apimockId', body: { x: 'x' }
+            }));
         });
 
         describe('matching mock', () => {
@@ -150,8 +147,10 @@ describe('Middleware', () => {
                 beforeEach(() => {
                     getMatchingApplicableHandlerFn.mockReturnValue(undefined);
                     state.getMatchingMock.mockReturnValue({
-                        name: 'matching-mock', isArray: true,
-                        request: {url: '/base-url', method: HttpMethods.GET}, responses: {}
+                        name: 'matching-mock',
+                        isArray: true,
+                        request: { url: '/base-url', method: HttpMethods.GET },
+                        responses: {}
                     });
                     matchingState = {
                         mocks: {},
@@ -162,34 +161,32 @@ describe('Middleware', () => {
                     state.getMatchingState.mockReturnValue(matchingState);
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
-                    request.headers = {'some': 'header'};
-                    (request as any).body = {'x': 'x'};
+                    request.headers = { some: 'header' };
+                    (request as any).body = { x: 'x' };
 
                     middleware.middleware(request, response, nextFn);
 
                     jsonBodyParser.mock.calls[0][2]();
                 });
 
-                it('gets the apimock id', () =>
-                    expect(getApimockIdFn).toHaveBeenCalled());
+                it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
 
-                it('gets the matching applicable handler', () =>
-                    expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, {x: 'x'}));
+                it('gets the matching applicable handler', () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
 
-                it('gets the matching mock', () =>
-                    expect(state.getMatchingMock).toHaveBeenCalledWith('/base-url', HttpMethods.GET, {
-                        'some': 'header'
-                    }, {x: 'x'}));
+                it('gets the matching mock', () => expect(state.getMatchingMock).toHaveBeenCalledWith('/base-url', HttpMethods.GET, {
+                    some: 'header'
+                }, { x: 'x' }));
 
-                it('calls the echo request handler', () =>
-                    expect(echoRequestHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
-                        id: 'apimockId',
-                        mock: {
-                            name: 'matching-mock', isArray: true,
-                            request: {url: '/base-url', method: HttpMethods.GET}, responses: {}
-                        },
-                        body: {x: 'x'}
-                    }));
+                it('calls the echo request handler', () => expect(echoRequestHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
+                    id: 'apimockId',
+                    mock: {
+                        name: 'matching-mock',
+                        isArray: true,
+                        request: { url: '/base-url', method: HttpMethods.GET },
+                        responses: {}
+                    },
+                    body: { x: 'x' }
+                }));
             });
 
             describe('recording is enabled', () => {
@@ -204,13 +201,15 @@ describe('Middleware', () => {
                     getApimockIdFn.mockReturnValue('apimockId');
                     getMatchingApplicableHandlerFn.mockReturnValue(undefined);
                     state.getMatchingMock.mockReturnValue({
-                        name: 'matching-mock', isArray: true,
-                        request: {url: '/base-url', method: HttpMethods.GET}, responses: {}
+                        name: 'matching-mock',
+                        isArray: true,
+                        request: { url: '/base-url', method: HttpMethods.GET },
+                        responses: {}
                     });
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
-                    request.headers = {'some': 'header'};
-                    (request as any).body = {'x': 'x'};
+                    request.headers = { some: 'header' };
+                    (request as any).body = { x: 'x' };
                 });
 
                 describe('record header is present', () => {
@@ -221,8 +220,7 @@ describe('Middleware', () => {
                         jsonBodyParser.mock.calls[0][2]();
                     });
 
-                    it('does not call the record response handler', () =>
-                        expect(recordResponseHandler.handle).not.toHaveBeenCalled());
+                    it('does not call the record response handler', () => expect(recordResponseHandler.handle).not.toHaveBeenCalled());
                 });
 
                 describe('record header is not present', () => {
@@ -233,16 +231,16 @@ describe('Middleware', () => {
                         jsonBodyParser.mock.calls[0][2]();
                     });
 
-                    it('calls the record response handler', () =>
-                        expect(recordResponseHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
-                            id: 'apimockId',
-                            mock: {
-                                name: 'matching-mock', isArray: true,
-                                request: {url: '/base-url', method: HttpMethods.GET}, responses: {}
-                            },
-                            body: {x: 'x'}
-                        }));
-
+                    it('calls the record response handler', () => expect(recordResponseHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
+                        id: 'apimockId',
+                        mock: {
+                            name: 'matching-mock',
+                            isArray: true,
+                            request: { url: '/base-url', method: HttpMethods.GET },
+                            responses: {}
+                        },
+                        body: { x: 'x' }
+                    }));
                 });
             });
 
@@ -258,13 +256,15 @@ describe('Middleware', () => {
                     getApimockIdFn.mockReturnValue('apimockId');
                     getMatchingApplicableHandlerFn.mockReturnValue(undefined);
                     state.getMatchingMock.mockReturnValue({
-                        name: 'matching-mock', isArray: true,
-                        request: {url: '/base-url', method: HttpMethods.GET}, responses: {}
+                        name: 'matching-mock',
+                        isArray: true,
+                        request: { url: '/base-url', method: HttpMethods.GET },
+                        responses: {}
                     });
                     request.url = '/base-url';
                     request.method = HttpMethods.GET;
-                    request.headers = {'some': 'header'};
-                    (request as any).body = {'x': 'x'};
+                    request.headers = { some: 'header' };
+                    (request as any).body = { x: 'x' };
 
                     middleware.middleware(request, response, nextFn);
 
@@ -275,8 +275,10 @@ describe('Middleware', () => {
                     response, nextFn, {
                         id: 'apimockId',
                         mock: {
-                            name: 'matching-mock', isArray: true,
-                            request: {url: '/base-url', method: HttpMethods.GET}, responses: {}
+                            name: 'matching-mock',
+                            isArray: true,
+                            request: { url: '/base-url', method: HttpMethods.GET },
+                            responses: {}
                         }
                     }));
             });
@@ -287,13 +289,12 @@ describe('Middleware', () => {
                 getApimockIdFn.mockReturnValue('apimockId');
                 getMatchingApplicableHandlerFn.mockReturnValue(undefined);
                 state.getMatchingMock.mockReturnValue(undefined);
-                request.headers = {'some': 'header'};
-                (request as any).body = {'x': 'x'};
+                request.headers = { some: 'header' };
+                (request as any).body = { x: 'x' };
 
                 middleware.middleware(request, response, nextFn);
 
                 jsonBodyParser.mock.calls[0][2]();
-
             });
 
             it('calls next', () => expect(nextFn).toHaveBeenCalled());
@@ -309,8 +310,7 @@ describe('Middleware', () => {
             getVariablesHandler.isApplicable.mockReturnValue(true);
         });
 
-        it('finds the applicable handler', () =>
-            expect(middleware.getMatchingApplicableHandler(request, {x: 'x'})).toEqual(getVariablesHandler));
+        it('finds the applicable handler', () => expect(middleware.getMatchingApplicableHandler(request, { x: 'x' })).toEqual(getVariablesHandler));
     });
 
     describe('getApimockId', () => {
@@ -324,60 +324,54 @@ describe('Middleware', () => {
 
         describe('configuration use cookie', () => {
             beforeEach(() => {
-                middleware['configuration'].middleware.useHeader = false;
-                middleware.getApimockId({some: 'header'});
+                middleware.configuration.middleware.useHeader = false;
+                middleware.getApimockId({ some: 'header' });
             });
 
-            it('returns the apimockId from the cookie', () =>
-                expect(getApimockIdFromCookieFn).toHaveBeenCalledWith({some: 'header'}));
+            it('returns the apimockId from the cookie', () => expect(getApimockIdFromCookieFn).toHaveBeenCalledWith({ some: 'header' }));
         });
 
         describe('configuration use header', () => {
             beforeEach(() => {
-                middleware['configuration'].middleware.useHeader = true;
-                middleware.getApimockId({some: 'header'});
+                middleware.configuration.middleware.useHeader = true;
+                middleware.getApimockId({ some: 'header' });
             });
 
-            it('returns the apimockId from the header', () =>
-                expect(getApimockIdFromHeaderFn).toHaveBeenCalledWith({some: 'header'}));
+            it('returns the apimockId from the header', () => expect(getApimockIdFromHeaderFn).toHaveBeenCalledWith({ some: 'header' }));
         });
     });
 
     describe('getApimockIdFromHeader', () => {
         beforeEach(() => {
-            middleware['configuration'].middleware.identifier = 'my-identifier';
+            middleware.configuration.middleware.identifier = 'my-identifier';
         });
         describe('apimockId header is present', () => {
-            it('returns the identifier', () =>
-                expect(middleware.getApimockIdFromHeader({
-                    a: 'a',
-                    'my-identifier': '123',
-                    c: 'c'
-                })).toBe('123'));
+            it('returns the identifier', () => expect(middleware.getApimockIdFromHeader({
+                a: 'a',
+                'my-identifier': '123',
+                c: 'c'
+            })).toBe('123'));
         });
 
         describe('apimockId header is not present', () => {
-            it('returns undefined', () =>
-                expect(middleware.getApimockIdFromHeader({
-                    a: 'a',
-                    'no-matching-identifier': '123',
-                    c: 'c'
-                })).toBe(undefined));
+            it('returns undefined', () => expect(middleware.getApimockIdFromHeader({
+                a: 'a',
+                'no-matching-identifier': '123',
+                c: 'c'
+            })).toBe(undefined));
         });
     });
 
     describe('getApimockIdFromCookie', () => {
         beforeEach(() => {
-            middleware['configuration'].middleware.identifier = 'my-identifier';
+            middleware.configuration.middleware.identifier = 'my-identifier';
         });
         describe('apimockId cookie is present', () => {
-            it('returns the apimockId', () =>
-                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;my-identifier=123;c=c'})).toBe('123'));
+            it('returns the apimockId', () => expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;my-identifier=123;c=c' })).toBe('123'));
         });
 
         describe('apimockId cookie is not present', () => {
-            it('returns undefined', () =>
-                expect(middleware.getApimockIdFromCookie({cookie: 'a=a;b=b;c=c'})).toBe(undefined));
+            it('returns undefined', () => expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;b=b;c=c' })).toBe(undefined));
         });
     });
 });

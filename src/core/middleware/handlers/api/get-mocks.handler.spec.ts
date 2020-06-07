@@ -1,13 +1,13 @@
 import * as http from 'http';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 
-import {IState} from '../../../state/Istate';
-import {State} from '../../../state/state';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import { createSpyObj } from 'jest-createspyobj';
+import { IState } from '../../../state/Istate';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
-import {GetMocksHandler} from './get-mocks.handler';
+import { GetMocksHandler } from './get-mocks.handler';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 describe('GetMocksHandler', () => {
     let container: Container;
@@ -27,7 +27,7 @@ describe('GetMocksHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: jest.Mock<Function>;
+        let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
@@ -42,19 +42,19 @@ describe('GetMocksHandler', () => {
             (state as any).mocks = [
                 {
                     name: 'one',
-                    request: {url: '/one', method: 'GET'},
-                    responses: {'some': {}, 'thing': {}}
+                    request: { url: '/one', method: 'GET' },
+                    responses: { some: {}, thing: {} }
                 },
                 {
                     name: 'two',
-                    request: {url: '/two', method: 'POST'},
-                    responses: {'some': {}, 'thing': {}}
+                    request: { url: '/two', method: 'POST' },
+                    responses: { some: {}, thing: {} }
                 }
             ];
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
-                    one: {scenario: 'some', delay: 0, echo: true},
-                    two: {scenario: 'thing', delay: 1000, echo: false}
+                    one: { scenario: 'some', delay: 0, echo: true },
+                    two: { scenario: 'thing', delay: 1000, echo: false }
                 })),
                 variables: {},
                 recordings: {},
@@ -64,7 +64,7 @@ describe('GetMocksHandler', () => {
         });
 
         it('gets the mocks', () => {
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(JSON.stringify({

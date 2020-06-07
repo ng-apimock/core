@@ -1,14 +1,14 @@
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
-import {Container} from 'inversify';
+import { Container } from 'inversify';
 import * as path from 'path';
 
-import {State} from '../state/state';
+import { createSpyObj } from 'jest-createspyobj';
+import { State } from '../state/state';
 
-import {PresetsProcessor} from './presets.processor';
-import {DefaultProcessingOptions} from './processing.options';
+import { PresetsProcessor } from './presets.processor';
+import { DefaultProcessingOptions } from './processing.options';
 
-import {createSpyObj} from 'jest-createspyobj';
 
 jest.mock('fs-extra');
 jest.mock('glob');
@@ -29,11 +29,11 @@ describe('PresetsProcessor', () => {
     });
 
     describe('process', () => {
-        let consoleLogFn: jest.Mock<Function>;
-        let consoleWarnFn: jest.Mock<Function>;
-        let doneFn: jest.Mock<any>;
-        let fsReadJsonSyncFn: jest.Mock<any>;
-        let globSyncFn: jest.Mock<string[]>;
+        let consoleLogFn: jest.Mock;
+        let consoleWarnFn: jest.Mock;
+        let doneFn: jest.Mock;
+        let fsReadJsonSyncFn: jest.Mock;
+        let globSyncFn: jest.Mock;
 
         beforeEach(() => {
             doneFn = jest.fn();
@@ -51,26 +51,26 @@ describe('PresetsProcessor', () => {
             fsReadJsonSyncFn.mockReturnValueOnce({
                 name: 'happy.preset',
                 mocks: {
-                    some: {scenario: 'success', delay: 2000, echo: true},
-                    another: {scenario: 'success'}
+                    some: { scenario: 'success', delay: 2000, echo: true },
+                    another: { scenario: 'success' }
                 },
-                variables: {today: 'some date'}
+                variables: { today: 'some date' }
             });
             fsReadJsonSyncFn.mockReturnValueOnce({
                 name: 'unhappy.preset',
-                mocks: {some: {scenario: 'failure'}, another: {scenario: 'error'}},
-                variables: {today: 'some date'}
+                mocks: { some: { scenario: 'failure' }, another: { scenario: 'error' } },
+                variables: { today: 'some date' }
             });
             fsReadJsonSyncFn.mockReturnValue({
                 name: 'happy.preset',
-                mocks: {some: {scenario: 'success'}, another: {scenario: 'success'}},
-                variables: {today: 'some date'}
+                mocks: { some: { scenario: 'success' }, another: { scenario: 'success' } },
+                variables: { today: 'some date' }
             });
         });
 
         describe('by default', () => {
             beforeEach(() => {
-                processor.process(Object.assign({}, DefaultProcessingOptions, {src: 'src'}));
+                processor.process({ ...DefaultProcessingOptions, src: 'src' });
             });
 
             it('processes each mock', () => {
@@ -84,14 +84,13 @@ describe('PresetsProcessor', () => {
                 expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'preset/duplicate.preset.json'));
             });
 
-            it('processes unique presets', () =>
-                expect(consoleLogFn).toHaveBeenCalledWith('Processed 2 unique presets.'));
+            it('processes unique presets', () => expect(consoleLogFn).toHaveBeenCalledWith('Processed 2 unique presets.'));
         });
 
         describe('with full processing options', () => {
             beforeEach(() => {
                 globSyncFn.mockReturnValue([]);
-                processor.process({src: 'src', patterns: {presets: '**/*.mypreset.json'}});
+                processor.process({ src: 'src', patterns: { presets: '**/*.mypreset.json' } });
             });
             it('processes each preset', () => {
                 expect(globSyncFn).toHaveBeenCalledWith(

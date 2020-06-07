@@ -1,6 +1,6 @@
-import {IState} from './Istate';
-import {MockState} from './mock.state';
-import {Recording} from './recording';
+import { IState } from './Istate';
+import { MockState } from './mock.state';
+import { Recording } from './recording';
 
 /** Global state. */
 export class GlobalState implements IState {
