@@ -1,11 +1,13 @@
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
-import * as path from 'path';
 import {inject, injectable} from 'inversify';
+import * as path from 'path';
+
 import {HttpHeaders, HttpStatusCode} from '../middleware/http';
 import {Mock} from '../mock/mock';
-import {ProcessingOptions} from './processing.options';
 import {State} from '../state/state';
+
+import {ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()

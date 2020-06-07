@@ -1,8 +1,9 @@
 import * as chokidar from 'chokidar';
 import {inject, injectable} from 'inversify';
-import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
+
 import {MocksProcessor} from './mocks.processor';
 import {PresetsProcessor} from './presets.processor';
+import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
 
 /** Mocks processor. */
 @injectable()
@@ -29,7 +30,7 @@ export class Processor {
         this.mocksProcessor.process(opts);
         this.presetsProcessor.process(opts);
 
-        if(opts.watch) {
+        if (opts.watch) {
             chokidar.watch(`${opts.src}/${opts.patterns.mocks}`, {
                 ignoreInitial: true,
                 usePolling: true,

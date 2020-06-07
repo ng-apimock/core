@@ -1,8 +1,9 @@
-import {inject, injectable} from 'inversify';
 import * as http from 'http';
-import {ApplicableHandler} from '../handler';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import {inject, injectable} from 'inversify';
+
 import {State} from '../../../state/state';
+import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import {ApplicableHandler} from '../handler';
 
 /**  Handler for a variables. */
 @injectable()

@@ -1,8 +1,9 @@
 import * as http from 'http';
 import {inject, injectable} from 'inversify';
-import {Handler} from '../handler';
+
 import {Mock} from '../../../mock/mock';
 import {State} from '../../../state/state';
+import {Handler} from '../handler';
 
 /**  Handler for a echoing a request. */
 @injectable()

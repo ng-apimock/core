@@ -1,9 +1,10 @@
-import container from './ioc-container';
-import {Processor} from './processor/processor';
-import {Middleware} from './middleware/middleware';
 import * as http from 'http';
+
+import {Configuration, DefaultConfiguration} from './configuration';
 import {Converter} from './convert';
-import {Configuration, DefaultConfiguration, MiddlewareConfiguration} from './configuration';
+import container from './ioc-container';
+import {Middleware} from './middleware/middleware';
+import {Processor} from './processor/processor';
 
 /** NgApimock */
 class NgApimock {
@@ -14,7 +15,7 @@ class NgApimock {
      */
     configure(configuration: Configuration): void {
         const middlewareConfiguration = Object.assign({}, DefaultConfiguration.middleware, configuration.middleware);
-        container.rebind<Configuration>('Configuration').toConstantValue({ middleware: middlewareConfiguration });
+        container.rebind<Configuration>('Configuration').toConstantValue({middleware: middlewareConfiguration});
     }
 
     /**

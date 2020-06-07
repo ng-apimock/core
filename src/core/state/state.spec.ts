@@ -1,5 +1,5 @@
-import {stub} from 'sinon';
 import {Container} from 'inversify';
+
 import {IState} from './Istate';
 import {SessionState} from './session.state';
 import {State} from './state';
@@ -36,7 +36,11 @@ describe('State', () => {
 
                     expect((matchingState as SessionState).identifier).toBe('someId');
                     expect(Object.keys(matchingState.mocks).length).toBe(1);
-                    expect(matchingState.mocks['some']).toEqual({scenario: 'thing', echo: true, delay: 0});
+                    expect(matchingState.mocks['some']).toEqual({
+                        scenario: 'thing',
+                        echo: true,
+                        delay: 0
+                    });
                     expect(Object.keys(matchingState.variables).length).toBe(1);
                     expect(matchingState.variables['some']).toBe('some');
                 });
@@ -60,7 +64,9 @@ describe('State', () => {
     describe('getMatchingMock', () => {
         beforeEach(() => {
             state.mocks.push(...[{
-                name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
+                name: 'simple',
+                request: {url: 'some/api', method: 'GET',},
+                responses: {one: {}, two: {}}
             }, {
                 name: 'advanced', request: {
                     url: 'some/api', method: 'POST',
@@ -118,7 +124,9 @@ describe('State', () => {
             it('returns the matching mock', () => {
                 // match simple mock - only url and method
                 expect(state.getMatchingMock('some/api', 'GET', {}, {})).toEqual({
-                    name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
+                    name: 'simple',
+                    request: {url: 'some/api', method: 'GET',},
+                    responses: {one: {}, two: {}}
                 });
                 // match advanced mock - url, method, headers, body
                 expect(state.getMatchingMock('some/api', 'POST', {
@@ -147,25 +155,23 @@ describe('State', () => {
     });
 
     describe('getResponse', () => {
-        let stateGetMatchingStateFn: sinon.SinonStub;
+        let stateGetMatchingStateFn: jest.SpyInstance;
         let matchingState: IState;
 
         beforeEach(() => {
             state.mocks.push(...[{
-                name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
+                name: 'simple',
+                request: {url: 'some/api', method: 'GET',},
+                responses: {one: {}, two: {}}
             }]);
-            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
+            stateGetMatchingStateFn = jest.spyOn(state, 'getMatchingState');
             matchingState = {
                 mocks: {simple: {scenario: 'one', delay: 0, echo: false}},
                 variables: {},
                 recordings: {},
                 record: false
             };
-            stateGetMatchingStateFn.returns(matchingState);
-        });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.restore();
+            stateGetMatchingStateFn.mockReturnValue(matchingState);
         });
 
         describe('no matching mock', () => {
@@ -176,14 +182,16 @@ describe('State', () => {
         describe('matching mock', () => {
             it('returns the selected response', () =>
                 expect(state.getResponse('simple', 'id')).toEqual({
-                    name: 'simple', request: {url: 'some/api', method: 'GET',}, responses: {one: {}, two: {}}
+                    name: 'simple',
+                    request: {url: 'some/api', method: 'GET',},
+                    responses: {one: {}, two: {}}
                 }.responses['one']));
         });
     });
 
     describe('getDelay', () => {
         let matchingState: IState;
-        let stateGetMatchingStateFn: sinon.SinonStub;
+        let stateGetMatchingStateFn: jest.SpyInstance;
 
         beforeEach(() => {
             matchingState = {
@@ -192,12 +200,9 @@ describe('State', () => {
                 recordings: {},
                 record: false
             };
-            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
-            stateGetMatchingStateFn.returns(matchingState);
-        });
 
-        afterEach(() => {
-            stateGetMatchingStateFn.restore();
+            stateGetMatchingStateFn = jest.spyOn(state, 'getMatchingState');
+            stateGetMatchingStateFn.mockReturnValue(matchingState);
         });
 
         describe('no matching mock', () => {
@@ -213,7 +218,7 @@ describe('State', () => {
 
     describe('getEcho', () => {
         let matchingState: IState;
-        let stateGetMatchingStateFn: sinon.SinonStub;
+        let stateGetMatchingStateFn: jest.SpyInstance;
 
         beforeEach(() => {
             matchingState = {
@@ -222,12 +227,8 @@ describe('State', () => {
                 recordings: {},
                 record: false
             };
-            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
-            stateGetMatchingStateFn.returns(matchingState);
-        });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.restore();
+            stateGetMatchingStateFn = jest.spyOn(state, 'getMatchingState');
+            stateGetMatchingStateFn.mockReturnValue(matchingState);
         });
 
         describe('no matching mock', () => {
@@ -243,7 +244,7 @@ describe('State', () => {
 
     describe('getVariables', () => {
         let matchingState: IState;
-        let stateGetMatchingStateFn: sinon.SinonStub;
+        let stateGetMatchingStateFn: jest.SpyInstance;
 
         beforeEach(() => {
             matchingState = {
@@ -252,11 +253,8 @@ describe('State', () => {
                 recordings: {},
                 record: false
             };
-            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
-            stateGetMatchingStateFn.returns(matchingState);
-        });
-        afterEach(() => {
-            stateGetMatchingStateFn.restore();
+            stateGetMatchingStateFn = jest.spyOn(state, 'getMatchingState');
+            stateGetMatchingStateFn.mockReturnValue(matchingState);
         });
 
         it('returns the state variables', () => {
@@ -267,7 +265,7 @@ describe('State', () => {
 
     describe('setToDefaults', () => {
         let matchingState: IState;
-        let stateGetMatchingStateFn: sinon.SinonStub;
+        let stateGetMatchingStateFn: jest.SpyInstance;
 
         beforeEach(() => {
             matchingState = {
@@ -280,16 +278,13 @@ describe('State', () => {
                 record: false
             };
 
-            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
-            stateGetMatchingStateFn.returns(matchingState);
+            stateGetMatchingStateFn = jest.spyOn(state, 'getMatchingState');
+            stateGetMatchingStateFn.mockReturnValue(matchingState);
 
             state.defaults['simple'] = {scenario: 'two', delay: 2000, echo: false};
             state.defaults['advanced'] = {scenario: 'four', delay: 4000, echo: true};
         });
 
-        afterEach(() => {
-            stateGetMatchingStateFn.restore();
-        });
 
         it('sets the state to defaults', () => {
             let simpleMockState = matchingState.mocks['simple'];
@@ -318,7 +313,7 @@ describe('State', () => {
 
     describe('setToPassThroughs', () => {
         let matchingState: IState;
-        let stateGetMatchingStateFn: sinon.SinonStub;
+        let stateGetMatchingStateFn: jest.SpyInstance;
 
         beforeEach(() => {
             matchingState = {
@@ -331,15 +326,11 @@ describe('State', () => {
                 record: false
             };
 
-            stateGetMatchingStateFn = stub(State.prototype, <any>'getMatchingState');
-            stateGetMatchingStateFn.returns(matchingState);
+            stateGetMatchingStateFn = jest.spyOn(state, 'getMatchingState');
+            stateGetMatchingStateFn.mockReturnValue(matchingState);
 
             state.defaults['simple'] = {scenario: 'two', delay: 2000, echo: false};
             state.defaults['advanced'] = {scenario: 'four', delay: 4000, echo: true};
-        });
-
-        afterEach(() => {
-            stateGetMatchingStateFn.restore();
         });
 
         it('sets the state to defaults', () => {

@@ -1,26 +1,28 @@
+import {NextHandleFunction} from 'connect';
 import * as http from 'http';
 import {inject, injectable} from 'inversify';
-import {ApplicableHandler} from './handlers/handler';
+
 import {Configuration} from '../configuration';
+import {Mock} from '../mock/mock';
+import {State} from '../state/state';
+
 import {DefaultsHandler} from './handlers/api/defaults.handler';
 import {DeleteVariableHandler} from './handlers/api/delete-variable.handler';
-import {EchoRequestHandler} from './handlers/mock/echo.request.handler';
 import {GetMocksHandler} from './handlers/api/get-mocks.handler';
 import {GetPresetsHandler} from './handlers/api/get-presets.handler';
+import {GetRecordedResponseHandler} from './handlers/api/get-recorded-response.handler';
 import {GetRecordingsHandler} from './handlers/api/get-recordings.handler';
 import {GetVariablesHandler} from './handlers/api/get-variables.handler';
-import {GetRecordedResponseHandler} from './handlers/api/get-recorded-response.handler';
 import {InitHandler} from './handlers/api/init.handler';
-import {Mock} from '../mock/mock';
-import {MockRequestHandler} from './handlers/mock/mock.request.handler';
-import {NextHandleFunction} from 'connect';
 import {PassThroughsHandler} from './handlers/api/pass-throughs.handler';
 import {RecordHandler} from './handlers/api/record.handler';
-import {RecordResponseHandler} from './handlers/mock/record.response.handler';
 import {SelectPresetHandler} from './handlers/api/select-preset.handler';
 import {SetVariableHandler} from './handlers/api/set-variable.handler';
-import {State} from '../state/state';
 import {UpdateMocksHandler} from './handlers/api/update-mocks.handler';
+import {ApplicableHandler} from './handlers/handler';
+import {EchoRequestHandler} from './handlers/mock/echo.request.handler';
+import {MockRequestHandler} from './handlers/mock/mock.request.handler';
+import {RecordResponseHandler} from './handlers/mock/record.response.handler';
 
 /** Middleware. */
 @injectable()
@@ -114,7 +116,10 @@ export class Middleware {
                             body: body
                         });
                     } else {
-                        this.mockRequestHandler.handle(request, response, next, {id: apimockId, mock: matchingMock});
+                        this.mockRequestHandler.handle(request, response, next, {
+                            id: apimockId,
+                            mock: matchingMock
+                        });
                     }
                 } else {
                     next();

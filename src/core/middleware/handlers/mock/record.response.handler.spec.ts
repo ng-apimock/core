@@ -1,34 +1,31 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
+import {Container} from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
-import {
-    assert,
-    createStubInstance,
-    match,
-    SinonFakeTimers,
-    SinonStub,
-    SinonStubbedInstance,
-    stub,
-    useFakeTimers
-} from 'sinon';
-import {Container} from 'inversify';
-import {HttpMethods, HttpStatusCode} from '../../http';
-import {IState} from '../../../state/Istate';
+
 import {Mock} from '../../../mock/mock';
+import {IState} from '../../../state/Istate';
 import {Recording} from '../../../state/recording';
-import {RecordResponseHandler} from './record.response.handler';
 import {State} from '../../../state/state';
+import {HttpMethods, HttpStatusCode} from '../../http';
+
+import {RecordResponseHandler} from './record.response.handler';
+
+import {createSpyObj} from 'jest-createspyobj';
+
+jest.mock('fs-extra');
+jest.mock('uuid');
 
 describe('RecordResponseHandler', () => {
     let container: Container;
-    let state: SinonStubbedInstance<State>;
     let recordResponseHandler: RecordResponseHandler;
+    let state: jest.Mocked<State>;
 
     beforeEach(() => {
         container = new Container();
-        state = createStubInstance(State);
+        state = createSpyObj(State);
 
         container.bind('BaseUrl').toConstantValue('baseUrl');
         container.bind('RecordResponseHandler').to(RecordResponseHandler);
@@ -38,170 +35,192 @@ describe('RecordResponseHandler', () => {
     });
 
     describe('handle', () => {
-        let clock: SinonFakeTimers;
-        let fetchResponseFn: SinonStub;
-        let state: SinonStubbedInstance<State>;
-        let nextFn: SinonStub;
-        let mock: Mock;
-        let now: Date;
-        let recordFn: SinonStub;
-        let request: any;
-        let responseBufferFn: SinonStub;
-        let responseHeadersGetFn: SinonStub;
-        let responseHeadersRawFn: SinonStub;
-        let response: SinonStubbedInstance<http.ServerResponse>;
+        let nextFn: jest.Mock<Function>;
+        let request: http.IncomingMessage;
+        let response: http.ServerResponse;
+
+        let fetchResponseFn: jest.SpyInstance;
+        let recordFn: jest.Mocked<any>;
+        let responseBufferFn: jest.Mocked<any>;
+        let responseHeadersGetFn: jest.Mocked<any>;
+        let responseHeadersRawFn: jest.Mocked<any>;
 
         beforeEach(() => {
-            state = createStubInstance(State);
-            mock = {name: 'some'} as Mock;
-            nextFn = stub();
-            now = new Date();
-            clock = useFakeTimers(now.getTime());
-            request = createStubInstance(http.IncomingMessage);
+            nextFn = jest.fn();
+            request = {} as http.IncomingMessage;
+            response = {
+                end: jest.fn(),
+                writeHead: jest.fn()
+            } as unknown as http.ServerResponse;
+
             request.url = '/some/api';
             request.method = HttpMethods.GET;
             request.headers = {host: 'localhost:8888'};
-            responseBufferFn = stub();
-            responseHeadersRawFn = stub();
-            responseHeadersGetFn = stub();
-            response = createStubInstance(http.ServerResponse);
+            responseBufferFn = jest.fn();
+            responseHeadersRawFn = jest.fn();
+            responseHeadersGetFn = jest.fn();
 
+            recordFn = jest.spyOn(recordResponseHandler, 'record');
+            fetchResponseFn = jest.spyOn(recordResponseHandler, 'fetchResponse');
 
-            recordFn = stub(RecordResponseHandler.prototype, 'record');
-            fetchResponseFn = stub(RecordResponseHandler.prototype, 'fetchResponse');
-
-            responseBufferFn.returns('the-data');
-            responseHeadersRawFn.returns({'Content-Type': 'application/pdf'});
-        });
-
-        afterEach(() => {
-            clock.restore();
-            fetchResponseFn.restore();
-            recordFn.restore();
-
+            responseBufferFn.mockReturnValue('the-data');
+            responseHeadersRawFn.mockReturnValue({'Content-Type': 'application/pdf'});
         });
 
         describe('by default', () => {
             beforeEach(() => {
-                fetchResponseFn.resolves({
+                fetchResponseFn.mockResolvedValue({
                     buffer: responseBufferFn, headers: {raw: responseHeadersRawFn}, status: 200
                 });
-                recordResponseHandler.handle(request, response as any, nextFn, {
-                    id: 'apimockId', mock: mock, body: `{'x':'x'}`
+
+            });
+
+            describe('method GET', () => {
+                beforeEach(() => {
+                    request.method = HttpMethods.GET;
+
+                    recordResponseHandler.handle(request, response as any, nextFn, {
+                        id: 'apimockId',
+                        mock: {name: 'some'} as Mock,
+                        body: JSON.stringify({x: 'x'})
+                    });
+                });
+
+                it('sets the record header to true', () =>
+                    expect(request.headers.record).toBe('true'));
+
+                it('calls the api without body', async () => {
+                    expect(fetchResponseFn).toHaveBeenCalled();
+                    const actualRequest = fetchResponseFn.mock.calls[0][0];
+                    expect(actualRequest.url).toBe('http://localhost:8888/some/api');
+                    expect(actualRequest.method).toBe(HttpMethods.GET);
+                    expect(actualRequest.body).toEqual(null);
+                    expect(actualRequest.headers.get('host')).toBe('localhost:8888');
+                    expect(actualRequest.headers.get('record')).toBe('true');
                 });
             });
 
-            afterEach(() => {
-                fetchResponseFn.reset();
+            describe('method DELETE', () => {
+                beforeEach(() => {
+                    request.method = HttpMethods.DELETE;
+
+                    recordResponseHandler.handle(request, response as any, nextFn, {
+                        id: 'apimockId',
+                        mock: {name: 'some'} as Mock,
+                        body: JSON.stringify({x: 'x'})
+                    });
+                });
+
+                it('sets the record header to true', () =>
+                    expect(request.headers.record).toBe('true'));
+
+                it('calls the api without body', async () => {
+                    expect(fetchResponseFn).toHaveBeenCalled();
+                    const actualRequest = fetchResponseFn.mock.calls[0][0];
+                    expect(actualRequest.url).toBe('http://localhost:8888/some/api');
+                    expect(actualRequest.method).toBe(HttpMethods.DELETE);
+                    expect(actualRequest.body).toEqual(null);
+                    expect(actualRequest.headers.get('host')).toBe('localhost:8888');
+                    expect(actualRequest.headers.get('record')).toBe('true');
+                });
             });
 
-            it('sets the record header to true', () =>
-                expect(request.headers.record).toBe('true'));
+            describe('method OTHER', () => {
+                beforeEach(() => {
+                    request.method = HttpMethods.POST;
 
-            it('calls the api', () => {
-                assert.calledWith(fetchResponseFn, match(async (actual: Request) => {
-                    await expect(actual.url).toBe('http://localhost:8888/some/api');
-                    await expect(actual.method).toBe(HttpMethods.GET);
-                    await expect(actual.headers.get('host')).toBe('localhost:8888');
-                    return await expect(actual.headers.get('record')).toBe('true');
-                }));
+                    recordResponseHandler.handle(request, response as any, nextFn, {
+                        id: 'apimockId',
+                        mock: {name: 'some'} as Mock,
+                        body: {x: 'x'}
+                    });
+                });
+
+                it('sets the record header to true', () =>
+                    expect(request.headers.record).toBe('true'));
+
+                it('calls the api without body', async () => {
+                    expect(fetchResponseFn).toHaveBeenCalled();
+                    const actualRequest = fetchResponseFn.mock.calls[0][0];
+                    expect(actualRequest.url).toBe('http://localhost:8888/some/api');
+                    expect(actualRequest.method).toBe(HttpMethods.POST);
+                    expect(actualRequest.body).not.toEqual(null);
+                    expect(actualRequest.headers.get('host')).toBe('localhost:8888');
+                    expect(actualRequest.headers.get('record')).toBe('true');
+                });
             });
         });
 
         describe('on successful api call', () => {
-            beforeEach(() => {
-                responseHeadersGetFn.returns('application/pdf');
-                fetchResponseFn.resolves({
+            beforeEach(async () => {
+                responseHeadersGetFn.mockReturnValue('application/pdf');
+                fetchResponseFn.mockResolvedValue({
                     buffer: responseBufferFn,
                     headers: {raw: responseHeadersRawFn, get: responseHeadersGetFn},
                     status: 200
                 });
-            });
+                recordFn.mockImplementation(() => {
+                });
 
-            afterEach(() => {
-                fetchResponseFn.reset();
-                recordFn.reset();
-                response.end.reset();
-                response.writeHead.reset();
+                await recordResponseHandler.handle(request, response as any, nextFn, {
+                    id: 'apimockId',
+                    mock: {name: 'some'} as Mock,
+                    body: JSON.stringify({x: 'x'})
+                });
             });
 
             it('on request data record', async () => {
-                await recordResponseHandler.handle(request, response as any, nextFn, {
-                    id: 'apimockId',
-                    mock: mock,
-                    body: `{'x':'x'}`
-                });
-                assert.calledWith(recordFn, 'apimockId', 'some', match(async (actual: Recording) => {
-                    await expect(actual.request.url).toBe('/some/api');
-                    await expect(actual.request.method).toBe(HttpMethods.GET);
-                    await expect(actual.request.headers).toEqual({host: 'localhost:8888', record: 'true'});
-                    await expect(actual.request.body).toBe(`{'x':'x'}` as any);
+                expect(recordFn).toHaveBeenCalled();
+                const actualRequest = recordFn.mock.calls[0][2];
+                expect(actualRequest.request.url).toBe('/some/api');
+                expect(actualRequest.request.method).toBe(HttpMethods.GET);
+                expect(actualRequest.request.headers.host).toBe('localhost:8888');
+                expect(actualRequest.request.headers.record).toBe('true');
+                expect(actualRequest.request.body).toBe(JSON.stringify({x: 'x'}));
 
-                    await expect(actual.response.data).toBe('the-data');
-                    await expect(actual.response.status).toBe(HttpStatusCode.OK);
-                    await expect(actual.response.headers).toEqual({'Content-Type': 'application/pdf'});
-                    return true;
-                }));
+                expect(actualRequest.response.data).toBe('the-data');
+                expect(actualRequest.response.status).toBe(HttpStatusCode.OK);
+                expect(actualRequest.response.headers).toEqual({'Content-Type': 'application/pdf'});
             });
 
             it('returns the response', async () => {
-                await recordResponseHandler.handle(request, response as any, nextFn, {
-                    id: 'apimockId',
-                    mock: mock,
-                    body: `{'x':'x'}`
-                });
-                assert.calledWith(response.writeHead, HttpStatusCode.OK, {'Content-Type': 'application/pdf'});
-                // @ts-ignore
-                assert.calledWith(response.end, 'the-data');
+                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, {'Content-Type': 'application/pdf'});
+                expect(response.end).toHaveBeenCalledWith('the-data');
             });
         });
 
         describe('on unsuccessful api call', () => {
             let rejectedPromise: Promise<any>;
             beforeEach(() => {
-                rejectedPromise = Promise.reject({message: 'oops'});
-                fetchResponseFn.resolves(rejectedPromise);
-            });
-
-            afterEach(() => {
-                fetchResponseFn.reset();
-                recordFn.reset();
-                response.end.reset();
-                response.writeHead.reset();
+                fetchResponseFn.mockRejectedValue({message: 'oops'});
             });
 
             it('returns the error response', async () => {
-                try {
-                    await recordResponseHandler.handle(request, response as any, nextFn, {
-                        id: 'apimockId',
-                        mock: mock,
-                        body: `{'x':'x'}`
-                    });
-                    await rejectedPromise;
-                    fail();
-                } catch (err) {
-                    // @ts-ignore
-                    assert.calledWith(response.end, 'oops');
-                }
+                await recordResponseHandler.handle(request, response as any, nextFn, {
+                    id: 'apimockId',
+                    mock: {name: 'some'} as Mock,
+                    body: JSON.stringify({x: 'x'})
+                });
+                expect(response.end).toHaveBeenCalledWith('oops');
             });
         });
     });
 
     describe('record', () => {
-        let fsWriteFileSyncFn: SinonStub;
+        let fsWriteFileSyncFn: jest.Mock;
         let matchingState: IState;
         let recording: Recording;
-        let uuidV4Fn: SinonStub;
+        let uuidV4Fn: jest.Mock;
 
         beforeEach(() => {
-            fsWriteFileSyncFn = stub(fs, 'writeFileSync');
+            fsWriteFileSyncFn = fs.writeFileSync as jest.Mock;
             matchingState = {
                 mocks: {},
                 variables: {},
                 recordings: {},
                 record: false
             };
-            state.getMatchingState.returns(matchingState);
+            state.getMatchingState.mockReturnValue(matchingState);
 
             recording = {
                 request: {
@@ -219,17 +238,12 @@ describe('RecordResponseHandler', () => {
                 datetime: new Date().getTime()
             };
 
-            uuidV4Fn = stub(uuid, 'v4');
-            uuidV4Fn.returns('generated-uuid');
-        });
-
-        afterEach(() => {
-            fsWriteFileSyncFn.restore();
-            uuidV4Fn.restore();
+            uuidV4Fn = uuid.v4 as jest.Mock;
+            uuidV4Fn.mockReturnValue('generated-uuid');
         });
 
         describe('applicable mimetype', () => {
-            beforeEach(()=> {
+            beforeEach(() => {
                 recording.response.contentType = 'application/json';
 
                 recordResponseHandler.record('apimockId', 'identifier', recording);
@@ -248,7 +262,7 @@ describe('RecordResponseHandler', () => {
         });
 
         describe('non applicable mimetype', () => {
-            beforeEach(()=> {
+            beforeEach(() => {
                 recording.response.contentType = 'application/pdf';
 
                 recordResponseHandler.record('apimockId', 'identifier', recording);
@@ -260,14 +274,17 @@ describe('RecordResponseHandler', () => {
                 expect(actual.request.method).toBe(HttpMethods.GET);
                 expect(actual.request.headers).toEqual({host: 'localhost:8888'});
                 expect(actual.request.body).toEqual({'some-key': 'some-value'});
+
                 // updates the data
-                expect(actual.response.data).toBe(`{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}`);
+                expect(actual.response.data).toBe('{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}');
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
                 expect(actual.response.headers).toEqual({'Content-Type': '...'});
             });
 
             it('saves the data', () => {
-                assert.calledWith(fsWriteFileSyncFn, path.join(os.tmpdir(), 'generated-uuid.pdf'));
+                expect(fsWriteFileSyncFn).toHaveBeenCalledWith(path.join(os.tmpdir(), 'generated-uuid.pdf'), expect.anything());
+                const data = fsWriteFileSyncFn.mock.calls[0][1];
+                expect(data).toEqual(Buffer.from('the-data', 'base64'));
             });
         });
     });

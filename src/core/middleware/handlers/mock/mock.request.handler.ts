@@ -1,13 +1,14 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
+import {inject, injectable} from 'inversify';
 import * as path from 'path';
 import * as url from 'url';
-import {inject, injectable} from 'inversify';
-import {Handler} from '../handler';
-import {HttpHeaders, HttpStatusCode} from '../../http';
+
 import {Mock} from '../../../mock/mock';
 import {MockResponse} from '../../../mock/mock.response';
 import {State} from '../../../state/state';
+import {HttpHeaders, HttpStatusCode} from '../../http';
+import {Handler} from '../handler';
 
 /**  Handler for a mock request. */
 @injectable()
@@ -95,7 +96,7 @@ export class MockRequestHandler implements Handler {
 
         Object.keys(variables).forEach((key) => {
             if (variables.hasOwnProperty(key)) {
-                if(typeof variables[key] === 'string') {
+                if (typeof variables[key] === 'string') {
                     _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), variables[key]);
                 } else {
                     // 1. replace object assignments ie. "x": "%%my-key%%"

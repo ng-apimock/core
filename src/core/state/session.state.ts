@@ -1,6 +1,6 @@
 import {IState} from './Istate';
-import {Recording} from './recording';
 import {MockState} from './mock.state';
+import {Recording} from './recording';
 
 /** Session state. */
 export class SessionState implements IState {

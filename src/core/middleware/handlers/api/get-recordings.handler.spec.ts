@@ -1,20 +1,23 @@
 import * as http from 'http';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
 import {Container} from 'inversify';
-import {GetRecordingsHandler} from './get-recordings.handler';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+
 import {IState} from '../../../state/Istate';
 import {State} from '../../../state/state';
+import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+
+import {GetRecordingsHandler} from './get-recordings.handler';
+
+import {createSpyObj} from 'jest-createspyobj';
 
 describe('GetRecordingsHandler', () => {
     let container: Container;
     let handler: GetRecordingsHandler;
     let matchingState: IState;
-    let state: SinonStubbedInstance<State>;
+    let state: jest.Mocked<State>;
 
     beforeEach(() => {
         container = new Container();
-        state = createStubInstance(State);
+        state = createSpyObj(State);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('GetRecordingsHandler').to(GetRecordingsHandler);
@@ -24,20 +27,30 @@ describe('GetRecordingsHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: SinonStub;
-        let request: SinonStubbedInstance<http.IncomingMessage>;
-        let response: SinonStubbedInstance<http.ServerResponse>;
+        let nextFn: jest.Mock<Function>;
+        let request: http.IncomingMessage;
+        let response: http.ServerResponse;
 
         beforeEach(() => {
-            nextFn = stub();
-            request = createStubInstance(http.IncomingMessage);
-            response = createStubInstance(http.ServerResponse);
+            nextFn = jest.fn();
+            request = {} as http.IncomingMessage;
+            response = {
+                end: jest.fn(),
+                writeHead: jest.fn()
+            } as unknown as http.ServerResponse;
 
-            (state as any)._mocks = [];
-            state.mocks.push(...[
-                {name: 'one', request: {url: '/one', method: 'GET'}, responses: {'some': {}, 'thing': {}}},
-                {name: 'two', request: {url: '/two', method: 'POST'}, responses: {'some': {}, 'thing': {}}}
-            ]);
+            (state as any).mocks = [
+                {
+                    name: 'one',
+                    request: {url: '/one', method: 'GET'},
+                    responses: {'some': {}, 'thing': {}}
+                },
+                {
+                    name: 'two',
+                    request: {url: '/two', method: 'POST'},
+                    responses: {'some': {}, 'thing': {}}
+                }
+            ];
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
                     one: {scenario: 'some', delay: 0, echo: true},
@@ -47,15 +60,14 @@ describe('GetRecordingsHandler', () => {
                 recordings: {'some': []},
                 record: true
             };
-            state.getMatchingState.returns(matchingState);
+            state.getMatchingState.mockReturnValue(matchingState);
         });
 
         it('gets the recordings', () => {
             handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
 
-            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            // @ts-ignore
-            assert.calledWith(response.end, JSON.stringify({
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            expect(response.end).toHaveBeenCalledWith(JSON.stringify({
                 recordings: {'some': []},
                 record: true
             }));
@@ -63,10 +75,10 @@ describe('GetRecordingsHandler', () => {
     });
 
     describe('isApplicable', () => {
-        let request: SinonStubbedInstance<http.IncomingMessage>;
+        let request: http.IncomingMessage;
 
         beforeEach(() => {
-            request = createStubInstance(http.IncomingMessage);
+            request = {} as http.IncomingMessage;
         });
 
         it('indicates applicable when url and method match', () => {

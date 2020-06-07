@@ -1,5 +1,5 @@
-import {MockResponse} from './mock.response';
 import {MockRequest} from './mock.request';
+import {MockResponse} from './mock.response';
 
 /** Mock. */
 export interface Mock {

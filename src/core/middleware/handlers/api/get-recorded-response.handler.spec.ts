@@ -1,16 +1,19 @@
 import 'reflect-metadata';
+
 import * as fs from 'fs-extra';
 import * as http from 'http';
+import {Container} from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-import {Container} from 'inversify';
-import {GetRecordedResponseHandler} from './get-recorded-response.handler';
+
 import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+
+import {GetRecordedResponseHandler} from './get-recorded-response.handler';
+
+jest.mock('fs-extra');
 
 describe('GetRecordedResponseHandler', () => {
     let container: Container;
-    let fsReadFileSyncFn: SinonStub;
     let handler: GetRecordedResponseHandler;
 
     beforeEach(() => {
@@ -23,39 +26,38 @@ describe('GetRecordedResponseHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: SinonStub;
-        let request: SinonStubbedInstance<http.IncomingMessage>;
-        let response: SinonStubbedInstance<http.ServerResponse>;
+        let fsReadFileSyncFn: jest.Mock<string>;
+        let nextFn: jest.Mock<Function>;
+        let request: http.IncomingMessage;
+        let response: http.ServerResponse;
 
         beforeEach(() => {
-            nextFn = stub();
-            request = createStubInstance(http.IncomingMessage);
-            response = createStubInstance(http.ServerResponse);
+            nextFn = jest.fn();
+            request = {} as http.IncomingMessage;
+            response = {
+                end: jest.fn(),
+                writeHead: jest.fn()
+            } as unknown as http.ServerResponse;
 
             request.url = 'some/url/to/some.pdf';
-            fsReadFileSyncFn = stub(fs, 'readFileSync');
-            fsReadFileSyncFn.returns('file-content');
-        });
-
-        afterEach(()=> {
-            fsReadFileSyncFn.restore();
+            fsReadFileSyncFn = fs.readFileSync as jest.Mock;
+            fsReadFileSyncFn.mockReturnValue('file-content');
         });
 
         it('returns the recorded response', () => {
             handler.handle(request as any, response as any, nextFn);
 
-            assert.calledWith(fsReadFileSyncFn, path.join(os.tmpdir(), 'some.pdf'));
-            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
-            // @ts-ignore
-            assert.calledWith(response.end, 'file-content');
+            expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join(os.tmpdir(), 'some.pdf'));
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
+            expect(response.end).toHaveBeenCalledWith('file-content');
         });
     });
 
     describe('isApplicable', () => {
-        let request: SinonStubbedInstance<http.IncomingMessage>;
+        let request: http.IncomingMessage;
 
         beforeEach(() => {
-            request = createStubInstance(http.IncomingMessage);
+            request = {} as http.IncomingMessage;
         });
 
         it('indicates applicable when url and method match', () => {

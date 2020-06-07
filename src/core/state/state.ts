@@ -1,12 +1,15 @@
 import 'reflect-metadata';
-import {injectable} from 'inversify';
-import {GlobalState} from './global.state';
+
 import {IncomingHttpHeaders} from 'http';
-import {IState} from './Istate';
+import {injectable} from 'inversify';
+
 import {Mock} from '../mock/mock';
 import {MockResponse} from '../mock/mock.response';
-import {MockState} from './mock.state';
 import {Preset} from '../preset/preset';
+
+import {GlobalState} from './global.state';
+import {IState} from './Istate';
+import {MockState} from './mock.state';
 import {SessionState} from './session.state';
 
 const DEFAULT_DELAY = 0;

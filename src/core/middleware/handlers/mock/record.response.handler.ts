@@ -1,15 +1,16 @@
 import * as fs from 'fs-extra';
 import * as http from 'http';
+import {inject, injectable} from 'inversify';
+import fetch, {Request} from 'node-fetch';
 import * as os from 'os';
 import * as path from 'path';
 import * as uuid from 'uuid';
-import fetch, {Request} from 'node-fetch';
-import {inject, injectable} from 'inversify';
-import {Handler} from '../handler';
-import {HttpMethods} from '../../http';
+
 import {Mock} from '../../../mock/mock';
 import {Recording} from '../../../state/recording';
 import {State} from '../../../state/state';
+import {HttpMethods} from '../../http';
+import {Handler} from '../handler';
 
 /**  Handler for a recording a response. */
 @injectable()
@@ -88,7 +89,7 @@ export class RecordResponseHandler implements Handler {
      * @param {string} name The name.
      * @param {Recording} recording The recordings.
      */
-    record(id: string, name: string, recording: Recording) {
+    record(id: string, name: string, recording: Recording): void {
         const contentType: string = recording.response.contentType;
         const recordings = this.state.getMatchingState(id).recordings;
         if (recordings[name] === undefined) {

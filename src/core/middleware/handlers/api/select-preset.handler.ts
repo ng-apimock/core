@@ -1,12 +1,13 @@
 import * as http from 'http';
 import {inject, injectable} from 'inversify';
-import {ApplicableHandler} from '../handler';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {IState} from '../../../state/Istate';
+
 import {Mock} from '../../../mock/mock';
-import {MockState} from '../../../state/mock.state';
 import {Preset} from '../../../preset/preset';
+import {IState} from '../../../state/Istate';
+import {MockState} from '../../../state/mock.state';
 import {State} from '../../../state/state';
+import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+import {ApplicableHandler} from '../handler';
 
 /**  Select preset handler. */
 @injectable()

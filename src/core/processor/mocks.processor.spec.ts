@@ -1,22 +1,28 @@
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
-import * as path from 'path';
 import {Container} from 'inversify';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-import {State} from '../state/state';
+import * as path from 'path';
+
 import {HttpHeaders} from '../middleware/http';
-import {MocksProcessor} from './mocks.processor';
 import {GlobalState} from '../state/global.state';
+import {State} from '../state/state';
+
+import {MocksProcessor} from './mocks.processor';
 import {DefaultProcessingOptions} from './processing.options';
+
+import {createSpyObj} from 'jest-createspyobj';
+
+jest.mock('fs-extra');
+jest.mock('glob');
 
 describe('MocksProcessor', () => {
     let container: Container;
-    let state: SinonStubbedInstance<State>;
+    let state: jest.Mocked<State>;
     let processor: MocksProcessor;
 
     beforeEach(() => {
         container = new Container();
-        state = createStubInstance(State);
+        state = createSpyObj(State);
 
         container.bind('State').toConstantValue(state);
         container.bind('MocksProcessor').to(MocksProcessor);
@@ -25,39 +31,39 @@ describe('MocksProcessor', () => {
     });
 
     describe('process', () => {
-        let consoleLogFn: SinonStub;
-        let consoleWarnFn: SinonStub;
-        let doneFn: SinonStub;
-        let fsReadJsonSyncFn: SinonStub;
-        let globSyncFn: SinonStub;
+        let consoleLogFn: jest.Mock;
+        let consoleWarnFn: jest.Mock;
+        let doneFn: jest.Mock;
+        let fsReadJsonSyncFn: jest.Mock;
+        let globSyncFn: jest.Mock;
 
         beforeEach(() => {
-            doneFn = stub();
+            doneFn = jest.fn();
 
-            consoleWarnFn = stub(console, 'warn');
-            consoleLogFn = stub(console, 'log');
-            fsReadJsonSyncFn = stub(fs, 'readJsonSync');
-            globSyncFn = stub(glob, 'sync');
+            consoleLogFn = console.log = jest.fn();
+            consoleWarnFn = console.warn = jest.fn();
+            fsReadJsonSyncFn = fs.readJsonSync as jest.Mock;
+            globSyncFn = glob.sync as jest.Mock;
 
-            (state as any)._mocks = [];
-            (state as any)._defaults = {};
-            (state as any)._global = new GlobalState();
-            globSyncFn.returns([
+            (state as any).mocks = [];
+            (state as any).defaults = {};
+            (state as any).global = new GlobalState();
+            globSyncFn.mockReturnValue([
                 'mock/minimal-json-request.mock.json',
                 'mock/minimal-binary-request.mock.json',
                 'mock/full-request.mock.json',
                 'mock/duplicate-request.mock.json']);
-            fsReadJsonSyncFn.onCall(0).returns({
+            fsReadJsonSyncFn.mockReturnValueOnce({
                 name: 'minimal-json-request',
                 request: {url: 'minimal/json/url', method: 'GET'},
                 responses: {'minimal-json-response': {}}
             });
-            fsReadJsonSyncFn.onCall(1).returns({
+            fsReadJsonSyncFn.mockReturnValueOnce({
                 name: 'minimal-binary-request',
                 request: {url: 'minimal/binary/url', method: 'GET'},
                 responses: {'minimal-binary-response': {file: 'some.pdf'}}
             });
-            fsReadJsonSyncFn.onCall(2).returns({
+            fsReadJsonSyncFn.mockReturnValueOnce({
                 name: 'full-request',
                 isArray: true,
                 delay: 1000,
@@ -85,18 +91,11 @@ describe('MocksProcessor', () => {
                     }
                 }
             });
-            fsReadJsonSyncFn.onCall(3).returns({
+            fsReadJsonSyncFn.mockReturnValue({
                 name: 'minimal-json-request',
                 request: {url: 'duplicate/url', method: 'GET'},
                 responses: {'duplicate-response': {}}
             });
-        });
-
-        afterEach(() => {
-            consoleLogFn.restore();
-            consoleWarnFn.restore();
-            fsReadJsonSyncFn.restore();
-            globSyncFn.restore();
         });
 
         describe('by default', () => {
@@ -104,19 +103,12 @@ describe('MocksProcessor', () => {
                 processor.process(Object.assign({}, DefaultProcessingOptions, {src: 'src'}));
             });
 
-            afterEach(() => {
-                consoleLogFn.reset();
-                consoleWarnFn.reset();
-                fsReadJsonSyncFn.reset();
-                globSyncFn.reset();
-            });
-
             it('processes each mock', () => {
-                assert.calledWith(globSyncFn,'**/*.mock.json', {cwd: 'src', root: '/'});
-                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-json-request.mock.json'));
-                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/minimal-binary-request.mock.json'));
-                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/full-request.mock.json'));
-                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock/duplicate-request.mock.json'));
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.mock.json', {cwd: 'src', root: '/'});
+                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/minimal-json-request.mock.json'));
+                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/minimal-binary-request.mock.json'));
+                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/full-request.mock.json'));
+                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/duplicate-request.mock.json'));
             });
 
             it('sets the defaults', () =>
@@ -134,7 +126,6 @@ describe('MocksProcessor', () => {
                 }));
 
             it('updates the mocks with default values', () => {
-                consoleLogFn.callThrough();
                 expect(state.mocks[0].responses).toEqual({
                     'duplicate-response': {
                         status: 200, // default is status ok => 200
@@ -171,16 +162,16 @@ describe('MocksProcessor', () => {
             });
 
             it('processes unique mocks', () =>
-                assert.calledWith(consoleLogFn, `Processed 3 unique mocks.`));
+                expect(consoleLogFn).toHaveBeenCalledWith('Processed 3 unique mocks.'));
         });
 
         describe('with full processing options', () => {
             beforeEach(() => {
-                globSyncFn.returns([]);
+                globSyncFn.mockReturnValue([]);
                 processor.process({src: 'src', patterns: {mocks: '**/*.mymock.json'}});
             });
             it('processes each mock', () => {
-                assert.calledWith(globSyncFn,
+                expect(globSyncFn).toHaveBeenCalledWith(
                     '**/*.mymock.json', {
                         cwd: 'src', root: '/'
                     }

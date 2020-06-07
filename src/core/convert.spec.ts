@@ -1,8 +1,11 @@
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import * as path from 'path';
-import {assert, SinonStub, stub} from 'sinon';
+
 import {Converter} from './convert';
+
+jest.mock('fs-extra');
+jest.mock('glob');
 
 describe('Converter', () => {
     let converter: Converter;
@@ -12,31 +15,29 @@ describe('Converter', () => {
     });
 
     describe('convert', () => {
-        let consoleLogFn: SinonStub;
-        let fsReadJsonSyncFn: SinonStub;
-        let fsOutputJsonSyncFn: SinonStub;
-        let globSyncFn: SinonStub;
+        let consoleLogFn: jest.Mock;
+        let fsOutputJsonSyncFn: jest.Mock;
+        let fsReadJsonSyncFn: jest.Mock;
+        let globSyncFn: jest.Mock;
 
         beforeEach(() => {
-            fsReadJsonSyncFn = stub(fs, 'readJsonSync');
-            fsOutputJsonSyncFn = stub(fs, 'outputJsonSync');
-            globSyncFn = stub(glob, 'sync');
-            consoleLogFn = stub(console, 'log');
+            consoleLogFn = console.log = jest.fn();
+            fsReadJsonSyncFn = fs.readJsonSync as jest.Mock;
+            fsOutputJsonSyncFn = fs.outputJsonSync as jest.Mock;
+            globSyncFn = glob.sync as jest.Mock;
 
-            globSyncFn.returns(['mock/old.mock.json', 'mock/new.mock.json']);
-            fsReadJsonSyncFn.onCall(0).returns({
-                name: 'old.mock', expression: 'old/mock', method: 'GET', responses: {'old-json-response': {}}
+            globSyncFn.mockReturnValue(['mock/old.mock.json', 'mock/new.mock.json']);
+            fsReadJsonSyncFn.mockReturnValueOnce({
+                name: 'old.mock',
+                expression: 'old/mock',
+                method: 'GET',
+                responses: {'old-json-response': {}}
             });
-            fsReadJsonSyncFn.onCall(1).returns({
-                name: 'new.mock', request: {url: 'new/mock', method: 'GET'}, responses: {'new-json-response': {}}
+            fsReadJsonSyncFn.mockReturnValue({
+                name: 'new.mock',
+                request: {url: 'new/mock', method: 'GET'},
+                responses: {'new-json-response': {}}
             });
-        });
-
-        afterEach(() => {
-            fsReadJsonSyncFn.restore();
-            fsOutputJsonSyncFn.restore();
-            globSyncFn.restore();
-            consoleLogFn.restore();
         });
 
         describe('by default', () => {
@@ -44,28 +45,27 @@ describe('Converter', () => {
                 converter.convert('src', 'destination');
             });
 
-            afterEach(() => {
-                fsReadJsonSyncFn.reset();
-                fsOutputJsonSyncFn.reset();
-                globSyncFn.reset();
-            });
 
             it('processes all files', () =>
-                assert.calledWith(globSyncFn, '**/*.mock.json', {cwd: 'src'}));
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.mock.json', {cwd: 'src'}));
 
             it('reads all the mock files', () => {
-                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock', 'old.mock.json'));
-                assert.calledWith(fsReadJsonSyncFn, path.join('src', 'mock', 'new.mock.json'));
+                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock', 'old.mock.json'));
+                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock', 'new.mock.json'));
             });
 
             it('converts old mock.json', () =>
-                assert.calledWith(fsOutputJsonSyncFn, path.join(process.cwd(), 'destination', 'mock', 'old.mock.json'), {
-                    name: 'old.mock', request: {method: 'GET', url: 'old/mock'}, responses: {'old-json-response': {}}
+                expect(fsOutputJsonSyncFn).toHaveBeenCalledWith(path.join(process.cwd(), 'destination', 'mock', 'old.mock.json'), {
+                    name: 'old.mock',
+                    request: {method: 'GET', url: 'old/mock'},
+                    responses: {'old-json-response': {}}
                 }, {spaces: 2}));
 
             it('does not convert new mock.json', () =>
-                assert.calledWith(fsOutputJsonSyncFn, path.join(process.cwd(), 'destination', 'mock', 'new.mock.json'), {
-                    name: 'new.mock', request: {method: 'GET', url: 'new/mock'}, responses: {'new-json-response': {}}
+                expect(fsOutputJsonSyncFn).toHaveBeenCalledWith(path.join(process.cwd(), 'destination', 'mock', 'new.mock.json'), {
+                    name: 'new.mock',
+                    request: {method: 'GET', url: 'new/mock'},
+                    responses: {'new-json-response': {}}
                 }, {spaces: 2}));
         });
         describe('without a specified pattern', () => {
@@ -74,7 +74,7 @@ describe('Converter', () => {
             });
 
             it('processes all files', () =>
-                assert.calledWith(globSyncFn, 'my/patterm.json', {cwd: 'src'}));
+                expect(globSyncFn).toHaveBeenCalledWith('my/patterm.json', {cwd: 'src'}));
         });
     });
 });

@@ -1,10 +1,12 @@
-import * as glob from 'glob';
-import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as glob from 'glob';
 import {inject, injectable} from 'inversify';
+import * as path from 'path';
+
 import {Preset} from '../preset/preset';
-import {ProcessingOptions} from './processing.options';
 import {State} from '../state/state';
+
+import {ProcessingOptions} from './processing.options';
 
 /** Presets processor. */
 @injectable()
