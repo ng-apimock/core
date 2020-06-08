@@ -99,9 +99,9 @@ describe('RecordResponseHandler', () => {
                 });
             });
 
-            describe('method DELETE', () => {
+            describe('method HEAD', () => {
                 beforeEach(() => {
-                    request.method = HttpMethods.DELETE;
+                    request.method = HttpMethods.HEAD;
 
                     recordResponseHandler.handle(request, response as any, nextFn, {
                         id: 'apimockId',
@@ -116,7 +116,7 @@ describe('RecordResponseHandler', () => {
                     expect(fetchResponseFn).toHaveBeenCalled();
                     const actualRequest = fetchResponseFn.mock.calls[0][0];
                     expect(actualRequest.url).toBe('http://localhost:8888/some/api');
-                    expect(actualRequest.method).toBe(HttpMethods.DELETE);
+                    expect(actualRequest.method).toBe(HttpMethods.HEAD);
                     expect(actualRequest.body).toEqual(null);
                     expect(actualRequest.headers.get('host')).toBe('localhost:8888');
                     expect(actualRequest.headers.get('record')).toBe('true');

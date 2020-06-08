@@ -3,6 +3,7 @@ export namespace HttpMethods {
     export const POST = 'POST';
     export const PUT = 'PUT';
     export const DELETE = 'DELETE';
+    export const HEAD = 'HEAD';
 }
 
 export namespace HttpHeaders {
