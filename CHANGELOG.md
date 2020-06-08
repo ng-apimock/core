@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file. See
 
 * 🐛 method GET and HEAD should not add a body while recording ([aee7f9d](https://github.com/ng-apimock/core/commit/aee7f9d78bf1365264812bcd04672aa7913a035a)), closes [#31](https://github.com/ng-apimock/core/issues/31)
 
-# [2.0.0](https://github.com/ng-apimock/core/compare/v1.0.25...v2.0.0) (2020-06-08)
+## [2.0.0](https://github.com/ng-apimock/core/compare/v1.0.25...v2.0.0) (2020-06-08)
 
 ### chore
 * 🤖 use eslint ([875808c](https://github.com/ng-apimock/core/commit/875808c398))
