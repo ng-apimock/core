@@ -1,13 +1,13 @@
 import * as chokidar from 'chokidar';
-import {inject, injectable} from 'inversify';
-import {DefaultProcessingOptions, ProcessingOptions} from './processing.options';
-import {MocksProcessor} from './mocks.processor';
-import {PresetsProcessor} from './presets.processor';
+import { inject, injectable } from 'inversify';
+
+import { MocksProcessor } from './mocks.processor';
+import { PresetsProcessor } from './presets.processor';
+import { DefaultProcessingOptions, ProcessingOptions } from './processing.options';
 
 /** Mocks processor. */
 @injectable()
 export class Processor {
-
     /**
      * Constructor.
      * @param {MocksProcessor} mocksProcessor The mocks processor.
@@ -29,7 +29,7 @@ export class Processor {
         this.mocksProcessor.process(opts);
         this.presetsProcessor.process(opts);
 
-        if(opts.watch) {
+        if (opts.watch) {
             chokidar.watch(`${opts.src}/${opts.patterns.mocks}`, {
                 ignoreInitial: true,
                 usePolling: true,
@@ -50,6 +50,6 @@ export class Processor {
      * @returns {ProcessingOptions} mergedOptions The merged options.
      */
     private getMergedOptions(options: ProcessingOptions): ProcessingOptions {
-        return Object.assign({}, DefaultProcessingOptions, options);
+        return { ...DefaultProcessingOptions, ...options };
     }
 }

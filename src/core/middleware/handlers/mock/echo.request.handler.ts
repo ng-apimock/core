@@ -1,8 +1,10 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
-import {Handler} from '../handler';
-import {Mock} from '../../../mock/mock';
-import {State} from '../../../state/state';
+
+import { inject, injectable } from 'inversify';
+
+import { Mock } from '../../../mock/mock';
+import { State } from '../../../state/state';
+import { Handler } from '../handler';
 
 /**  Handler for a echoing a request. */
 @injectable()
@@ -14,13 +16,13 @@ export class EchoRequestHandler implements Handler {
     constructor(@inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function,
-           params: { id: string, mock: Mock, body: any }): void {
+        params: { id: string, mock: Mock, body: any }): void {
         const echo: boolean = this.state.getEcho(params.mock.name, params.id);
 
         if (echo) {
-            console.log(`${params.mock.request.method} request made on '${params.mock.request.url}' with body: '${JSON.stringify(params.body)}`);
+            console.log(`${params.mock.request.method} request made on '${params.mock.request.url}' with body: '${JSON.stringify(params.body)}'`);
         }
     }
 }

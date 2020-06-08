@@ -1,8 +1,10 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
-import {ApplicableHandler} from '../handler';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {State} from '../../../state/state';
+
+import { inject, injectable } from 'inversify';
+
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Init handler. */
 @injectable()
@@ -16,13 +18,13 @@ export class InitHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const urlMatches = request.url.startsWith(`${this.baseUrl}/init`);
         const methodMatches = request.method === HttpMethods.GET;

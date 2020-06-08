@@ -1,10 +1,12 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
 import * as os from 'os';
 import * as path from 'path';
-import {inject, injectable} from 'inversify';
-import {ApplicableHandler} from '../handler';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
+
+import * as fs from 'fs-extra';
+import { inject, injectable } from 'inversify';
+
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Handler for a recording a response. */
 @injectable()
@@ -16,7 +18,7 @@ export class GetRecordedResponseHandler implements ApplicableHandler {
     constructor(@inject('BaseUrl') private baseUrl: string) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
         const fileName = request.url.substring(request.url.lastIndexOf('/') + 1);
         const file = fs.readFileSync(path.join(os.tmpdir(), fileName));
@@ -24,11 +26,10 @@ export class GetRecordedResponseHandler implements ApplicableHandler {
         response.end(file);
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.GET;
         const urlMatches = request.url.startsWith(`${this.baseUrl}/recordings/`);
         return urlMatches && methodMatches;
     }
-
 }

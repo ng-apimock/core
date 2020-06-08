@@ -1,4 +1,4 @@
-import {GlobalState} from './global.state';
+import { GlobalState } from './global.state';
 
 describe('GlobalState', () => {
     let state: GlobalState;
@@ -8,16 +8,12 @@ describe('GlobalState', () => {
             state = new GlobalState();
         });
 
-        it('creates a new mocks object', () =>
-            expect(state.mocks).toEqual({}));
+        it('creates a new mocks object', () => expect(state.mocks).toEqual({}));
 
-        it('creates a new variables object', () =>
-            expect(state.variables).toEqual({}));
+        it('creates a new variables object', () => expect(state.variables).toEqual({}));
 
-        it('creates a new recordings object', () =>
-            expect(state.recordings).toEqual({}));
+        it('creates a new recordings object', () => expect(state.recordings).toEqual({}));
 
-        it('sets the record indicator to false', () =>
-            expect(state.record).toBe(false));
+        it('sets the record indicator to false', () => expect(state.record).toBe(false));
     });
 });

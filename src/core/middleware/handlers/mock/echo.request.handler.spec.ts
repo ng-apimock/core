@@ -1,20 +1,23 @@
 import * as http from 'http';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-import {Container} from 'inversify';
-import {EchoRequestHandler} from './echo.request.handler';
-import {HttpMethods} from '../../http';
-import {Mock} from '../../../mock/mock';
-import {State} from '../../../state/state';
+
+import { Container } from 'inversify';
+import { createSpyObj } from 'jest-createspyobj';
+
+import { Mock } from '../../../mock/mock';
+import { State } from '../../../state/state';
+import { HttpMethods } from '../../http';
+
+import { EchoRequestHandler } from './echo.request.handler';
+
 
 describe('EchoRequestHandler', () => {
     let container: Container;
-    let consoleLogFn: SinonStub;
     let echoRequestHandler: EchoRequestHandler;
-    let state: SinonStubbedInstance<State>;
+    let state: jest.Mocked<State>;
 
     beforeEach(() => {
         container = new Container();
-        state = createStubInstance(State);
+        state = createSpyObj(State);
 
         container.bind('EchoRequestHandler').to(EchoRequestHandler);
         container.bind('State').toConstantValue(state);
@@ -22,67 +25,58 @@ describe('EchoRequestHandler', () => {
         echoRequestHandler = container.get<EchoRequestHandler>('EchoRequestHandler');
     });
 
-    afterEach(() => {
-        consoleLogFn.restore();
-    });
-
     describe('handle', () => {
-        let nextFn: SinonStub;
-        let request: SinonStubbedInstance<http.IncomingMessage>;
-        let response: SinonStubbedInstance<http.ServerResponse>;
+        let consoleLogFn: jest.Mock;
+        let nextFn: jest.Mock;
+        let request: http.IncomingMessage;
+        let response: http.ServerResponse;
 
         beforeEach(() => {
-            consoleLogFn = stub(console, 'log');
-            nextFn = stub();
-            request = createStubInstance(http.IncomingMessage);
-            response = createStubInstance(http.ServerResponse);
-        });
+            nextFn = jest.fn();
+            request = {} as http.IncomingMessage;
+            response = {
+                end: jest.fn(),
+                writeHead: jest.fn()
+            } as unknown as http.ServerResponse;
 
-        afterEach(() => {
-            state.getEcho.reset();
-            nextFn.reset();
-            consoleLogFn.reset();
+            consoleLogFn = console.log = jest.fn();
         });
 
         describe('echo = true', () => {
             beforeEach(() => {
-                state.getEcho.returns(true);
+                state.getEcho.mockReturnValue(true);
             });
 
             it('console.logs the request', () => {
                 echoRequestHandler.handle(request as any, response as any, nextFn, {
-                    id: 'apimockId', mock: {
-                        name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                    } as Mock, body: {x: 'x'}
+                    id: 'apimockId',
+                    mock: {
+                        name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
+                    } as Mock,
+                    body: { x: 'x' }
                 });
 
-                assert.calledWith(state.getEcho, ({
-                    name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                } as Mock).name, 'apimockId');
-                assert.calledWith(consoleLogFn, `${({
-                    name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                } as Mock).request.method} request made on \'${({
-                    name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                } as Mock).request.url}\' with body: \'${JSON.stringify({x: 'x'})}`);
+                expect(state.getEcho).toHaveBeenCalledWith('some', 'apimockId');
+                expect(consoleLogFn).toHaveBeenCalledWith(`${HttpMethods.GET} request made on '/some/url' with body: '${JSON.stringify({ x: 'x' })}'`);
             });
         });
 
         describe('echo = false', () => {
             beforeEach(() => {
-                state.getEcho.returns(false);
+                state.getEcho.mockReturnValue(false);
             });
 
             it('does not console.logs the request', () => {
                 echoRequestHandler.handle(request as any, response as any, nextFn, {
-                    id: 'apimockId', mock: {
-                        name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                    } as Mock, body: {x: 'x'}
+                    id: 'apimockId',
+                    mock: {
+                        name: 'some', request: { method: HttpMethods.GET, url: '/some/url' }
+                    } as Mock,
+                    body: { x: 'x' }
                 });
 
-                assert.calledWith(state.getEcho, ({
-                    name: 'some', request: {method: HttpMethods.GET, url: '/some/url'}
-                } as Mock).name, 'apimockId');
-                assert.notCalled(consoleLogFn);
+                expect(state.getEcho).toHaveBeenCalledWith('some', 'apimockId');
+                expect(consoleLogFn).not.toHaveBeenCalled();
             });
         });
     });

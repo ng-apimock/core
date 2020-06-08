@@ -1,6 +1,6 @@
-import {IncomingHttpHeaders, OutgoingHttpHeaders} from 'http';
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
 
-/** An actual http response recording.*/
+/** An actual http response recording. */
 export interface Recording {
     request: {
         url: string;

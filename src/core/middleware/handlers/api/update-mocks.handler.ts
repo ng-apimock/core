@@ -1,9 +1,11 @@
 import * as http from 'http';
-import {inject, injectable} from 'inversify';
-import {ApplicableHandler} from '../handler';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {Mock} from '../../../mock/mock';
-import {State} from '../../../state/state';
+
+import { inject, injectable } from 'inversify';
+
+import { Mock } from '../../../mock/mock';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
 
 /**  Update mocks handler. */
 @injectable()
@@ -19,20 +21,20 @@ export class UpdateMocksHandler implements ApplicableHandler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
         id: string, body: { name: string, scenario?: string, echo?: boolean, delay?: number }
     }): void {
         const state = this.state.getMatchingState(params.id);
-        const body = params.body;
+        const { body } = params;
         try {
             const mockName: string = body.name;
             const matchingMock: Mock = this.state.mocks.find((mock) => mock.name === mockName);
 
             if (matchingMock !== undefined) {
-                const scenario: string = body.scenario;
-                const echo: boolean = body.echo;
-                const delay: number = body.delay;
+                const { scenario } = body;
+                const { echo } = body;
+                const { delay } = body;
 
                 if (echo !== undefined) {
                     state.mocks[mockName].echo = echo;
@@ -42,8 +44,8 @@ export class UpdateMocksHandler implements ApplicableHandler {
                 }
 
                 if (scenario !== undefined) {
-                    if (scenario === this.PASS_THROUGH ||
-                        Object.keys(matchingMock.responses).find((_scenario) => _scenario === scenario)) {
+                    if (scenario === this.PASS_THROUGH
+                        || Object.keys(matchingMock.responses).find((_scenario) => _scenario === scenario)) {
                         state.mocks[mockName].scenario = scenario;
                     } else {
                         throw new Error(`No scenario matching ['${scenario}'] found`);
@@ -60,7 +62,7 @@ export class UpdateMocksHandler implements ApplicableHandler {
         }
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.PUT;
         const urlMatches = request.url.startsWith(`${this.baseUrl}/mocks`);

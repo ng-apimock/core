@@ -1,13 +1,17 @@
 import 'reflect-metadata';
-import {injectable} from 'inversify';
-import {GlobalState} from './global.state';
-import {IncomingHttpHeaders} from 'http';
-import {IState} from './Istate';
-import {Mock} from '../mock/mock';
-import {MockResponse} from '../mock/mock.response';
-import {MockState} from './mock.state';
-import {Preset} from '../preset/preset';
-import {SessionState} from './session.state';
+
+import { IncomingHttpHeaders } from 'http';
+
+import { injectable } from 'inversify';
+
+import { Mock } from '../mock/mock';
+import { MockResponse } from '../mock/mock.response';
+import { Preset } from '../preset/preset';
+
+import { IState } from './Istate';
+import { GlobalState } from './global.state';
+import { MockState } from './mock.state';
+import { SessionState } from './session.state';
 
 const DEFAULT_DELAY = 0;
 const DEFAULT_ECHO = false;
@@ -17,9 +21,13 @@ const PASS_THROUGH = 'passThrough';
 @injectable()
 export class State {
     readonly _mocks: Mock[];
+
     readonly _presets: Preset[];
+
     readonly _defaults: { [identifier: string]: MockState };
+
     readonly _global: GlobalState;
+
     readonly _sessions: SessionState[];
 
     /** Constructor. */
@@ -84,7 +92,7 @@ export class State {
      * @return {Mock} mock The matching mock.
      */
     getMatchingMock(url: string, method: string, headers: IncomingHttpHeaders, body: any): Mock {
-        return this.mocks.find(_mock => {
+        return this.mocks.find((_mock) => {
             const matchUrl = new RegExp(_mock.request.url).exec(decodeURI(url)) !== null;
             const matchMethod = _mock.request.method === method;
 
@@ -116,11 +124,10 @@ export class State {
         return Object.keys(bodyMatcher).every((key) => {
             if (typeof bodyMatcher[key] === 'object') {
                 return body[key] !== undefined ? this.matchesBody(bodyMatcher[key], body[key]) : false;
-            } else {
-                const defined = body[key] !== undefined;
-                const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
-                return defined && matched;
             }
+            const defined = body[key] !== undefined;
+            const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
+            return defined && matched;
         });
     }
 
@@ -132,8 +139,8 @@ export class State {
      */
     getResponse(name: string, id: string): MockResponse {
         const state = this.getMatchingState(id);
-        let response = undefined;
-        let scenario = undefined;
+        let response;
+        let scenario;
 
         if (state.mocks[name] !== undefined) {
             scenario = state.mocks[name].scenario;
@@ -212,5 +219,4 @@ export class State {
             state.mocks[mockName].scenario = PASS_THROUGH;
         });
     }
-
 }

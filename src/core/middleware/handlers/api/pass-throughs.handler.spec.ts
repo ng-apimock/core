@@ -1,18 +1,22 @@
 import * as http from 'http';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-import {Container} from 'inversify';
-import {HttpHeaders, HttpStatusCode} from '../../http';
-import {PassThroughsHandler} from './pass-throughs.handler';
-import {State} from '../../../state/state';
+
+import { Container } from 'inversify';
+import { createSpyObj } from 'jest-createspyobj';
+
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpStatusCode } from '../../http';
+
+import { PassThroughsHandler } from './pass-throughs.handler';
+
 
 describe('PassThroughsHandler', () => {
     let container: Container;
     let handler: PassThroughsHandler;
-    let state: SinonStubbedInstance<State>;
+    let state: jest.Mocked<State>;
 
     beforeEach(() => {
         container = new Container();
-        state = createStubInstance(State);
+        state = createSpyObj(State);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('PassThroughsHandler').to(PassThroughsHandler);
@@ -22,43 +26,46 @@ describe('PassThroughsHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: SinonStub;
-        let request: SinonStubbedInstance<http.IncomingMessage>;
-        let response: SinonStubbedInstance<http.ServerResponse>;
+        let nextFn: jest.Mock;
+        let request: http.IncomingMessage;
+        let response: http.ServerResponse;
 
         beforeEach(() => {
-            nextFn = stub();
-            request = createStubInstance(http.IncomingMessage);
-            response = createStubInstance(http.ServerResponse);
+            nextFn = jest.fn();
+            request = {} as http.IncomingMessage;
+            response = {
+                end: jest.fn(),
+                writeHead: jest.fn()
+            } as unknown as http.ServerResponse;
         });
 
         it('sets the passThroughs', () => {
-            handler.handle(request as any, response as any, nextFn, {id: 'apimockId'});
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
-            assert.calledWith(state.setToPassThroughs, 'apimockId');
-            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            assert.called(response.end);
+            expect(state.setToPassThroughs).toHaveBeenCalledWith('apimockId');
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            expect(response.end).toHaveBeenCalled();
         });
     });
 
     describe('isApplicable', () => {
-        let request: SinonStubbedInstance<http.IncomingMessage>;
+        let request: http.IncomingMessage;
 
         beforeEach(() => {
-            request = createStubInstance(http.IncomingMessage);
+            request = {} as http.IncomingMessage;
         });
 
         it('indicates applicable when url and action match', () => {
             request.url = `${'/base-url'}/actions`;
-            expect(handler.isApplicable(request as any, {action: 'passThroughs'})).toBe(true);
+            expect(handler.isApplicable(request as any, { action: 'passThroughs' })).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
             request.url = `${'/base-url'}/actions`;
-            expect(handler.isApplicable(request as any, {action: 'NO-MATCHING-ACTION'})).toBe(false);
+            expect(handler.isApplicable(request as any, { action: 'NO-MATCHING-ACTION' })).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
             request.url = `${'/base-url'}/no-match`;
-            expect(handler.isApplicable(request as any, {action: 'passThroughs'})).toBe(false);
+            expect(handler.isApplicable(request as any, { action: 'passThroughs' })).toBe(false);
         });
     });
 });

@@ -1,20 +1,24 @@
 import * as http from 'http';
-import {assert, createStubInstance, SinonStub, SinonStubbedInstance, stub} from 'sinon';
-import {Container} from 'inversify';
-import {HttpHeaders, HttpMethods, HttpStatusCode} from '../../http';
-import {IState} from '../../../state/Istate';
-import {SetVariableHandler} from './set-variable.handler';
-import {State} from '../../../state/state';
+
+import { Container } from 'inversify';
+import { createSpyObj } from 'jest-createspyobj';
+
+import { IState } from '../../../state/Istate';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+
+import { SetVariableHandler } from './set-variable.handler';
+
 
 describe('SetVariableHandler', () => {
     let container: Container;
     let handler: SetVariableHandler;
     let matchingState: IState;
-    let state: SinonStubbedInstance<State>;
+    let state: jest.Mocked<State>;
 
     beforeEach(() => {
         container = new Container();
-        state = createStubInstance(State);
+        state = createSpyObj(State);
 
         container.bind('BaseUrl').toConstantValue('/base-url');
         container.bind('SetVariableHandler').to(SetVariableHandler);
@@ -24,67 +28,63 @@ describe('SetVariableHandler', () => {
     });
 
     describe('handle', () => {
-        let nextFn: SinonStub;
-        let request: SinonStubbedInstance<http.IncomingMessage>;
-        let response: SinonStubbedInstance<http.ServerResponse>;
+        let nextFn: jest.Mock;
+        let request: http.IncomingMessage;
+        let response: http.ServerResponse;
 
         beforeEach(() => {
-            nextFn = stub();
-            request = createStubInstance(http.IncomingMessage);
-            response = createStubInstance(http.ServerResponse);
+            nextFn = jest.fn();
+            request = {} as http.IncomingMessage;
+            response = {
+                end: jest.fn(),
+                writeHead: jest.fn()
+            } as unknown as http.ServerResponse;
 
             request.method = HttpMethods.PUT;
             matchingState = {
                 mocks: {},
                 variables: JSON.parse(JSON.stringify({
-                    one: 'first',two: 'second',three: 'third'
+                    one: 'first', two: 'second', three: 'third'
                 })),
                 recordings: {},
                 record: false
             };
-            state.getMatchingState.returns(matchingState);
-        });
-
-        afterEach(() => {
-            state.getMatchingState.reset();
-            response.writeHead.reset();
-            response.end.reset();
+            state.getMatchingState.mockReturnValue(matchingState);
         });
 
         it('sets the variable', () => {
-            const body = { 'four': 'fourth' } as any;
-            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
+            const body = { four: 'fourth' } as any;
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            assert.called(response.end);
-            expect(matchingState.variables['four']).toBe('fourth');
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            expect(response.end).toHaveBeenCalled();
+            expect(matchingState.variables.four).toBe('fourth');
         });
 
         it('sets the variables', () => {
-            const body = { 'five': 'fifth', 'six': 'sixth' } as any;
-            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
+            const body = { five: 'fifth', six: 'sixth' } as any;
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            assert.calledWith(response.writeHead, HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            assert.called(response.end);
-            expect(matchingState.variables['five']).toBe('fifth');
-            expect(matchingState.variables['six']).toBe('sixth');
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            expect(response.end).toHaveBeenCalled();
+            expect(matchingState.variables.five).toBe('fifth');
+            expect(matchingState.variables.six).toBe('sixth');
         });
 
         it('throw error if no key value pair is present', () => {
             const body = {} as any;
-            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body: body });
+            handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            assert.calledWith(response.writeHead, HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            // @ts-ignore
-            assert.calledWith(response.end, `{"message":"A variable should have a key and value"}`);
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            expect(response.end).toHaveBeenCalledWith('{"message":"A variable should have a key and value"}');
         });
     });
 
     describe('isApplicable', () => {
-        let request: SinonStubbedInstance<http.IncomingMessage>;
+        let request: http.IncomingMessage;
 
         beforeEach(() => {
-            request = createStubInstance(http.IncomingMessage);
+            request = {} as http.IncomingMessage;
         });
 
         it('indicates applicable when url and action match', () => {

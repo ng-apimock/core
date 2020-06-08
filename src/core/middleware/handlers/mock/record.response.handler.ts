@@ -1,15 +1,17 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
 import * as os from 'os';
 import * as path from 'path';
+
+import * as fs from 'fs-extra';
+import { inject, injectable } from 'inversify';
+import fetch, { Request } from 'node-fetch';
 import * as uuid from 'uuid';
-import fetch, {Request} from 'node-fetch';
-import {inject, injectable} from 'inversify';
-import {Handler} from '../handler';
-import {HttpMethods} from '../../http';
-import {Mock} from '../../../mock/mock';
-import {Recording} from '../../../state/recording';
-import {State} from '../../../state/state';
+
+import { Mock } from '../../../mock/mock';
+import { Recording } from '../../../state/recording';
+import { State } from '../../../state/state';
+import { HttpMethods } from '../../http';
+import { Handler } from '../handler';
 
 /**  Handler for a recording a response. */
 @injectable()
@@ -26,15 +28,15 @@ export class RecordResponseHandler implements Handler {
                 @inject('State') private state: State) {
     }
 
-    /** {@inheritDoc}.*/
+    /** {@inheritDoc}. */
     async handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string, mock: Mock, body: any }): Promise<any> {
-        const method = request.method;
-        const headers = request.headers;
+        const { method } = request;
+        const { headers } = request;
 
         headers.record = 'true';
 
         const requestInit: any = {
-            method: method,
+            method,
             headers: headers as HeadersInit
         };
 
@@ -88,9 +90,9 @@ export class RecordResponseHandler implements Handler {
      * @param {string} name The name.
      * @param {Recording} recording The recordings.
      */
-    record(id: string, name: string, recording: Recording) {
-        const contentType: string = recording.response.contentType;
-        const recordings = this.state.getMatchingState(id).recordings;
+    record(id: string, name: string, recording: Recording): void {
+        const { contentType } = recording.response;
+        const { recordings } = this.state.getMatchingState(id);
         if (recordings[name] === undefined) {
             recordings[name] = [];
         }
@@ -98,7 +100,7 @@ export class RecordResponseHandler implements Handler {
         if (this.APPLICABLE_MIMETYPES.indexOf(contentType) === -1) {
             const destination = `${uuid.v4()}.${contentType.substring(contentType.indexOf('/') + 1)}`;
             fs.writeFileSync(path.join(os.tmpdir(), destination), Buffer.from((recording.response.data as any).toString(this.RESPONSE_ENCODING), this.RESPONSE_ENCODING as any));
-            recording.response.data = JSON.stringify({apimockFileLocation: `${this.baseUrl}/recordings/${destination}`});
+            recording.response.data = JSON.stringify({ apimockFileLocation: `${this.baseUrl}/recordings/${destination}` });
         } else {
             recording.response.data = recording.response.data.toString();
         }
