@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/ng-apimock/core/compare/v1.0.25...v2.0.0) (2020-06-08)
+
+
+### chore
+
+* 🤖 update eslint dependencies ([25b4e91](https://github.com/ng-apimock/core/commit/25b4e91baecb8d89162c0cdbbf0df06b68e3b70b))
+
+
+### BREAKING CHANGES
+
+* 🧨 no
+
 # 1.0.0 (2020-06-08)
 
 
