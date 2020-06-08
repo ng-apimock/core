@@ -40,7 +40,7 @@ export class RecordResponseHandler implements Handler {
             headers: headers as HeadersInit
         };
 
-        if ([HttpMethods.GET, HttpMethods.DELETE].indexOf(request.method) === -1) {
+        if ([HttpMethods.GET, HttpMethods.HEAD].indexOf(request.method) === -1) {
             requestInit.body = JSON.stringify(params.body);
         }
 
