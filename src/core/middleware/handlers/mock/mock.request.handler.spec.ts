@@ -104,7 +104,7 @@ describe('MockRequestHandler', () => {
 
                     expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
                     expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
-                    expect(fsReadFileSyncFn).toHaveBeenCalledWith('path/to/some.pdf');
+                    expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join('path', 'to', 'some.pdf'));
 
                     jest.runAllTimers();
 
@@ -163,7 +163,7 @@ describe('MockRequestHandler', () => {
                     expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
                     expect(state.getVariables).toHaveBeenCalledWith('apimockId');
                     expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
-                    expect(fsReadFileSyncFn).toHaveBeenCalledWith('path/to/some.pdf');
+                    expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join('path', 'to', 'some.pdf'));
 
                     expect(interpolateResponseDataFn).toHaveBeenCalledWith(JSON.stringify(mockResponse.data), variables);
 
