@@ -21,7 +21,7 @@ export class EchoRequestHandler implements Handler {
         const echo: boolean = this.state.getEcho(params.mock.name, params.id);
 
         if (echo) {
-            console.log(`${params.mock.request.method} request made on '${params.mock.request.url}' with body: '${JSON.stringify(params.body)}`);
+            console.log(`${params.mock.request.method} request made on '${params.mock.request.url}' with body: '${JSON.stringify(params.body)}'`);
         }
     }
 }

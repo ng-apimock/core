@@ -23,6 +23,7 @@
   "rules": {
     "class-methods-use-this": "off",
     "comma-dangle": "off",
+    "dot-notation": "warn",
     "global-require": "off",
     "import/extensions": "off",
     "indent": ["error", 4],

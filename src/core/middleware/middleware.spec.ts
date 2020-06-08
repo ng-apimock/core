@@ -324,7 +324,7 @@ describe('Middleware', () => {
 
         describe('configuration use cookie', () => {
             beforeEach(() => {
-                middleware.configuration.middleware.useHeader = false;
+                middleware['configuration'].middleware.useHeader = false;
                 middleware.getApimockId({ some: 'header' });
             });
 
@@ -333,7 +333,7 @@ describe('Middleware', () => {
 
         describe('configuration use header', () => {
             beforeEach(() => {
-                middleware.configuration.middleware.useHeader = true;
+                middleware['configuration'].middleware.useHeader = true;
                 middleware.getApimockId({ some: 'header' });
             });
 
@@ -343,7 +343,7 @@ describe('Middleware', () => {
 
     describe('getApimockIdFromHeader', () => {
         beforeEach(() => {
-            middleware.configuration.middleware.identifier = 'my-identifier';
+            middleware['configuration'].middleware.identifier = 'my-identifier';
         });
         describe('apimockId header is present', () => {
             it('returns the identifier', () => expect(middleware.getApimockIdFromHeader({
@@ -364,7 +364,7 @@ describe('Middleware', () => {
 
     describe('getApimockIdFromCookie', () => {
         beforeEach(() => {
-            middleware.configuration.middleware.identifier = 'my-identifier';
+            middleware['configuration'].middleware.identifier = 'my-identifier';
         });
         describe('apimockId cookie is present', () => {
             it('returns the apimockId', () => expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;my-identifier=123;c=c' })).toBe('123'));
