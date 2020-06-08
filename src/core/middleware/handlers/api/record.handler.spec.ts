@@ -1,7 +1,8 @@
 import * as http from 'http';
-import { Container } from 'inversify';
 
+import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
+
 import { IState } from '../../../state/Istate';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpStatusCode } from '../../http';

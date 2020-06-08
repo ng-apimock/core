@@ -1,7 +1,7 @@
 import * as chokidar from 'chokidar';
 import { Container } from 'inversify';
-
 import { createSpyObj } from 'jest-createspyobj';
+
 import { MocksProcessor } from './mocks.processor';
 import { PresetsProcessor } from './presets.processor';
 import { Processor } from './processor';

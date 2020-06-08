@@ -1,8 +1,9 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
-import { inject, injectable } from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
+
+import * as fs from 'fs-extra';
+import { inject, injectable } from 'inversify';
 
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';

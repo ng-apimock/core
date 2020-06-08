@@ -1,9 +1,10 @@
+import * as path from 'path';
+
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { Container } from 'inversify';
-import * as path from 'path';
-
 import { createSpyObj } from 'jest-createspyobj';
+
 import { HttpHeaders } from '../middleware/http';
 import { GlobalState } from '../state/global.state';
 import { State } from '../state/state';

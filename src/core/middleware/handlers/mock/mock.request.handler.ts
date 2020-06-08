@@ -1,8 +1,9 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
-import { inject, injectable } from 'inversify';
 import * as path from 'path';
 import * as url from 'url';
+
+import * as fs from 'fs-extra';
+import { inject, injectable } from 'inversify';
 
 import { Mock } from '../../../mock/mock';
 import { MockResponse } from '../../../mock/mock.response';

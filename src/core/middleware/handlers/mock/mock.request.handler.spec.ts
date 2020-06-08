@@ -1,15 +1,16 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
-import { Container } from 'inversify';
+import * as path from 'path';
 
+import * as fs from 'fs-extra';
+import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
+
 import { Mock } from '../../../mock/mock';
 import { MockResponse } from '../../../mock/mock.response';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { MockRequestHandler } from './mock.request.handler';
-
 
 jest.mock('fs-extra');
 jest.useFakeTimers();
@@ -78,7 +79,7 @@ describe('MockRequestHandler', () => {
 
                     expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
                     expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
-                    expect(fsReadFileSyncFn).toHaveBeenCalledWith('path/to/some.pdf');
+                    expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join('path', 'to', 'some.pdf'));
 
                     jest.runAllTimers();
 

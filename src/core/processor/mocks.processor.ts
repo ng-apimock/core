@@ -1,7 +1,8 @@
+import * as path from 'path';
+
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { inject, injectable } from 'inversify';
-import * as path from 'path';
 
 import { HttpHeaders, HttpStatusCode } from '../middleware/http';
 import { Mock } from '../mock/mock';

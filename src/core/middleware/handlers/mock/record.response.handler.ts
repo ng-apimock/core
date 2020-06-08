@@ -1,9 +1,10 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
-import { inject, injectable } from 'inversify';
-import fetch, { Request } from 'node-fetch';
 import * as os from 'os';
 import * as path from 'path';
+
+import * as fs from 'fs-extra';
+import { inject, injectable } from 'inversify';
+import fetch, { Request } from 'node-fetch';
 import * as uuid from 'uuid';
 
 import { Mock } from '../../../mock/mock';

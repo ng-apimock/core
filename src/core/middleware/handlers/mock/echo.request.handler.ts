@@ -1,4 +1,5 @@
 import * as http from 'http';
+
 import { inject, injectable } from 'inversify';
 
 import { Mock } from '../../../mock/mock';

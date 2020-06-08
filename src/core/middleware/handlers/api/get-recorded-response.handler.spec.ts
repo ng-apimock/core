@@ -1,10 +1,11 @@
 import 'reflect-metadata';
 
-import * as fs from 'fs-extra';
 import * as http from 'http';
-import { Container } from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
+
+import * as fs from 'fs-extra';
+import { Container } from 'inversify';
 
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 

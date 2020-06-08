@@ -1,5 +1,6 @@
-import { NextHandleFunction } from 'connect';
 import * as http from 'http';
+
+import { NextHandleFunction } from 'connect';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../configuration';

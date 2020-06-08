@@ -1,11 +1,12 @@
-import * as fs from 'fs-extra';
 import * as http from 'http';
-import { Container } from 'inversify';
 import * as os from 'os';
 import * as path from 'path';
+
+import * as fs from 'fs-extra';
+import { Container } from 'inversify';
+import { createSpyObj } from 'jest-createspyobj';
 import * as uuid from 'uuid';
 
-import { createSpyObj } from 'jest-createspyobj';
 import { Mock } from '../../../mock/mock';
 import { IState } from '../../../state/Istate';
 import { Recording } from '../../../state/recording';
