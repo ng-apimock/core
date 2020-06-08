@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/ng-apimock/core/compare/v2.0.0...v2.0.1) (2020-06-08)
+
+
+### Bug Fixes
+
+* 🐛 method GET and HEAD should not add a body while recording ([aee7f9d](https://github.com/ng-apimock/core/commit/aee7f9d78bf1365264812bcd04672aa7913a035a)), closes [#31](https://github.com/ng-apimock/core/issues/31)
+
 # [2.0.0](https://github.com/ng-apimock/core/compare/v1.0.25...v2.0.0) (2020-06-08)
 
 ### chore
@@ -19,4 +26,4 @@ All notable changes to this project will be documented in this file. See
 ### ci
 * 🎡 release ([64f1c83](https://github.com/ng-apimock/core/commit/64f1c83191)) 
 * 🎡 add release workflow ([fb7c325](https://github.com/ng-apimock/core/commit/fb7c3257df)) 
-* 🎡 remove circle-ci ([1da7a9a](https://github.com/ng-apimock/core/commit/1da7a9a6e4)) 
+* 🎡 remove circle-ci ([1da7a9a](https://github.com/ng-apimock/core/commit/1da7a9a6e4))
