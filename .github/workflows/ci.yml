@@ -50,16 +50,21 @@ jobs:
         if: success()
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        uses: pullreminders/slack-action@master
+        uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          args: '{"channel":"core","text":"Hello world"}'
+          # Updates existing message from the first step
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: core
+          status: SUCCESS
+          color: good
       - name: Notify slack success
         if: success()
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         uses: voxmedia/github-action-slack-notify-build@v1
         with:
-          channel: app-alerts
+          message_id: ${{ steps.slack.outputs.message_id }}
+          channel: core
           status: SUCCESS
           color: good
       - name: Notify slack fail
