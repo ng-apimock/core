@@ -30,12 +30,29 @@ jobs:
             ${{ runner.os }}-node-
       - name: install
         run: npm ci
+      - name: Notify slack success
+        if: success()
+        id: slack # IMPORTANT: reference this step ID value in future Slack steps
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@v1
+        with:
+          channel: core
+          status: STARTING
+          color: warning
       - name: lint
         run: npm run lint
       - name: build
         run: npm run compile
       - name: test
         run: npm test
+      - name: Notify slack success
+        if: success()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: '{"channel":"core","text":"Hello world"}'
       - name: Notify slack success
         if: success()
         env:
