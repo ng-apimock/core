@@ -8,7 +8,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { GetPresetsHandler } from './get-presets.handler';
 
-
 describe('GetPresetsHandler', () => {
     let container: Container;
     let handler: GetPresetsHandler;

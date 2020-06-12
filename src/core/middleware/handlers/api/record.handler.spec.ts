@@ -9,7 +9,6 @@ import { HttpHeaders, HttpStatusCode } from '../../http';
 
 import { RecordHandler } from './record.handler';
 
-
 describe('RecordHandler', () => {
     let container: Container;
     let handler: RecordHandler;

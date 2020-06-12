@@ -8,7 +8,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { InitHandler } from './init.handler';
 
-
 describe('InitHandler', () => {
     let container: Container;
     let handler: InitHandler;

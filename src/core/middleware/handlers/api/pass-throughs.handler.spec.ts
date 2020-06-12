@@ -8,7 +8,6 @@ import { HttpHeaders, HttpStatusCode } from '../../http';
 
 import { PassThroughsHandler } from './pass-throughs.handler';
 
-
 describe('PassThroughsHandler', () => {
     let container: Container;
     let handler: PassThroughsHandler;

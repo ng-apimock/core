@@ -8,7 +8,6 @@ import { HttpHeaders, HttpStatusCode } from '../../http';
 
 import { DefaultsHandler } from './defaults.handler';
 
-
 describe('DefaultsHandler', () => {
     let container: Container;
     let handler: DefaultsHandler;

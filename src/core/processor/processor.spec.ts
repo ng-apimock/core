@@ -6,7 +6,6 @@ import { MocksProcessor } from './mocks.processor';
 import { PresetsProcessor } from './presets.processor';
 import { Processor } from './processor';
 
-
 jest.mock('fs-extra');
 jest.mock('chokidar');
 

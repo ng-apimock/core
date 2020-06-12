@@ -9,7 +9,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { SetVariableHandler } from './set-variable.handler';
 
-
 describe('SetVariableHandler', () => {
     let container: Container;
     let handler: SetVariableHandler;

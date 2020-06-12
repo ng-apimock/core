@@ -9,7 +9,6 @@ import { HttpMethods } from '../../http';
 
 import { EchoRequestHandler } from './echo.request.handler';
 
-
 describe('EchoRequestHandler', () => {
     let container: Container;
     let echoRequestHandler: EchoRequestHandler;

@@ -10,7 +10,6 @@ import { State } from '../state/state';
 import { PresetsProcessor } from './presets.processor';
 import { DefaultProcessingOptions } from './processing.options';
 
-
 jest.mock('fs-extra');
 jest.mock('glob');
 
