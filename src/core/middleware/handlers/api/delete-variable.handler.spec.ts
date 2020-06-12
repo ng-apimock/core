@@ -9,7 +9,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { DeleteVariableHandler } from './delete-variable.handler';
 
-
 describe('DeleteVariableHandler', () => {
     let container: Container;
     let handler: DeleteVariableHandler;

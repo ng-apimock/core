@@ -45,7 +45,6 @@ describe('Converter', () => {
                 converter.convert('src', 'destination');
             });
 
-
             it('processes all files', () => expect(globSyncFn).toHaveBeenCalledWith('**/*.mock.json', { cwd: 'src' }));
 
             it('reads all the mock files', () => {

@@ -12,7 +12,6 @@ export interface Handler {
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params?: any): void;
 }
 
-
 /** Handler. */
 export interface ApplicableHandler extends Handler {
     /**

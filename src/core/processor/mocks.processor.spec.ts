@@ -12,7 +12,6 @@ import { State } from '../state/state';
 import { MocksProcessor } from './mocks.processor';
 import { DefaultProcessingOptions } from './processing.options';
 
-
 jest.mock('fs-extra');
 jest.mock('glob');
 

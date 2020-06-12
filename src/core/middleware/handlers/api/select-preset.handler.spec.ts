@@ -9,7 +9,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { SelectPresetHandler } from './select-preset.handler';
 
-
 describe('SelectPresetHandler', () => {
     let container: Container;
     let handler: SelectPresetHandler;

@@ -9,7 +9,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { GetRecordingsHandler } from './get-recordings.handler';
 
-
 describe('GetRecordingsHandler', () => {
     let container: Container;
     let handler: GetRecordingsHandler;

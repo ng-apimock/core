@@ -27,7 +27,6 @@ import { RecordResponseHandler } from './handlers/mock/record.response.handler';
 import { HttpMethods } from './http';
 import { Middleware } from './middleware';
 
-
 describe('Middleware', () => {
     let container: Container;
     let defaultsHandler: DefaultsHandler;

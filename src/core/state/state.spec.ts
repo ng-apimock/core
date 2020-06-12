@@ -285,7 +285,6 @@ describe('State', () => {
             state.defaults.advanced = { scenario: 'four', delay: 4000, echo: true };
         });
 
-
         it('sets the state to defaults', () => {
             let simpleMockState = matchingState.mocks.simple;
             expect(simpleMockState.scenario).toBe('one');

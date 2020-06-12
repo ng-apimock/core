@@ -9,7 +9,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { GetMocksHandler } from './get-mocks.handler';
 
-
 describe('GetMocksHandler', () => {
     let container: Container;
     let handler: GetMocksHandler;

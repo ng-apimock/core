@@ -9,7 +9,6 @@ import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { GetVariablesHandler } from './get-variables.handler';
 
-
 describe('GetVariablesHandler', () => {
     let container: Container;
     let handler: GetVariablesHandler;

@@ -15,7 +15,6 @@ import { HttpMethods, HttpStatusCode } from '../../http';
 
 import { RecordResponseHandler } from './record.response.handler';
 
-
 jest.mock('fs-extra');
 jest.mock('uuid');
 
