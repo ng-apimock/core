@@ -61,7 +61,7 @@
         "lint-staged": "10.2.11",
         "rimraf": "3.0.2",
         "semantic-release": "17.0.8",
-        "ts-jest": "26.1.0",
+        "ts-jest": "26.1.1",
         "typescript": "3.9.5"
     },
     "dependencies": {
