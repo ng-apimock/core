@@ -2,6 +2,7 @@ import * as http from 'http';
 
 import { inject, injectable } from 'inversify';
 
+import { Configuration } from '../../../configuration';
 import { Mock } from '../../../mock/mock';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
@@ -14,10 +15,10 @@ export class UpdateMocksHandler implements ApplicableHandler {
 
     /**
      * Constructor.
-     * @param {string} baseUrl The base url.
+     * @param {Configuration} configuration The configuration.
      * @param {State} state The state.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string,
+    constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('State') private state: State) {
     }
 
@@ -65,7 +66,7 @@ export class UpdateMocksHandler implements ApplicableHandler {
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.PUT;
-        const urlMatches = request.url.startsWith(`${this.baseUrl}/mocks`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/mocks`);
         return urlMatches && methodMatches;
     }
 }

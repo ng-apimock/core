@@ -7,6 +7,7 @@ import { inject, injectable } from 'inversify';
 import fetch, { Request } from 'node-fetch';
 import * as uuid from 'uuid';
 
+import { Configuration } from '../../../configuration';
 import { Mock } from '../../../mock/mock';
 import { Recording } from '../../../state/recording';
 import { State } from '../../../state/state';
@@ -21,10 +22,10 @@ export class RecordResponseHandler implements Handler {
 
     /**
      * Constructor.
-     * @param {string} baseUrl The base url.
+     * @param {Configuration} configuration The configuration.
      * @param {State} state The state.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string,
+    constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('State') private state: State) {
     }
 
@@ -100,7 +101,7 @@ export class RecordResponseHandler implements Handler {
         if (this.APPLICABLE_MIMETYPES.indexOf(contentType) === -1) {
             const destination = `${uuid.v4()}.${contentType.substring(contentType.indexOf('/') + 1)}`;
             fs.writeFileSync(path.join(os.tmpdir(), destination), Buffer.from((recording.response.data as any).toString(this.RESPONSE_ENCODING), this.RESPONSE_ENCODING as any));
-            recording.response.data = JSON.stringify({ apimockFileLocation: `${this.baseUrl}/recordings/${destination}` });
+            recording.response.data = JSON.stringify({ apimockFileLocation: `${this.configuration.middleware.basePath}/recordings/${destination}` });
         } else {
             recording.response.data = recording.response.data.toString();
         }

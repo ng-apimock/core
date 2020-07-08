@@ -27,7 +27,7 @@ describe('RecordResponseHandler', () => {
         container = new Container();
         state = createSpyObj(State);
 
-        container.bind('BaseUrl').toConstantValue('baseUrl');
+        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
         container.bind('RecordResponseHandler').to(RecordResponseHandler);
         container.bind('State').toConstantValue(state);
 
@@ -271,7 +271,7 @@ describe('RecordResponseHandler', () => {
                 expect(actual.request.body).toEqual({ 'some-key': 'some-value' });
 
                 // updates the data
-                expect(actual.response.data).toBe('{"apimockFileLocation":"baseUrl/recordings/generated-uuid.pdf"}');
+                expect(actual.response.data).toBe('{"apimockFileLocation":"/base-path/recordings/generated-uuid.pdf"}');
                 expect(actual.response.status).toEqual(HttpStatusCode.OK);
                 expect(actual.response.headers).toEqual({ 'Content-Type': '...' });
             });

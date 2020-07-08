@@ -17,7 +17,7 @@ describe('GetPresetsHandler', () => {
         container = new Container();
         state = createSpyObj(State);
 
-        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
         container.bind('GetPresetsHandler').to(GetPresetsHandler);
         container.bind('State').toConstantValue(state);
 
@@ -72,17 +72,17 @@ describe('GetPresetsHandler', () => {
         });
 
         it('indicates applicable when url and method match', () => {
-            request.url = `${'/base-url'}/presets`;
+            request.url = '/base-path/presets';
             request.method = HttpMethods.GET;
             expect(handler.isApplicable(request as any)).toBe(true);
         });
         it('indicates not applicable when the method does not match', () => {
-            request.url = `${'/base-url'}/presets`;
+            request.url = '/base-path/presets';
             request.method = HttpMethods.PUT;
             expect(handler.isApplicable(request as any)).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${'/base-url'}/no-match`;
+            request.url = '/base-path/no-match';
             request.method = HttpMethods.GET;
             expect(handler.isApplicable(request as any)).toBe(false);
         });
