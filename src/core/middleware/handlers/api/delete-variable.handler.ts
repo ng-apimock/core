@@ -2,6 +2,7 @@ import * as http from 'http';
 
 import { inject, injectable } from 'inversify';
 
+import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
@@ -11,10 +12,10 @@ import { ApplicableHandler } from '../handler';
 export class DeleteVariableHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {string} baseUrl The base url.
+     * @param {Configuration} configuration The configuration.
      * @param {State} state The state.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string,
+    constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('State') private state: State) {
     }
 
@@ -22,7 +23,7 @@ export class DeleteVariableHandler implements ApplicableHandler {
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
         const state = this.state.getMatchingState(params.id);
         const { url } = request;
-        const key = new RegExp(`${this.baseUrl}/variables/(.*)`).exec(url)[1];
+        const key = new RegExp(`${this.configuration.middleware.basePath}/variables/(.*)`).exec(url)[1];
         delete state.variables[key];
 
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
@@ -32,7 +33,7 @@ export class DeleteVariableHandler implements ApplicableHandler {
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.DELETE;
-        const urlMatches = request.url.startsWith(`${this.baseUrl}/variables`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/variables`);
         return urlMatches && methodMatches;
     }
 }

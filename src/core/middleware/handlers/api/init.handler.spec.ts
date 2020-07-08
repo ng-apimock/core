@@ -17,7 +17,7 @@ describe('InitHandler', () => {
         container = new Container();
         state = createSpyObj(State);
 
-        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
         container.bind('InitHandler').to(InitHandler);
         container.bind('State').toConstantValue(state);
 
@@ -54,17 +54,17 @@ describe('InitHandler', () => {
         });
 
         it('indicates applicable when url and action match', () => {
-            request.url = `${'/base-url'}/init`;
+            request.url = '/base-path/init';
             request.method = HttpMethods.GET;
             expect(handler.isApplicable(request as any)).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
-            request.url = `${'/base-url'}/init`;
+            request.url = '/base-path/init';
             request.method = HttpMethods.PUT;
             expect(handler.isApplicable(request as any)).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${'/base-url'}/no-match`;
+            request.url = '/base-path/no-match';
             request.method = HttpMethods.GET;
             expect(handler.isApplicable(request as any)).toBe(false);
         });

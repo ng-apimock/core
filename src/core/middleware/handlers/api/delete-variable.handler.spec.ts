@@ -19,7 +19,7 @@ describe('DeleteVariableHandler', () => {
         container = new Container();
         state = createSpyObj(State);
 
-        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
         container.bind('DeleteVariableHandler').to(DeleteVariableHandler);
         container.bind('State').toConstantValue(state);
 
@@ -39,7 +39,7 @@ describe('DeleteVariableHandler', () => {
                 writeHead: jest.fn()
             } as unknown as http.ServerResponse;
 
-            request.url = `${'/base-url'}/variables/one`;
+            request.url = '/base-path/variables/one';
             matchingState = {
                 mocks: {},
                 variables: JSON.parse(JSON.stringify({
@@ -72,17 +72,17 @@ describe('DeleteVariableHandler', () => {
         });
 
         it('indicates applicable when url and method match', () => {
-            request.url = `${'/base-url'}/variables`;
+            request.url = '/base-path/variables';
             request.method = HttpMethods.DELETE;
             expect(handler.isApplicable(request as any)).toBe(true);
         });
         it('indicates not applicable when the method does not match', () => {
-            request.url = `${'/base-url'}/variables`;
+            request.url = '/base-path/variables';
             request.method = HttpMethods.GET;
             expect(handler.isApplicable(request as any)).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${'/base-url'}/no-match`;
+            request.url = '/base-path/no-match';
             request.method = HttpMethods.DELETE;
             expect(handler.isApplicable(request as any)).toBe(false);
         });

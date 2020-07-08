@@ -2,6 +2,7 @@ import * as http from 'http';
 
 import { inject, injectable } from 'inversify';
 
+import { Configuration } from '../../../configuration';
 import { Mock } from '../../../mock/mock';
 import { Preset } from '../../../preset/preset';
 import { IState } from '../../../state/Istate';
@@ -18,10 +19,10 @@ export class SelectPresetHandler implements ApplicableHandler {
 
     /**
      * Constructor.
-     * @param {string} baseUrl The base url.
+     * @param {Configuration} configuration The configuration.
      * @param {State} state The state.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string,
+    constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('State') private state: State) {
     }
 
@@ -57,7 +58,7 @@ export class SelectPresetHandler implements ApplicableHandler {
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.PUT;
-        const urlMatches = request.url.startsWith(`${this.baseUrl}/presets`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/presets`);
         return urlMatches && methodMatches;
     }
 

@@ -5,6 +5,8 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
+import { Configuration } from '../../../configuration';
+import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
 
@@ -13,9 +15,9 @@ import { ApplicableHandler } from '../handler';
 export class GetRecordedResponseHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {string} baseUrl The base url.
+     * @param {Configuration} configuration The configuration.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string) {
+    constructor(@inject('Configuration') private configuration: Configuration) {
     }
 
     /** {@inheritDoc}. */
@@ -29,7 +31,7 @@ export class GetRecordedResponseHandler implements ApplicableHandler {
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.GET;
-        const urlMatches = request.url.startsWith(`${this.baseUrl}/recordings/`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/recordings/`);
         return urlMatches && methodMatches;
     }
 }

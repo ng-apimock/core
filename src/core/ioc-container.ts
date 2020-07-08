@@ -29,7 +29,6 @@ import { State } from './state/state';
 
 // IOC configuration
 const container = new Container();
-container.bind<string>('BaseUrl').toConstantValue('/ngapimock');
 container.bind<State>('State').to(State).inSingletonScope();
 container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
 

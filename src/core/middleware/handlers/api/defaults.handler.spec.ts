@@ -3,6 +3,7 @@ import * as http from 'http';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
+import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpStatusCode } from '../../http';
 
@@ -18,7 +19,7 @@ describe('DefaultsHandler', () => {
         state = createSpyObj(State);
 
         container.bind('ActionHandler').to(DefaultsHandler);
-        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
         container.bind('State').toConstantValue(state);
 
         handler = container.get<DefaultsHandler>('ActionHandler');
@@ -55,15 +56,15 @@ describe('DefaultsHandler', () => {
         });
 
         it('indicates applicable when url and action match', () => {
-            request.url = `${'/base-url'}/actions`;
+            request.url = '/base-path/actions';
             expect(handler.isApplicable(request as any, { action: 'defaults' })).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
-            request.url = `${'/base-url'}/actions`;
+            request.url = '/base-path/actions';
             expect(handler.isApplicable(request as any, { action: 'NO-MATCHING-ACTION' })).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${'/base-url'}/no-match`;
+            request.url = '/base-path/no-match';
             expect(handler.isApplicable(request as any, { action: 'defaults' })).toBe(false);
         });
     });
