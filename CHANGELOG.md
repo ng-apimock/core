@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/ng-apimock/core/compare/v2.0.1...v2.1.0) (2020-07-08)
+
+
+### Features
+
+* 🎸 make endpoints base path configurable ([#78](https://github.com/ng-apimock/core/issues/78)) ([59fdd27](https://github.com/ng-apimock/core/commit/59fdd279f1ac2f657ca9a4f8f57e863ae695d6b7)), closes [#76](https://github.com/ng-apimock/core/issues/76)
+
 ## [2.0.1](https://github.com/ng-apimock/core/compare/v2.0.0...v2.0.1) (2020-06-08)
 
 
