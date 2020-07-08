@@ -42,7 +42,7 @@ export class Middleware {
      * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
      * @param {GetVariablesHandler} getVariablesHandler The get variables handler.
      * @param {InitHandler} initHandler The init handler.
-     * @param {NextHandleFunction} JsonBodyParser The body parser that is responsible for making the body available.
+     * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
      * @param {MockRequestHandler} mockRequestHandler The mock request handler.
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
      * @param {RecordHandler} recordHandler The record handler.

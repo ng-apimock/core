@@ -3,13 +3,15 @@ export interface Configuration {
 }
 
 export interface MiddlewareConfiguration {
-    useHeader: boolean;
+    basePath: string;
     identifier: string;
+    useHeader: boolean;
 }
 
 export const DefaultConfiguration: Configuration = {
     middleware: {
-        useHeader: false,
-        identifier: 'apimockid'
+        basePath: '/ngapimock',
+        identifier: 'apimockid',
+        useHeader: false
     }
 };

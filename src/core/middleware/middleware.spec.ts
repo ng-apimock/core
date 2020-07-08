@@ -149,7 +149,7 @@ describe('Middleware', () => {
                     state.getMatchingMock.mockReturnValue({
                         name: 'matching-mock',
                         isArray: true,
-                        request: { url: '/base-url', method: HttpMethods.GET },
+                        request: { url: '/base-path', method: HttpMethods.GET },
                         responses: {}
                     });
                     matchingState = {
@@ -159,7 +159,7 @@ describe('Middleware', () => {
                         record: false
                     };
                     state.getMatchingState.mockReturnValue(matchingState);
-                    request.url = '/base-url';
+                    request.url = '/base-path';
                     request.method = HttpMethods.GET;
                     request.headers = { some: 'header' };
                     (request as any).body = { x: 'x' };
@@ -173,7 +173,7 @@ describe('Middleware', () => {
 
                 it('gets the matching applicable handler', () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
 
-                it('gets the matching mock', () => expect(state.getMatchingMock).toHaveBeenCalledWith('/base-url', HttpMethods.GET, {
+                it('gets the matching mock', () => expect(state.getMatchingMock).toHaveBeenCalledWith('/base-path', HttpMethods.GET, {
                     some: 'header'
                 }, { x: 'x' }));
 
@@ -182,7 +182,7 @@ describe('Middleware', () => {
                     mock: {
                         name: 'matching-mock',
                         isArray: true,
-                        request: { url: '/base-url', method: HttpMethods.GET },
+                        request: { url: '/base-path', method: HttpMethods.GET },
                         responses: {}
                     },
                     body: { x: 'x' }
@@ -203,10 +203,10 @@ describe('Middleware', () => {
                     state.getMatchingMock.mockReturnValue({
                         name: 'matching-mock',
                         isArray: true,
-                        request: { url: '/base-url', method: HttpMethods.GET },
+                        request: { url: '/base-path', method: HttpMethods.GET },
                         responses: {}
                     });
-                    request.url = '/base-url';
+                    request.url = '/base-path';
                     request.method = HttpMethods.GET;
                     request.headers = { some: 'header' };
                     (request as any).body = { x: 'x' };
@@ -236,7 +236,7 @@ describe('Middleware', () => {
                         mock: {
                             name: 'matching-mock',
                             isArray: true,
-                            request: { url: '/base-url', method: HttpMethods.GET },
+                            request: { url: '/base-path', method: HttpMethods.GET },
                             responses: {}
                         },
                         body: { x: 'x' }
@@ -258,10 +258,10 @@ describe('Middleware', () => {
                     state.getMatchingMock.mockReturnValue({
                         name: 'matching-mock',
                         isArray: true,
-                        request: { url: '/base-url', method: HttpMethods.GET },
+                        request: { url: '/base-path', method: HttpMethods.GET },
                         responses: {}
                     });
-                    request.url = '/base-url';
+                    request.url = '/base-path';
                     request.method = HttpMethods.GET;
                     request.headers = { some: 'header' };
                     (request as any).body = { x: 'x' };
@@ -277,7 +277,7 @@ describe('Middleware', () => {
                         mock: {
                             name: 'matching-mock',
                             isArray: true,
-                            request: { url: '/base-url', method: HttpMethods.GET },
+                            request: { url: '/base-path', method: HttpMethods.GET },
                             responses: {}
                         }
                     }));

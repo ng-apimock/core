@@ -2,6 +2,7 @@ import * as http from 'http';
 
 import { inject, injectable } from 'inversify';
 
+import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
@@ -11,10 +12,10 @@ import { ApplicableHandler } from '../handler';
 export class InitHandler implements ApplicableHandler {
     /**
      * Constructor.
-     * @param {string} baseUrl The base url.
+     * @param {Configuration} configuration The configuration.
      * @param {State} state The state.
      */
-    constructor(@inject('BaseUrl') private baseUrl: string,
+    constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('State') private state: State) {
     }
 
@@ -26,7 +27,7 @@ export class InitHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
-        const urlMatches = request.url.startsWith(`${this.baseUrl}/init`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/init`);
         const methodMatches = request.method === HttpMethods.GET;
         return urlMatches && methodMatches;
     }

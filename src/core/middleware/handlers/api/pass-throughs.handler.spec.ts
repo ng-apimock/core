@@ -17,7 +17,7 @@ describe('PassThroughsHandler', () => {
         container = new Container();
         state = createSpyObj(State);
 
-        container.bind('BaseUrl').toConstantValue('/base-url');
+        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
         container.bind('PassThroughsHandler').to(PassThroughsHandler);
         container.bind('State').toConstantValue(state);
 
@@ -55,15 +55,15 @@ describe('PassThroughsHandler', () => {
         });
 
         it('indicates applicable when url and action match', () => {
-            request.url = `${'/base-url'}/actions`;
+            request.url = '/base-path/actions';
             expect(handler.isApplicable(request as any, { action: 'passThroughs' })).toBe(true);
         });
         it('indicates not applicable when the action does not match', () => {
-            request.url = `${'/base-url'}/actions`;
+            request.url = '/base-path/actions';
             expect(handler.isApplicable(request as any, { action: 'NO-MATCHING-ACTION' })).toBe(false);
         });
         it('indicates not applicable when the url does not match', () => {
-            request.url = `${'/base-url'}/no-match`;
+            request.url = '/base-path/no-match';
             expect(handler.isApplicable(request as any, { action: 'passThroughs' })).toBe(false);
         });
     });
