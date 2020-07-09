@@ -1,3 +1,5 @@
+import { MockResponseThenClause } from './mock.response.then.clause';
+
 /** Mock response. */
 export interface MockResponse {
     // response status code (default: 200)
@@ -12,4 +14,6 @@ export interface MockResponse {
     statusText?: string;
     // indicates this response is the default response
     default?: boolean;
+    // chainable response
+    then?: MockResponseThenClause;
 }

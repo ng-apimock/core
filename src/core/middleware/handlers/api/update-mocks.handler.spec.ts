@@ -54,8 +54,12 @@ describe('UpdateMocksHandler', () => {
             ];
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
-                    one: { scenario: 'some', delay: 0, echo: true },
-                    two: { scenario: 'thing', delay: 1000, echo: false }
+                    one: {
+                        scenario: 'some', delay: 0, echo: true, counter: 1
+                    },
+                    two: {
+                        scenario: 'thing', delay: 1000, echo: false, counter: 2
+                    }
                 })),
                 variables: {},
                 recordings: {},
@@ -68,7 +72,7 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'two', echo: true };
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            expect(matchingState.mocks[body.name].echo).toBe(true);
+            expect(matchingState.mocks['two'].echo).toBe(true);
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
         });
@@ -77,26 +81,30 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'two', delay: 2000 };
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            expect(matchingState.mocks[body.name].delay).toBe(2000);
+            expect(matchingState.mocks['two'].delay).toBe(2000);
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
         });
 
         it('selects a mocks', () => {
+            expect(matchingState.mocks['two'].counter).toBe(2);
             const body = { name: 'two', scenario: 'thing' };
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            expect(matchingState.mocks[body.name].scenario).toBe('thing');
-            expect(matchingState.mocks[body.name].delay).toBe(1000);
+            expect(matchingState.mocks['two'].scenario).toBe('thing');
+            expect(matchingState.mocks['two'].counter).toBe(0);
+            expect(matchingState.mocks['two'].delay).toBe(1000);
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
         });
 
         it('selects passThrough', () => {
+            expect(matchingState.mocks['two'].counter).toBe(2);
             const body = { name: 'two', scenario: 'passThrough' };
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
-            expect(matchingState.mocks[body.name].scenario).toBe('passThrough');
+            expect(matchingState.mocks['two'].scenario).toBe('passThrough');
+            expect(matchingState.mocks['two'].counter).toBe(0);
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
         });
