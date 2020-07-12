@@ -1,6 +1,5 @@
 import * as path from 'path';
 
-import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
@@ -9,6 +8,7 @@ import { HttpHeaders } from '../middleware/http';
 import { GlobalState } from '../state/global.state';
 import { State } from '../state/state';
 
+import { FileLoader } from './file.loader';
 import { MocksProcessor } from './mocks.processor';
 import { DefaultProcessingOptions } from './processing.options';
 
@@ -18,13 +18,16 @@ jest.mock('glob');
 describe('MocksProcessor', () => {
     let container: Container;
     let state: jest.Mocked<State>;
+    let fileLoader: jest.Mocked<FileLoader>;
     let processor: MocksProcessor;
 
     beforeEach(() => {
         container = new Container();
         state = createSpyObj(State);
+        fileLoader = createSpyObj(FileLoader);
 
         container.bind('State').toConstantValue(state);
+        container.bind('FileLoader').toConstantValue(fileLoader);
         container.bind('MocksProcessor').to(MocksProcessor);
 
         processor = container.get<MocksProcessor>('MocksProcessor');
@@ -34,7 +37,7 @@ describe('MocksProcessor', () => {
         let consoleLogFn: jest.Mock;
         let consoleWarnFn: jest.Mock;
         let doneFn: jest.Mock;
-        let fsReadJsonSyncFn: jest.Mock;
+        let loadFileFn: jest.Mock;
         let globSyncFn: jest.Mock;
 
         beforeEach(() => {
@@ -42,7 +45,7 @@ describe('MocksProcessor', () => {
 
             consoleLogFn = console.log = jest.fn();
             consoleWarnFn = console.warn = jest.fn();
-            fsReadJsonSyncFn = fs.readJsonSync as jest.Mock;
+            loadFileFn = fileLoader.loadFile as jest.Mock;
             globSyncFn = glob.sync as jest.Mock;
 
             (state as any).mocks = [];
@@ -53,17 +56,17 @@ describe('MocksProcessor', () => {
                 'mock/minimal-binary-request.mock.json',
                 'mock/full-request.mock.json',
                 'mock/duplicate-request.mock.json']);
-            fsReadJsonSyncFn.mockReturnValueOnce({
+            loadFileFn.mockReturnValueOnce({
                 name: 'minimal-json-request',
                 request: { url: 'minimal/json/url', method: 'GET' },
                 responses: { 'minimal-json-response': {} }
             });
-            fsReadJsonSyncFn.mockReturnValueOnce({
+            loadFileFn.mockReturnValueOnce({
                 name: 'minimal-binary-request',
                 request: { url: 'minimal/binary/url', method: 'GET' },
                 responses: { 'minimal-binary-response': { file: 'some.pdf' } }
             });
-            fsReadJsonSyncFn.mockReturnValueOnce({
+            loadFileFn.mockReturnValueOnce({
                 name: 'full-request',
                 isArray: true,
                 delay: 1000,
@@ -91,7 +94,7 @@ describe('MocksProcessor', () => {
                     }
                 }
             });
-            fsReadJsonSyncFn.mockReturnValue({
+            loadFileFn.mockReturnValue({
                 name: 'minimal-json-request',
                 request: { url: 'duplicate/url', method: 'GET' },
                 responses: { 'duplicate-response': {} }
@@ -105,10 +108,10 @@ describe('MocksProcessor', () => {
 
             it('processes each mock', () => {
                 expect(globSyncFn).toHaveBeenCalledWith('**/*.mock.json', { cwd: 'src', root: '/' });
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/minimal-json-request.mock.json'));
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/minimal-binary-request.mock.json'));
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/full-request.mock.json'));
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'mock/duplicate-request.mock.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'mock/minimal-json-request.mock.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'mock/minimal-binary-request.mock.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'mock/full-request.mock.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'mock/duplicate-request.mock.json'));
             });
 
             it('sets the defaults', () => expect(state.defaults).toEqual({

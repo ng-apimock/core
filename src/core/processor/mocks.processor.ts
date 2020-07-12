@@ -8,6 +8,7 @@ import { HttpHeaders, HttpStatusCode } from '../middleware/http';
 import { Mock } from '../mock/mock';
 import { State } from '../state/state';
 
+import { FileLoader } from './file.loader';
 import { ProcessingOptions } from './processing.options';
 
 /** Mocks processor. */
@@ -21,7 +22,7 @@ export class MocksProcessor {
      * Constructor.
      * @param {State} state The state.
      */
-    constructor(@inject('State') public state: State) {
+    constructor(@inject('State') public state: State, @inject('FileLoader') public fileLoader: FileLoader) {
     }
 
     /**
@@ -38,7 +39,7 @@ export class MocksProcessor {
             root: '/'
         }).forEach((file) => {
             const mockPath = path.join(options.src, file);
-            const mock = fs.readJsonSync(mockPath);
+            const mock = this.fileLoader.loadFile(mockPath);
             const match = this.state.mocks.find((_mock: Mock) => _mock.name === mock.name);
             const index = this.state.mocks.indexOf(match);
 
