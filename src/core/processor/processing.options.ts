@@ -9,7 +9,7 @@ export interface ProcessingOptions {
 
 export const DefaultProcessingOptions = {
     patterns: {
-        presets: '**/*.preset.json',
-        mocks: '**/*.mock.json'
+        presets: '**/*.preset.*',
+        mocks: '**/*.mock.*'
     }
 };
