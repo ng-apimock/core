@@ -62,3 +62,6 @@ typings/
 
 # ide
 .idea
+
+# compile output
+dist/
