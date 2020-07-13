@@ -1,0 +1,904 @@
+{
+  "name": "graph",
+  "request": {
+    "url": "/graphql",
+    "method": "POST"
+  },
+  "responses": {
+    "okResponse": {
+      "default": true,
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "data": {
+        "data": {
+          "items": {
+            "data": [
+              {
+                "fullDocumentNumber": "889 1119826535-705",
+                "primaryDocumentNumber": "1119826535",
+                "itemId": "ea9cb1dd-9b26-4ab5-85e1-dcbca0c9d843",
+                "passengerName": "KLINGHOFER/ILAN",
+                "dateOfPurchase": "2020-01-16T20:22:46.553Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  },
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1119826535",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "2198766705",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 1000,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "string",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "01/16/20",
+                    "reason": "string",
+                    "bookingAgent": null
+                  },
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "01/16/20",
+                    "reason": "string",
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1122263232",
+                "primaryDocumentNumber": "1122263232",
+                "itemId": "95b16bcd-a292-4a87-8c9d-ceb6cc9210eb",
+                "passengerName": "RUSSEL/MATT",
+                "dateOfPurchase": "2020-01-13T00:00:00.000Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [
+                  {
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "extractDate": "2020-01-13T00:00:00.000Z",
+                    "formOfPayment": "CreditTransaction",
+                    "__typename": "NetRemit"
+                  }
+                ],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1122263232",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1122263232",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1122263232",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 3,
+                    "value": null,
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 54960,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "TKTT",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "SettledHistory",
+                    "historyType": "Settled",
+                    "date": "01/19/20",
+                    "reason": null,
+                    "refNumber": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1126109819",
+                "primaryDocumentNumber": "1126109819",
+                "itemId": "db7a9303-7f3e-4a60-8f4b-b3e7a5757708",
+                "passengerName": "BAKER/MARIA",
+                "dateOfPurchase": "2020-01-16T20:22:46.553Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1126109819",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 1000,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "string",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "01/16/20",
+                    "reason": "string",
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1132876883-595",
+                "primaryDocumentNumber": "1132876883",
+                "itemId": "369f82d0-0c7b-429b-b75f-0177fdc8d155",
+                "passengerName": "BAKER/MARIA",
+                "dateOfPurchase": "2020-01-16T20:22:46.553Z",
+                "transactionType": "EMD",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "5424000000000015",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1132876883",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 0,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1132876883",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1132876883",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 2,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1234565430",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "9283948595",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "9283948595",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 3,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "9283948595",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 4,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 1000,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "EMDA",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "01/16/20",
+                    "reason": "string",
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1140183625",
+                "primaryDocumentNumber": "1140183625",
+                "itemId": "d25fb769-eb43-4a0a-b5a1-379252c90cf5",
+                "passengerName": "RUSSEL/MATT",
+                "dateOfPurchase": "2019-12-16T00:00:00.000Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1140183625",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1140183625",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1140183625",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 3,
+                    "value": null,
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 54960,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "TKTT",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "12/16/19",
+                    "reason": null,
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1151310017",
+                "primaryDocumentNumber": "1151310017",
+                "itemId": "e56521c6-24f2-46b9-88a4-262ef1aab143",
+                "passengerName": "RUSSEL/MATT",
+                "dateOfPurchase": "2019-12-16T00:00:00.000Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1151310017",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1151310017",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1151310017",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 3,
+                    "value": null,
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 54960,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "TKTT",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "12/16/19",
+                    "reason": null,
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1151310018",
+                "primaryDocumentNumber": "1151310018",
+                "itemId": "dddba99f-abd1-4838-b24c-c7d9443296f2",
+                "passengerName": "RUSSEL/MATT",
+                "dateOfPurchase": "2019-12-16T00:00:00.000Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1151310018",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1151310018",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1151310018",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 3,
+                    "value": null,
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 54960,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "TKTT",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "12/16/19",
+                    "reason": null,
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1151310019",
+                "primaryDocumentNumber": "1151310019",
+                "itemId": "505d084a-bd10-4465-ae76-3e5b757122c9",
+                "passengerName": "RUSSEL/MATT",
+                "dateOfPurchase": "2019-12-16T00:00:00.000Z",
+                "transactionType": "TICKET",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1151310019",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1151310019",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1151310019",
+                    "ticketingDateOfIssue": "2020-01-13T00:00:00.000Z",
+                    "couponNumber": 3,
+                    "value": null,
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 54960,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "TKTT",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "12/16/19",
+                    "reason": null,
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "964 1157241777-595",
+                "primaryDocumentNumber": "1157241777",
+                "itemId": "c14dd744-a78e-4f48-952a-36b016f5fbda",
+                "passengerName": "LONGLASTNAME/LONGFIRSTNAME",
+                "dateOfPurchase": "2020-01-16T20:22:46.553Z",
+                "transactionType": "EMD",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "964",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "5424000000000015",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1157241777",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 0,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1157241777",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1157241777",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 2,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "1234565430",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "9283948595",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 2,
+                    "value": null,
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "9283948595",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 3,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  },
+                  {
+                    "ticketDocumentNumber": "9283948595",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 4,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 1000,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "EMDS",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "01/16/20",
+                    "reason": "string",
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              },
+              {
+                "fullDocumentNumber": "889 1162800753-430",
+                "primaryDocumentNumber": "1162800753",
+                "itemId": "8866805b-9129-4c87-a82c-6769129b9517",
+                "passengerName": "LONGLASTNAME/LONGFIRSTNAME",
+                "dateOfPurchase": "2020-01-16T20:22:46.553Z",
+                "transactionType": "EMD",
+                "void": false,
+                "voidInfo": null,
+                "exchangeInfo": null,
+                "exchange": null,
+                "agency": {
+                  "arcNumber": "55000002",
+                  "__typename": "Agency"
+                },
+                "airline": {
+                  "numCode": "889",
+                  "__typename": "Airline"
+                },
+                "payments": [
+                  {
+                    "formOfPaymentAccountNumber": "4444393975756664",
+                    "formOfPaymentType": "Cc",
+                    "exchangedDocumentReferences": null,
+                    "__typename": "Payment"
+                  }
+                ],
+                "refunds": [],
+                "netRemits": [],
+                "coupons": [
+                  {
+                    "ticketDocumentNumber": "1234565430",
+                    "ticketingDateOfIssue": "2020-01-17T20:22:46.000Z",
+                    "couponNumber": 1,
+                    "value": {
+                      "amount": 0,
+                      "currency": "USD",
+                      "precision": 2,
+                      "__typename": "Money"
+                    },
+                    "__typename": "Coupon"
+                  }
+                ],
+                "prices": {
+                  "ticketDocumentAmount": {
+                    "amount": 1000,
+                    "precision": 2,
+                    "currency": "USD",
+                    "__typename": "Money"
+                  },
+                  "__typename": "Prices"
+                },
+                "ticketDocumentInfo": {
+                  "documentType": "EMDA",
+                  "__typename": "TicketDocumentInfo"
+                },
+                "history": [
+                  {
+                    "__typename": "IssuedHistory",
+                    "historyType": "Issued",
+                    "date": "01/16/20",
+                    "reason": "string",
+                    "bookingAgent": null
+                  }
+                ],
+                "__typename": "Item"
+              }
+            ],
+            "__typename": "PaginatedItem"
+          }
+        }
+      }
+    },
+    "errorResponse": {
+      "status": 500
+    },
+    "loadingResponse": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "data": {
+        "time": "MOCK TIME AFTER DELAY!!"
+      },
+      "delay": 10000
+    }
+  }
+}
