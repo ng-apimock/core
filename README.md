@@ -123,6 +123,43 @@ you need to surround the part with %% like this:
 
 These variables can be set using the available clients.
 
+For even more flexibility, mocks can be written using Javascript, allowing modularization and programmatic genearation of mock data. The mock file should have a '.js' extension and needs to export the configuration like so:
+
+```javascript
+const data = require('./data.json'); // example of importing json from a separate file
+
+module.exports = {
+  "name": "some mock",
+  "isArray": false, 
+  "request": {
+    "url": "/items",
+    "method": "GET",
+    "body": {},
+    "headers": {}
+  },
+  "responses": {
+    "something": { 
+        "status": 200, 
+        "data": data, // use imported json
+        "default": true,
+    }
+  }
+}
+```
+
+To ensure that js files are processed, make sure to include them in your configuration like so:
+
+```javascript
+ngApimock.processor.process({
+    src: 'the/path/to/your/mocks',
+    patterns: {
+        mocks: '**/*.mock.*', // use .* extension to pick up js files
+        presets: '**/*.preset.json' // optional, defaults to **/*.preset.json
+    },
+    watch: true // optional, defaults to false
+});
+```
+
 ## How to write presets
 There are a couple of rules to follow.
 
