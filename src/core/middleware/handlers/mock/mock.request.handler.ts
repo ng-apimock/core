@@ -81,8 +81,10 @@ export class MockRequestHandler implements Handler {
      * @returns {string|boolean} callbackName Either the name or false.
      */
     private getJsonCallbackName(request: http.IncomingMessage): string | boolean {
-        const parsedUrl: any = url.parse(request.url, true);
-        return !parsedUrl.query || !parsedUrl.query.callback ? false : parsedUrl.query.callback;
+        const parsedUrl = url.parse(request.url, true);
+        return !parsedUrl.query || !parsedUrl.query.callback
+            ? false
+            : parsedUrl.query.callback as string;
     }
 
     /**
