@@ -159,7 +159,7 @@ export class MockRequestHandler implements Handler {
     }
 
     /**
-     * Sends the respont back.
+     * Sends the response back.
      * @param {Object} params The parameters.
      * @param {MockResponseThenClause} thenClause The Mock response then clause.
      * @param {http.ServerResponse} response The http response.
