@@ -85,6 +85,7 @@ There are a couple of rules to follow.
 {
   "name": "some mock", // the name of the mock
   "isArray": true, // optional, indicator that indicates if the response data is an array or object (for json response)
+  "delay": 1000 // optional, delay in milliseconds
   "request": {
     "url": "/items", // the regular express to match request urls
     "method": "GET", // the request method
@@ -98,8 +99,16 @@ There are a couple of rules to follow.
         "file": "some/file.pdf", // optional, file location
         "headers": {}, // optional headers object  
         "statusText": "some message", // optional, status text
-        "default": true, // optional, indicates if this response will be returned by default
-        "delay": 1000 // optional, delay in milliseconds
+        "default": true // optional, indicates if this response will be returned by default
+        "then": { // optional
+            "criteria: { // optional
+                "times": 2 // optional, the number of times the current response has to be returned before this then clause will be effectuated
+            },
+            "mocks": [{
+                "name": "some mock", // optional, when not provided the current mock is assumed
+                "scenario": "server-error" // the scenario to select
+            }]
+        }
     }
   }
 }

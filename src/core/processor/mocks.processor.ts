@@ -72,14 +72,16 @@ export class MocksProcessor {
             let state = {
                 scenario: this.PASS_THROUGH,
                 echo: this.DEFAULT_ECHO,
-                delay: mock.delay || this.DEFAULT_DELAY
+                delay: mock.delay || this.DEFAULT_DELAY,
+                counter: 0
             };
 
             if (_default !== undefined) {
                 state = {
                     scenario: _default,
                     echo: this.DEFAULT_ECHO,
-                    delay: mock.delay || this.DEFAULT_DELAY
+                    delay: mock.delay || this.DEFAULT_DELAY,
+                    counter: 0
                 };
             }
 

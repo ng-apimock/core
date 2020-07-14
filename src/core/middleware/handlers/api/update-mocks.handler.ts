@@ -48,6 +48,7 @@ export class UpdateMocksHandler implements ApplicableHandler {
                     if (scenario === this.PASS_THROUGH
                         || Object.keys(matchingMock.responses).find((_scenario) => _scenario === scenario)) {
                         state.mocks[mockName].scenario = scenario;
+                        state.mocks[mockName].counter = 0;
                     } else {
                         throw new Error(`No scenario matching ['${scenario}'] found`);
                     }

@@ -112,15 +112,27 @@ describe('MocksProcessor', () => {
             });
 
             it('sets the defaults', () => expect(state.defaults).toEqual({
-                'minimal-json-request': { scenario: 'passThrough', echo: false, delay: 0 },
-                'minimal-binary-request': { scenario: 'passThrough', echo: false, delay: 0 },
-                'full-request': { scenario: 'full-response', echo: false, delay: 1000 }
+                'minimal-json-request': {
+                    scenario: 'passThrough', echo: false, delay: 0, counter: 0
+                },
+                'minimal-binary-request': {
+                    scenario: 'passThrough', echo: false, delay: 0, counter: 0
+                },
+                'full-request': {
+                    scenario: 'full-response', echo: false, delay: 1000, counter: 0
+                }
             }));
 
             it('sets the global mocks', () => expect(state.global.mocks).toEqual({
-                'minimal-json-request': { scenario: 'passThrough', echo: false, delay: 0 },
-                'minimal-binary-request': { scenario: 'passThrough', echo: false, delay: 0 },
-                'full-request': { scenario: 'full-response', echo: false, delay: 1000 }
+                'minimal-json-request': {
+                    scenario: 'passThrough', echo: false, delay: 0, counter: 0
+                },
+                'minimal-binary-request': {
+                    scenario: 'passThrough', echo: false, delay: 0, counter: 0
+                },
+                'full-request': {
+                    scenario: 'full-response', echo: false, delay: 1000, counter: 0
+                }
             }));
 
             it('updates the mocks with default values', () => {
