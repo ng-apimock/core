@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/ng-apimock/core/compare/v2.1.0...v2.2.0) (2020-07-14)
+
+
+### Features
+
+* 🎸 implement then clause functionality ([#81](https://github.com/ng-apimock/core/issues/81)) ([8486be7](https://github.com/ng-apimock/core/commit/8486be78ee7e451ff12d701b12379dbd29aaa96d)), closes [#80](https://github.com/ng-apimock/core/issues/80)
+
 # [2.1.0](https://github.com/ng-apimock/core/compare/v2.0.1...v2.1.0) (2020-07-08)
 
 
