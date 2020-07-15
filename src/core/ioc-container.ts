@@ -22,6 +22,7 @@ import { EchoRequestHandler } from './middleware/handlers/mock/echo.request.hand
 import { MockRequestHandler } from './middleware/handlers/mock/mock.request.handler';
 import { RecordResponseHandler } from './middleware/handlers/mock/record.response.handler';
 import { Middleware } from './middleware/middleware';
+import { FileLoader } from './processor/file.loader';
 import { MocksProcessor } from './processor/mocks.processor';
 import { PresetsProcessor } from './processor/presets.processor';
 import { Processor } from './processor/processor';
@@ -55,6 +56,7 @@ container.bind<RecordHandler>('RecordHandler').to(RecordHandler);
 container.bind<GetRecordedResponseHandler>('GetRecordedResponseHandler').to(GetRecordedResponseHandler);
 container.bind<GetRecordingsHandler>('GetRecordingsHandler').to(GetRecordingsHandler);
 
+container.bind<FileLoader>('FileLoader').to(FileLoader);
 container.bind<MocksProcessor>('MocksProcessor').to(MocksProcessor);
 container.bind<PresetsProcessor>('PresetsProcessor').to(PresetsProcessor);
 container.bind<Processor>('Processor').to(Processor);
