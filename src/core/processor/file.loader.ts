@@ -4,7 +4,7 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class FileLoader {
-    loadFile(filePath: string) {
+    loadFile(filePath: string): any {
         const requireFilePath = path.relative(
             path.resolve(__dirname),
             path.resolve(filePath)
