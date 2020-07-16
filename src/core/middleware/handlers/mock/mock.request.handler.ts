@@ -143,8 +143,12 @@ export class MockRequestHandler implements Handler {
                 const matchingMockToUpdate = m.name
                     ? state.mocks[m.name]
                     : matchingMockState;
-                matchingMockToUpdate.counter = 0;
-                matchingMockToUpdate.scenario = m.scenario;
+                if (matchingMockToUpdate !== undefined) {
+                    matchingMockToUpdate.counter = 0;
+                    matchingMockToUpdate.scenario = m.scenario;
+                } else {
+                    console.error(`No scenario matching name [${m.name}] exists`);
+                }
             });
         }
     }
