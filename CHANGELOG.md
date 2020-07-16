@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.1](https://github.com/ng-apimock/core/compare/v2.3.0...v2.3.1) (2020-07-16)
+
+
+### Bug Fixes
+
+* 🐛 log no matching mock error while handling then clause ([#92](https://github.com/ng-apimock/core/issues/92)) ([3118fd9](https://github.com/ng-apimock/core/commit/3118fd9924ab66dacf697e1f283eaa9e5c875709)), closes [#91](https://github.com/ng-apimock/core/issues/91)
+
 # [2.3.0](https://github.com/ng-apimock/core/compare/v2.2.0...v2.3.0) (2020-07-15)
 
 
