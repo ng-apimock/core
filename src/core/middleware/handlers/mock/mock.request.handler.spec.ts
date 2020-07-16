@@ -329,6 +329,31 @@ describe('MockRequestHandler', () => {
                 expect(matchingState.mocks.another.counter).toEqual(1);
             });
         });
+
+        describe('with criteria that matches but no matching mock', () => {
+            let consoleErrorFn: jest.SpyInstance;
+
+            beforeEach(() => {
+                consoleErrorFn = jest.spyOn(console, 'error');
+                (mockRequestHandler as any).handleThenCriteria({
+                    criteria: { times: 2 },
+                    mocks: [{ name: 'no-match', scenario: 'some scenario' }]
+                }, matchingMockState, matchingState);
+            });
+
+            it('does not select the scenario', () => {
+                expect(matchingMockState.scenario).toEqual('the default');
+            });
+
+            it('resets the counter', () => {
+                expect(matchingMockState.counter).toEqual(2);
+                expect(matchingState.mocks.another.counter).toEqual(1);
+            });
+
+            it('logs the error', () => {
+                expect(consoleErrorFn).toHaveBeenCalledWith('No scenario matching name [no-match] exists');
+            });
+        });
     });
 
     describe('respond', () => {
