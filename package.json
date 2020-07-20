@@ -62,7 +62,7 @@
         "rimraf": "3.0.2",
         "semantic-release": "17.1.1",
         "ts-jest": "26.1.2",
-        "typescript": "3.9.6"
+        "typescript": "3.9.7"
     },
     "dependencies": {
         "body-parser": "1.19.0",
