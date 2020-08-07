@@ -66,7 +66,7 @@
     },
     "dependencies": {
         "body-parser": "1.19.0",
-        "chokidar": "3.4.1",
+        "chokidar": "3.4.2",
         "fs-extra": "9.0.1",
         "glob": "7.1.6",
         "inversify": "5.0.1",
