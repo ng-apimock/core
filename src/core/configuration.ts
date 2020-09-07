@@ -1,11 +1,11 @@
-export interface Configuration {
-    middleware: MiddlewareConfiguration;
-}
-
 export interface MiddlewareConfiguration {
     basePath: string;
     identifier: string;
     useHeader: boolean;
+}
+
+export interface Configuration {
+    middleware: MiddlewareConfiguration;
 }
 
 export const DefaultConfiguration: Configuration = {
