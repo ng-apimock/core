@@ -33,7 +33,8 @@ apimock.processor.process({
     src: 'mocks', // required
     patterns: { // optional
         mocks: '**/*Mock.json', // optional: default is '**/*.mock.json'
-        presets: '**/*Preset.json' // optional: default is '**/*.preset.json'
+        presets: '**/*Preset.json', // optional: default is '**/*.preset.json'
+        mockWatches: '**/*.json' // optional: no default
     },
     watch: true // optional: default is 'false'
 });
@@ -41,7 +42,7 @@ apimock.processor.process({
 
 There are 3 parameters here:
 - **src**: this is the directory that will be use to search for mocks and presets.
-- **patterns**: there are 2 regex patterns that can be overridden, mocks and presets. 
+- **patterns**: there are 3 regex patterns that can be overridden, mocks, presets and mockWatches. 
 - **watch**: set to true will ensure that ng-apimock will watch for file changes.
 
 :::caution
