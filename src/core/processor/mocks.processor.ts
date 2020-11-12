@@ -32,7 +32,7 @@ export class MocksProcessor {
      */
     process(options: ProcessingOptions): void {
         let counter = 0;
-        const pattern = options.patterns.mocks;
+        const pattern = options.patterns.mockWatches || options.patterns.mocks;
 
         glob.sync(pattern, {
             cwd: options.src,
