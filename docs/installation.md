@@ -34,7 +34,7 @@ apimock.processor.process({
     patterns: { // optional
         mocks: '**/*Mock.json', // optional: default is '**/*.mock.json'
         presets: '**/*Preset.json', // optional: default is '**/*.preset.json'
-        mockWatches: '**/*.json' // optional: no default
+        mockWatches: '**/*.json' // optional: no default, set if watch files regex is different from mocks pattern
     },
     watch: true // optional: default is 'false'
 });
@@ -72,7 +72,7 @@ app.use(apimock.middleware);
 The default bodyParser library that is used has a body limit is `100kb`. In order to increase the limit you can set the limit like this:
 
 ```js
-app.use(bodyParser.json({limit: '10mb'});
+app.use(bodyParser.json({limit: '10mb'}));
 ```
 
 #### Middleware configuration

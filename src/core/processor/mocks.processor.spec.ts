@@ -190,5 +190,24 @@ describe('MocksProcessor', () => {
                 );
             });
         });
+
+        describe('with mockWatches set', () => {
+            beforeEach(() => {
+                globSyncFn.mockReturnValue([]);
+                processor.process({ src: 'src', patterns: { mocks: '**/*.mymock.json', mockWatches: '*/*' } });
+            });
+            it('processes each mockWatch and mock', () => {
+                expect(globSyncFn).toHaveBeenCalledWith(
+                    '**/*', {
+                        cwd: 'src', root: '/', nodir: true
+                    }
+                );
+                expect(globSyncFn).toHaveBeenCalledWith(
+                    '**/*.mymock.json', {
+                        cwd: 'src', root: '/'
+                    }
+                );
+            });
+        });
     });
 });

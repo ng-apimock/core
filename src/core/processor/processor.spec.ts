@@ -115,5 +115,31 @@ describe('MocksProcessor', () => {
                 expect(presetsProcessor.process).toHaveBeenCalledTimes(2);
             });
         });
+
+        describe('watch - with mockWatches set', () => {
+            beforeEach(() => {
+                processor.process({
+                    src: 'src',
+                    patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern', mockWatches: 'mock-watches' },
+                    watch: true
+                });
+            });
+
+            it('watches for mockWatches changes when set', async () => {
+                expect(chokidarWatchFn).toHaveBeenCalledWith('src/mock-watches', {
+                    ignoreInitial: true, usePolling: true, interval: 2000
+                });
+
+                expect(fsWatcher.on).toHaveBeenCalledWith('all', expect.anything());
+                expect(mocksProcessor.process).toHaveBeenCalledTimes(1);
+
+                const onAllCall = fsWatcher.on.mock.calls[0];
+
+                expect(onAllCall[0]).toBe('all');
+                await onAllCall[1](); // call the callback function.
+
+                expect(mocksProcessor.process).toHaveBeenCalledTimes(2);
+            });
+        });
     });
 });
