@@ -1,12 +1,12 @@
 import * as path from 'path';
 
-import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
 import { State } from '../state/state';
 
+import { FileLoader } from './file.loader';
 import { PresetsProcessor } from './presets.processor';
 import { DefaultProcessingOptions } from './processing.options';
 
@@ -16,13 +16,16 @@ jest.mock('glob');
 describe('PresetsProcessor', () => {
     let container: Container;
     let state: jest.Mocked<State>;
+    let fileLoader: jest.Mocked<FileLoader>;
     let processor: PresetsProcessor;
 
     beforeEach(() => {
         container = new Container();
         state = createSpyObj(State);
+        fileLoader = createSpyObj(FileLoader);
 
         container.bind('State').toConstantValue(state);
+        container.bind('FileLoader').toConstantValue(fileLoader);
         container.bind('PresetsProcessor').to(PresetsProcessor);
 
         processor = container.get<PresetsProcessor>('PresetsProcessor');
@@ -32,7 +35,7 @@ describe('PresetsProcessor', () => {
         let consoleLogFn: jest.Mock;
         let consoleWarnFn: jest.Mock;
         let doneFn: jest.Mock;
-        let fsReadJsonSyncFn: jest.Mock;
+        let loadFileFn: jest.Mock;
         let globSyncFn: jest.Mock;
 
         beforeEach(() => {
@@ -40,7 +43,7 @@ describe('PresetsProcessor', () => {
 
             consoleLogFn = console.log = jest.fn();
             consoleWarnFn = console.warn = jest.fn();
-            fsReadJsonSyncFn = fs.readJsonSync as jest.Mock;
+            loadFileFn = fileLoader.loadFile as jest.Mock;
             globSyncFn = glob.sync as jest.Mock;
 
             (state as any).presets = [];
@@ -48,7 +51,7 @@ describe('PresetsProcessor', () => {
                 'preset/happy.preset.json',
                 'preset/unhappy.preset.json',
                 'preset/duplicate.preset.json']);
-            fsReadJsonSyncFn.mockReturnValueOnce({
+            loadFileFn.mockReturnValueOnce({
                 name: 'happy.preset',
                 mocks: {
                     some: { scenario: 'success', delay: 2000, echo: true },
@@ -56,12 +59,12 @@ describe('PresetsProcessor', () => {
                 },
                 variables: { today: 'some date' }
             });
-            fsReadJsonSyncFn.mockReturnValueOnce({
+            loadFileFn.mockReturnValueOnce({
                 name: 'unhappy.preset',
                 mocks: { some: { scenario: 'failure' }, another: { scenario: 'error' } },
                 variables: { today: 'some date' }
             });
-            fsReadJsonSyncFn.mockReturnValue({
+            loadFileFn.mockReturnValue({
                 name: 'happy.preset',
                 mocks: { some: { scenario: 'success' }, another: { scenario: 'success' } },
                 variables: { today: 'some date' }
@@ -79,9 +82,9 @@ describe('PresetsProcessor', () => {
                         cwd: 'src', root: '/'
                     }
                 );
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'preset/happy.preset.json'));
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'preset/unhappy.preset.json'));
-                expect(fsReadJsonSyncFn).toHaveBeenCalledWith(path.join('src', 'preset/duplicate.preset.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/happy.preset.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/unhappy.preset.json'));
+                expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/duplicate.preset.json'));
             });
 
             it('processes unique presets', () => expect(consoleLogFn).toHaveBeenCalledWith('Processed 2 unique presets.'));
@@ -93,6 +96,25 @@ describe('PresetsProcessor', () => {
                 processor.process({ src: 'src', patterns: { presets: '**/*.mypreset.json' } });
             });
             it('processes each preset', () => {
+                expect(globSyncFn).toHaveBeenCalledWith(
+                    '**/*.mypreset.json', {
+                        cwd: 'src', root: '/'
+                    }
+                );
+            });
+        });
+
+        describe('with preset watches set', () => {
+            beforeEach(() => {
+                globSyncFn.mockReturnValue([]);
+                processor.process({ src: 'src', patterns: { presets: '**/*.mypreset.json' }, watches: { presets: '**/*' } });
+            });
+            it('processes each preset watch and preset', () => {
+                expect(globSyncFn).toHaveBeenCalledWith(
+                    '**/*', {
+                        cwd: 'src', root: '/', nodir: true
+                    }
+                );
                 expect(globSyncFn).toHaveBeenCalledWith(
                     '**/*.mypreset.json', {
                         cwd: 'src', root: '/'

@@ -1,4 +1,4 @@
-A mock in [@ng-apimock/core](https://github.com/ng-apimock/core) is represented in a json file that follows the request / response principle.
+A mock in [@ng-apimock/core](https://github.com/ng-apimock/core) is represented in a json/js file that follows the request / response principle.
 
 ## Writing a mock file
 Mocks in [@ng-apimock/core](https://github.com/ng-apimock/core) are written in json or javascript.
@@ -55,7 +55,7 @@ module.exports = {
 Writing a mock should always follow the [json schema](#json-schema).
 
 ### Advanced request matching
-When [@ng-apimock/core](https://github.com/ng-apimock/core) tries to match a request to a mock ,it will always look at the required fields of the request.
+When [@ng-apimock/core](https://github.com/ng-apimock/core) tries to match a request to a mock, it will always look at the required fields of the request.
 But when the request is configured with the header and body, it will also use that information to match.
 
 Looking at the following request configuration
@@ -83,7 +83,7 @@ Looking at the following request configuration
 }
 ```
 the request will only match when the 
-- Content-type header is of typ 'application/json'
+- Content-type header is of type 'application/json'
 - The body contains an item that matches the regex
 
 ### Chaining responses
@@ -117,11 +117,10 @@ Looking at the following response configuration
                 }],
                 "times": 3 // optional
             }
-          }
-        },
-        "internal_server_error": {
-            "status": 500
         }
+    },
+    "internal_server_error": {
+        "status": 500
     }
 }
 ```

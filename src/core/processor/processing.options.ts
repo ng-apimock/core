@@ -3,7 +3,10 @@ export interface ProcessingOptions {
     patterns?: {
         mocks?: string;
         presets?: string;
-        mockWatches?: string;
+    };
+    watches?: {
+        mocks?: string;
+        presets?: string;
     };
     watch?: boolean;
 }

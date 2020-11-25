@@ -31,9 +31,9 @@ export class MocksProcessor {
      * @param {ProcessingOptions} options The processing options.
      */
     process(options: ProcessingOptions): void {
-        if (options.patterns.mockWatches) {
-            // trigger deletion of files matching mockWatches pattern from cache
-            glob.sync(options.patterns.mockWatches, {
+        if (options.watches?.mocks) {
+            // trigger deletion of files matching mock watches pattern from cache
+            glob.sync(options.watches.mocks, {
                 cwd: options.src,
                 root: '/',
                 nodir: true // prevents error if pattern matches a dir
@@ -44,6 +44,7 @@ export class MocksProcessor {
 
         let counter = 0;
         const pattern = options.patterns.mocks;
+
         glob.sync(pattern, {
             cwd: options.src,
             root: '/'

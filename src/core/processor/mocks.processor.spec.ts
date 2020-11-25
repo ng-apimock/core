@@ -191,12 +191,12 @@ describe('MocksProcessor', () => {
             });
         });
 
-        describe('with mockWatches set', () => {
+        describe('with mock watches set', () => {
             beforeEach(() => {
                 globSyncFn.mockReturnValue([]);
-                processor.process({ src: 'src', patterns: { mocks: '**/*.mymock.json', mockWatches: '**/*' } });
+                processor.process({ src: 'src', patterns: { mocks: '**/*.mymock.json' }, watches: { mocks: '**/*' } });
             });
-            it('processes each mockWatch and mock', () => {
+            it('processes each mock watch and mock pattern', () => {
                 expect(globSyncFn).toHaveBeenCalledWith(
                     '**/*', {
                         cwd: 'src', root: '/', nodir: true
