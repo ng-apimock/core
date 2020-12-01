@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/ng-apimock/core/compare/v2.3.2...v2.4.0) (2020-12-01)
+
+
+### Features
+
+* Support file watching for patterns other than mocks ([#236](https://github.com/ng-apimock/core/issues/236)) ([#257](https://github.com/ng-apimock/core/issues/257)) ([970eb84](https://github.com/ng-apimock/core/commit/970eb8452c5d6b4d4804c5c54792a539b0ca29a1))
+
 ## [2.3.2](https://github.com/ng-apimock/core/compare/v2.3.1...v2.3.2) (2020-07-16)
 
 
