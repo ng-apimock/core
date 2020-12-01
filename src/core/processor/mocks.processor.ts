@@ -1,6 +1,5 @@
 import * as path from 'path';
 
-import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { inject, injectable } from 'inversify';
 
@@ -21,6 +20,7 @@ export class MocksProcessor {
     /**
      * Constructor.
      * @param {State} state The state.
+     * @param {FileLoader} fileLoader The file loader.
      */
     constructor(@inject('State') public state: State, @inject('FileLoader') public fileLoader: FileLoader) {
     }
@@ -31,6 +31,17 @@ export class MocksProcessor {
      * @param {ProcessingOptions} options The processing options.
      */
     process(options: ProcessingOptions): void {
+        if (options.watches?.mocks) {
+            // trigger deletion of files matching mock watches pattern from cache
+            glob.sync(options.watches.mocks, {
+                cwd: options.src,
+                root: '/',
+                nodir: true // prevents error if pattern matches a dir
+            }).forEach((file) => {
+                this.fileLoader.loadFile(path.join(options.src, file));
+            });
+        }
+
         let counter = 0;
         const pattern = options.patterns.mocks;
 

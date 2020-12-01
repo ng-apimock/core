@@ -1,10 +1,10 @@
-A preset in [@ng-apimock/core](https://github.com/ng-apimock/core) is represented in a json file.
+A preset in [@ng-apimock/core](https://github.com/ng-apimock/core) is represented in a json/js file.
 It allows you to set the state of one or multiple mocks and set variables all at once.
 
-This can for instance be used to set all the mocks correctly for your happy or onhappy flow.
+This can for instance be used to set all the mocks correctly for your happy or unhappy flow.
 
 ## Writing a preset file
-Presets in [@ng-apimock/core](https://github.com/ng-apimock/core) are written in json.
+Presets in [@ng-apimock/core](https://github.com/ng-apimock/core) are written in json or javascript.
 There is only one rule to follow when writing a preset file.
 1. It has a unique name
 

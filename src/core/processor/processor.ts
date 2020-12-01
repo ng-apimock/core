@@ -30,13 +30,12 @@ export class Processor {
         this.presetsProcessor.process(opts);
 
         if (opts.watch) {
-            chokidar.watch(`${opts.src}/${opts.patterns.mocks}`, {
+            chokidar.watch(`${opts.src}/${opts.watches?.mocks || opts.patterns.mocks}`, {
                 ignoreInitial: true,
                 usePolling: true,
                 interval: 2000
             }).on('all', () => this.mocksProcessor.process(opts));
-
-            chokidar.watch(`${opts.src}/${opts.patterns.presets}`, {
+            chokidar.watch(`${opts.src}/${opts.watches?.presets || opts.patterns.presets}`, {
                 ignoreInitial: true,
                 usePolling: true,
                 interval: 2000
