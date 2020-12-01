@@ -4,6 +4,10 @@ export interface ProcessingOptions {
         mocks?: string;
         presets?: string;
     };
+    watches?: {
+        mocks?: string;
+        presets?: string;
+    };
     watch?: boolean;
 }
 

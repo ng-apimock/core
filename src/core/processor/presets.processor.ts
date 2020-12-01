@@ -1,12 +1,12 @@
 import * as path from 'path';
 
-import * as fs from 'fs-extra';
 import * as glob from 'glob';
 import { inject, injectable } from 'inversify';
 
 import { Preset } from '../preset/preset';
 import { State } from '../state/state';
 
+import { FileLoader } from './file.loader';
 import { ProcessingOptions } from './processing.options';
 
 /** Presets processor. */
@@ -15,8 +15,9 @@ export class PresetsProcessor {
     /**
      * Constructor.
      * @param {State} state The state.
+     * @param {FileLoader} fileLoader The file loader.
      */
-    constructor(@inject('State') public state: State) {
+    constructor(@inject('State') public state: State, @inject('FileLoader') public fileLoader: FileLoader) {
     }
 
     /**
@@ -25,6 +26,17 @@ export class PresetsProcessor {
      * @param {ProcessingOptions} options The processing options.
      */
     process(options: ProcessingOptions): void {
+        if (options.watches?.presets) {
+            // trigger deletion of files matching preset watches pattern from cache
+            glob.sync(options.watches.presets, {
+                cwd: options.src,
+                root: '/',
+                nodir: true // prevents error if pattern matches a dir
+            }).forEach((file) => {
+                this.fileLoader.loadFile(path.join(options.src, file));
+            });
+        }
+
         let counter = 0;
         const pattern = options.patterns.presets;
 
@@ -33,7 +45,7 @@ export class PresetsProcessor {
             root: '/'
         }).forEach((file) => {
             const presetPath = path.join(options.src, file);
-            const preset = fs.readJsonSync(presetPath);
+            const preset = this.fileLoader.loadFile(presetPath);
             const match = this.state.presets.find((_preset: Preset) => _preset.name === preset.name);
             const index = this.state.presets.indexOf(match);
 
