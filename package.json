@@ -69,7 +69,7 @@
         "chokidar": "3.4.3",
         "fs-extra": "9.0.1",
         "glob": "7.1.6",
-        "inversify": "5.0.1",
+        "inversify": "5.0.5",
         "node-fetch": "2.6.1",
         "reflect-metadata": "0.1.13",
         "uuid": "8.3.1"
