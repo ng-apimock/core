@@ -33,7 +33,7 @@ app.set('port', (process.env.PORT || 3000));
 
 // Process the application mocks
 apimock.processor.process({src: 'path/to/my/mocks'})
-// Use the ng-apimock middelware
+// Use the ng-apimock middleware
 app.use(apimock.middleware);
 
 app.listen(app.get('port'), function() {
