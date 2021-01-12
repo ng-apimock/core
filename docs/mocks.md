@@ -115,7 +115,9 @@ Looking at the following response configuration
                     "name": "some-other-mock", 
                     "scenario": "some-scenario"
                 }],
-                "times": 3 // optional
+                "criteria": { // optional
+                    "times": 3
+                }
             }
         }
     },
