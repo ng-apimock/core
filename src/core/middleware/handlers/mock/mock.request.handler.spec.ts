@@ -7,7 +7,6 @@ import { createSpyObj } from 'jest-createspyobj';
 
 import { Mock } from '../../../mock/mock';
 import { MockResponse } from '../../../mock/mock.response';
-import { MockResponseThenClause } from '../../../mock/mock.response.then.clause';
 import { IState } from '../../../state/Istate';
 import { MockState } from '../../../state/mock.state';
 import { State } from '../../../state/state';
@@ -315,7 +314,7 @@ describe('MockRequestHandler', () => {
         describe('with empty criteria', () => {
             beforeEach(() => {
                 (mockRequestHandler as any).handleThenCriteria({
-                    criteria: { },
+                    criteria: {},
                     mocks: [{ scenario: 'some scenario' }]
                 }, matchingMockState, matchingState);
             });
