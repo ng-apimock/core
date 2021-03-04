@@ -6,6 +6,7 @@ import { createSpyObj } from 'jest-createspyobj';
 import { Configuration, DefaultConfiguration } from '../configuration';
 import { IState } from '../state/Istate';
 import { State } from '../state/state';
+import { CreateMockHandler } from './handlers/api/create-mock.handler';
 
 import { DefaultsHandler } from './handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './handlers/api/delete-variable.handler';
@@ -48,6 +49,7 @@ describe('Middleware', () => {
     let setVariableHandler: SetVariableHandler;
     let selectPresetHandler: SelectPresetHandler;
     let updateMocksHandler: UpdateMocksHandler;
+	let createMockHandler: CreateMockHandler;
 
     beforeEach(() => {
         container = new Container();
@@ -69,6 +71,7 @@ describe('Middleware', () => {
         setVariableHandler = createSpyObj(SetVariableHandler);
         state = createSpyObj(State);
         updateMocksHandler = createSpyObj(UpdateMocksHandler);
+		createMockHandler = createSpyObj(CreateMockHandler);
 
         container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
@@ -90,6 +93,7 @@ describe('Middleware', () => {
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);
         container.bind('Middleware').to(Middleware);
         container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
+        container.bind('CreateMockHandler').toConstantValue(createMockHandler);
 
         middleware = container.get<Middleware>('Middleware');
     });
