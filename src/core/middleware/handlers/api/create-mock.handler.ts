@@ -1,28 +1,20 @@
+
 import * as http from 'http';
-
-import { inject, injectable } from 'inversify';
-
-import { Configuration } from '../../../configuration';
-import { State } from '../../../state/state';
-import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
-import { ApplicableHandler } from '../handler';
 import * as path from 'path';
 
 import * as fs from 'fs-extra';
-import { MockResponse } from '../../../mock/mock.response';
-import { Mock } from '../../../mock/mock';
+import { inject, injectable } from 'inversify';
 
-export interface PostedMock {
-	name: string;
-	method: 'POST' | 'GET' | 'PUT' | 'OPTIONS',
-	url: string;
-	responses: { [key: string]: MockResponse }
-}
+import { Configuration } from '../../../configuration';
+import { Mock } from '../../../mock/mock';
+import { MockResponse } from '../../../mock/mock.response';
+import { State } from '../../../state/state';
+import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { ApplicableHandler } from '../handler';
+
 /**  Handler for creating and saving mocks in the mocks directory. */
 @injectable()
 export class CreateMockHandler implements ApplicableHandler {
-	APPLICABLE_MIMETYPES = ['application/json', 'application/xml'];
-    RESPONSE_ENCODING = 'base64';
 	MOCK_EXTENTIONS = {
 		JSON: 'mock.json',
 		SCRIPT: 'mock.js'
@@ -49,8 +41,6 @@ export class CreateMockHandler implements ApplicableHandler {
 				if(this.checkIfMockExists(body)) {
                     throw new Error('this mock already exissts');
                 }
-               
-                console.log('now save stuff');
 				this.saveMock(body);
                 
             } else {
@@ -73,7 +63,7 @@ export class CreateMockHandler implements ApplicableHandler {
 				default: true,
 				statusText: 'no response posted'
 			};
-			mock.responses['createdDetault'] = defaultResponse;
+			mock.responses['createdDefault'] = defaultResponse;
 		}
 		fs.writeFileSync(path.join(processConfig.src, `${mock.name}.${this.MOCK_EXTENTIONS.JSON}`), JSON.stringify(mock));
     }
