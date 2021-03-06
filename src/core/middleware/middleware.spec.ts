@@ -6,8 +6,8 @@ import { createSpyObj } from 'jest-createspyobj';
 import { Configuration, DefaultConfiguration } from '../configuration';
 import { IState } from '../state/Istate';
 import { State } from '../state/state';
-import { CreateMockHandler } from './handlers/api/create-mock.handler';
 
+import { CreateMockHandler } from './handlers/api/create-mock.handler';
 import { DefaultsHandler } from './handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './handlers/api/delete-variable.handler';
 import { GetMocksHandler } from './handlers/api/get-mocks.handler';
@@ -49,7 +49,7 @@ describe('Middleware', () => {
     let setVariableHandler: SetVariableHandler;
     let selectPresetHandler: SelectPresetHandler;
     let updateMocksHandler: UpdateMocksHandler;
-	let createMockHandler: CreateMockHandler;
+    let createMockHandler: CreateMockHandler;
 
     beforeEach(() => {
         container = new Container();
@@ -71,7 +71,7 @@ describe('Middleware', () => {
         setVariableHandler = createSpyObj(SetVariableHandler);
         state = createSpyObj(State);
         updateMocksHandler = createSpyObj(UpdateMocksHandler);
-		createMockHandler = createSpyObj(CreateMockHandler);
+        createMockHandler = createSpyObj(CreateMockHandler);
 
         container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
@@ -139,7 +139,8 @@ describe('Middleware', () => {
 
             it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
 
-            it('gets the matching applicable handler', () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
+            it('gets the matching applicable handler', 
+                () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
 
             it('calls the handler.handle', () => expect(applicableHandlerHandleFn).toHaveBeenCalledWith(request, response, nextFn, {
                 id: 'apimockId', body: { x: 'x' }
@@ -175,22 +176,24 @@ describe('Middleware', () => {
 
                 it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
 
-                it('gets the matching applicable handler', () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
+                it('gets the matching applicable handler',
+                    () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
 
                 it('gets the matching mock', () => expect(state.getMatchingMock).toHaveBeenCalledWith('/base-path', HttpMethods.GET, {
                     some: 'header'
                 }, { x: 'x' }));
 
-                it('calls the echo request handler', () => expect(echoRequestHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
-                    id: 'apimockId',
-                    mock: {
-                        name: 'matching-mock',
-                        isArray: true,
-                        request: { url: '/base-path', method: HttpMethods.GET },
-                        responses: {}
-                    },
-                    body: { x: 'x' }
-                }));
+                it('calls the echo request handler',
+                    () => expect(echoRequestHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
+                        id: 'apimockId',
+                        mock: {
+                            name: 'matching-mock',
+                            isArray: true,
+                            request: { url: '/base-path', method: HttpMethods.GET },
+                            responses: {}
+                        },
+                        body: { x: 'x' }
+                    }));
             });
 
             describe('recording is enabled', () => {
@@ -235,16 +238,17 @@ describe('Middleware', () => {
                         jsonBodyParser.mock.calls[0][2]();
                     });
 
-                    it('calls the record response handler', () => expect(recordResponseHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
-                        id: 'apimockId',
-                        mock: {
-                            name: 'matching-mock',
-                            isArray: true,
-                            request: { url: '/base-path', method: HttpMethods.GET },
-                            responses: {}
-                        },
-                        body: { x: 'x' }
-                    }));
+                    it('calls the record response handler',
+                        () => expect(recordResponseHandler.handle).toHaveBeenCalledWith(request, response, nextFn, {
+                            id: 'apimockId',
+                            mock: {
+                                name: 'matching-mock',
+                                isArray: true,
+                                request: { url: '/base-path', method: HttpMethods.GET },
+                                responses: {}
+                            },
+                            body: { x: 'x' }
+                        }));
                 });
             });
 
@@ -314,7 +318,8 @@ describe('Middleware', () => {
             getVariablesHandler.isApplicable.mockReturnValue(true);
         });
 
-        it('finds the applicable handler', () => expect(middleware.getMatchingApplicableHandler(request, { x: 'x' })).toEqual(getVariablesHandler));
+        it('finds the applicable handler',
+            () => expect(middleware.getMatchingApplicableHandler(request, { x: 'x' })).toEqual(getVariablesHandler));
     });
 
     describe('getApimockId', () => {
@@ -371,7 +376,8 @@ describe('Middleware', () => {
             middleware['configuration'].middleware.identifier = 'my-identifier';
         });
         describe('apimockId cookie is present', () => {
-            it('returns the apimockId', () => expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;my-identifier=123;c=c' })).toBe('123'));
+            it('returns the apimockId',
+                () => expect(middleware.getApimockIdFromCookie({ cookie: 'a=a;my-identifier=123;c=c' })).toBe('123'));
         });
 
         describe('apimockId cookie is not present', () => {

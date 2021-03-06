@@ -225,7 +225,7 @@ export class State {
         this._processingOptions = config;
     }
 
-	getProcessingOptions(): ProcessingOptions {
-		return this._processingOptions;
-	}
+    getProcessingOptions(): ProcessingOptions {
+        return this._processingOptions;
+    }
 }
