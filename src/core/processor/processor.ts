@@ -1,5 +1,6 @@
 import * as chokidar from 'chokidar';
 import { inject, injectable } from 'inversify';
+import { State } from '../state/state';
 
 import { MocksProcessor } from './mocks.processor';
 import { PresetsProcessor } from './presets.processor';
@@ -8,12 +9,14 @@ import { DefaultProcessingOptions, ProcessingOptions } from './processing.option
 /** Mocks processor. */
 @injectable()
 export class Processor {
+	private processingOptions: ProcessingOptions;
     /**
      * Constructor.
      * @param {MocksProcessor} mocksProcessor The mocks processor.
      * @param {PresetsProcessor} presetsProcessor The presets processor.
      */
     constructor(@inject('MocksProcessor') public mocksProcessor: MocksProcessor,
+				@inject('State') private state: State,
                 @inject('PresetsProcessor') public presetsProcessor: PresetsProcessor) {
     }
 
@@ -25,7 +28,7 @@ export class Processor {
      */
     process(options: ProcessingOptions): void {
         const opts = this.getMergedOptions(options);
-
+		this.state.setProcessingOptions(opts);
         this.mocksProcessor.process(opts);
         this.presetsProcessor.process(opts);
 
@@ -51,4 +54,8 @@ export class Processor {
     private getMergedOptions(options: ProcessingOptions): ProcessingOptions {
         return { ...DefaultProcessingOptions, ...options };
     }
+
+	getProcessingOptions() {
+		return this.processingOptions;
+	}
 }

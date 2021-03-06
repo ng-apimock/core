@@ -30,7 +30,7 @@ export class State {
     readonly _global: GlobalState;
 
     readonly _sessions: SessionState[];
-    _processorConfiguration: ProcessingOptions;
+    private _processingOptions: ProcessingOptions;
     /** Constructor. */
     constructor() {
         this._mocks = [];
@@ -221,7 +221,11 @@ export class State {
         });
     }
 
-    setProcessorConfig(config: ProcessingOptions) {
-        this._processorConfiguration = config;
+    setProcessingOptions(config: ProcessingOptions) {
+        this._processingOptions = config;
     }
+
+	getProcessingOptions(): ProcessingOptions {
+		return this._processingOptions;
+	}
 }

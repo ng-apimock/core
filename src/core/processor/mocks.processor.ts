@@ -31,8 +31,6 @@ export class MocksProcessor {
      * @param {ProcessingOptions} options The processing options.
      */
     process(options: ProcessingOptions): void {
-		// store the options in the state for later saving of mocks
-		this.state.setProcessorConfig(options);
         if (options.watches?.mocks) {
             // trigger deletion of files matching mock watches pattern from cache
             glob.sync(options.watches.mocks, {
