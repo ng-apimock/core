@@ -9,6 +9,7 @@ import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { CreateMockHandler } from './create-mock.handler';
+import path = require('path');
 
 jest.mock('fs-extra');
 describe('CreateMocksHandler', () => {
@@ -116,7 +117,7 @@ describe('CreateMocksHandler', () => {
         });
         it('shoud save the mock in the mocks folder', () => {
             handler.saveMock(mockPostData);
-            expect(outputJSONSync).toHaveBeenCalledWith('the/mocks/path/newmockname.mock.json', mockPostData, { spaces: 2 });
+            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newmockname.mock.json'), mockPostData, { spaces: 2 });
         });
         it('should add a default response if no reponse is posted and save the mock', () => {
             mockPostData.responses = {};
@@ -131,7 +132,8 @@ describe('CreateMocksHandler', () => {
                     }
                 }
             };
-            expect(outputJSONSync).toHaveBeenCalledWith('the/mocks/path/newmockname.mock.json', expectedPostData, { spaces: 2 });
+            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newmockname.mock.json'),
+                expectedPostData, { spaces: 2 });
         });
     });
 
