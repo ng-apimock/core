@@ -139,7 +139,7 @@ describe('Middleware', () => {
 
             it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
 
-            it('gets the matching applicable handler', 
+            it('gets the matching applicable handler',
                 () => expect(getMatchingApplicableHandlerFn).toHaveBeenCalledWith(request, { x: 'x' }));
 
             it('calls the handler.handle', () => expect(applicableHandlerHandleFn).toHaveBeenCalledWith(request, response, nextFn, {
