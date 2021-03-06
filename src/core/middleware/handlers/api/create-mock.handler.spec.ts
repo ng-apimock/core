@@ -1,4 +1,5 @@
 import * as http from 'http';
+import * as path from 'path';
 
 import * as fs from 'fs-extra';
 import { Container } from 'inversify';
@@ -9,7 +10,6 @@ import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 
 import { CreateMockHandler } from './create-mock.handler';
-import path = require('path');
 
 jest.mock('fs-extra');
 describe('CreateMocksHandler', () => {
