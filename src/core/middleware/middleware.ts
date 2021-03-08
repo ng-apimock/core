@@ -7,6 +7,7 @@ import { Configuration } from '../configuration';
 import { Mock } from '../mock/mock';
 import { State } from '../state/state';
 
+import { CreateMockHandler } from './handlers/api/create-mock.handler';
 import { DefaultsHandler } from './handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './handlers/api/delete-variable.handler';
 import { GetMocksHandler } from './handlers/api/get-mocks.handler';
@@ -51,6 +52,7 @@ export class Middleware {
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
      * @param {State} apimockState The apimock state.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
+     * @param {CreateMockHandler} createMockHandler The create mocks handler.
      */
     constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
@@ -70,7 +72,8 @@ export class Middleware {
                 @inject('SelectPresetHandler') private selectPresetHandler: SelectPresetHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
                 @inject('State') private apimockState: State,
-                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler) {
+                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
+                @inject('CreateMockHandler') private createMockHandler: CreateMockHandler) {
         this.handlers = [
             defaultsHandler,
             deleteVariableHandler,
@@ -84,7 +87,8 @@ export class Middleware {
             recordHandler,
             setVariableHandler,
             selectPresetHandler,
-            updateMocksHandler
+            updateMocksHandler,
+            createMockHandler
         ];
     }
 

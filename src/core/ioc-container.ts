@@ -5,6 +5,7 @@ import { NextHandleFunction } from 'connect';
 import { Container } from 'inversify';
 
 import { Configuration, DefaultConfiguration } from './configuration';
+import { CreateMockHandler } from './middleware/handlers/api/create-mock.handler';
 import { DefaultsHandler } from './middleware/handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './middleware/handlers/api/delete-variable.handler';
 import { GetMocksHandler } from './middleware/handlers/api/get-mocks.handler';
@@ -63,4 +64,5 @@ container.bind<Processor>('Processor').to(Processor);
 container.bind<NextHandleFunction>('JsonBodyParser').toConstantValue(bodyParser.json());
 container.bind<Middleware>('Middleware').to(Middleware);
 
+container.bind<CreateMockHandler>('CreateMockHandler').to(CreateMockHandler);
 export default container;

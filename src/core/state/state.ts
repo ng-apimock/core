@@ -7,6 +7,7 @@ import { injectable } from 'inversify';
 import { Mock } from '../mock/mock';
 import { MockResponse } from '../mock/mock.response';
 import { Preset } from '../preset/preset';
+import { ProcessingOptions } from '../processor/processing.options';
 
 import { IState } from './Istate';
 import { GlobalState } from './global.state';
@@ -29,7 +30,7 @@ export class State {
     readonly _global: GlobalState;
 
     readonly _sessions: SessionState[];
-
+    private _processingOptions: ProcessingOptions;
     /** Constructor. */
     constructor() {
         this._mocks = [];
@@ -218,5 +219,13 @@ export class State {
         Object.keys(state.mocks).forEach((mockName) => {
             state.mocks[mockName].scenario = PASS_THROUGH;
         });
+    }
+
+    setProcessingOptions(config: ProcessingOptions) {
+        this._processingOptions = config;
+    }
+
+    getProcessingOptions(): ProcessingOptions {
+        return this._processingOptions;
     }
 }

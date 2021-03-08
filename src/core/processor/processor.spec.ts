@@ -2,6 +2,8 @@ import * as chokidar from 'chokidar';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
+import { State } from '../state/state';
+
 import { MocksProcessor } from './mocks.processor';
 import { PresetsProcessor } from './presets.processor';
 import { Processor } from './processor';
@@ -12,14 +14,17 @@ jest.mock('chokidar');
 describe('MocksProcessor', () => {
     let container: Container;
     let mocksProcessor: jest.Mocked<MocksProcessor>;
+    let state: jest.Mocked<State>;
     let presetsProcessor: jest.Mocked<PresetsProcessor>;
     let processor: Processor;
 
     beforeEach(() => {
         container = new Container();
         mocksProcessor = createSpyObj(MocksProcessor);
+        state = createSpyObj(State);
         presetsProcessor = createSpyObj(PresetsProcessor);
 
+        container.bind('State').toConstantValue(state);
         container.bind('MocksProcessor').toConstantValue(mocksProcessor);
         container.bind('PresetsProcessor').toConstantValue(presetsProcessor);
         container.bind('Processor').to(Processor);
