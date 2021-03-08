@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/ng-apimock/core/compare/v2.4.0...v2.5.0) (2021-03-08)
+
+
+### Features
+
+* **post-mocks:** create mocks handler ([#367](https://github.com/ng-apimock/core/issues/367)) ([e36980d](https://github.com/ng-apimock/core/commit/e36980d5fa246418e575c151f9d3de8f8de38bdb))
+
 # [2.4.0](https://github.com/ng-apimock/core/compare/v2.3.2...v2.4.0) (2020-12-01)
 
 
