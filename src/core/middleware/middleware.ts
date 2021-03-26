@@ -95,7 +95,8 @@ export class Middleware {
             updateMocksHandler,
             createMockHandler,
             createPresetHandler,
-            addMockToPresetHandler
+            addMockToPresetHandler,
+            createMockHandler
         ];
     }
 
