@@ -6,25 +6,28 @@ import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
 import { Mock } from '../../../mock/mock';
+import { Preset } from '../../../preset/preset';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
 
-import { CreateMockHandler } from './create-mock.handler';
+import { CreatePresetHandler } from './create-preset.handler';
 
 jest.mock('fs-extra');
-describe('CreateMocksHandler', () => {
+jest.mock('../handerutil');
+
+describe('CreatePresetHandler', () => {
     let container: Container;
-    let handler: CreateMockHandler;
+    let handler: CreatePresetHandler;
     let state: jest.Mocked<State>;
 
     beforeEach(() => {
         container = new Container();
         state = createSpyObj(State);
         container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
-        container.bind('CreateMockHandler').to(CreateMockHandler);
+        container.bind('CreatePresetHandler').to(CreatePresetHandler);
         container.bind('State').toConstantValue(state);
-        handler = container.get<CreateMockHandler>('CreateMockHandler');
+        handler = container.get<CreatePresetHandler>('CreatePresetHandler');
     });
 
     describe('handle', () => {
@@ -33,95 +36,71 @@ describe('CreateMocksHandler', () => {
         let response: http.ServerResponse;
 
         beforeEach(() => {
-            handler.saveMock = jest.fn();
+            handler.savePreset = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
                 end: jest.fn(),
                 writeHead: jest.fn()
             } as unknown as http.ServerResponse;
         });
-        it('should throw if the incoming request is not if the type Mock', () => {
+        it('should throw if the incoming request is not if the type Preset', () => {
             handler.handle(request as any, response as any, nextFn, {
                 id: 'someId',
                 body: {
-                    name: 'valid',
-                    request: {}
-                } as unknown as Mock
+                    name: 'valid'
+                } as Preset
             });
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         });
-        it('should throw if the mock already exists', () => {
-            HandlerUtils.checkIfMockExists = jest.fn().mockReturnValue(true);
+        it('should throw if the Preset already exists', () => {
+            HandlerUtils.checkIfPresetExists = jest.fn().mockReturnValue(true);
             handler.handle(request as any, response as any, nextFn, {
                 id: 'someId',
                 body: {
                     name: 'valid',
-                    request: {},
-                    responses: {}
-                } as unknown as Mock
+                    mocks: {},
+                    variables: {}
+                } as Preset
             });
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'this mock already exists' }));
+            expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Preset with this name already exists' }));
         });
-        it('should save the mock is the the mock is valid and does not yet exist', () => {
-            handler.saveMock = jest.fn();
-            HandlerUtils.checkIfMockExists = jest.fn().mockReturnValue(false);
+        it('should save the Preset is the the preset is valid and does not yet exist', () => {
+            handler.savePreset = jest.fn();
+            HandlerUtils.checkIfPresetExists = jest.fn().mockReturnValue(false);
             handler.handle(request as any, response as any, nextFn, {
                 id: 'someId',
                 body: {
                     name: 'valid',
-                    request: {},
-                    responses: {}
-                } as unknown as Mock
+                    mocks: {},
+                    variables: {}
+                } as unknown as Preset
             });
-            expect(handler.saveMock).toHaveBeenCalled();
+            expect(handler.savePreset).toHaveBeenCalled();
         });
     });
 
-    describe('saveMock', () => {
+    describe('savePreset', () => {
         let outputJSONSync: jest.Mock;
-        let mockPostData: Mock;
+        let mockPostData: Preset;
         beforeEach(() => {
             outputJSONSync = fs.outputJSONSync as jest.Mock;
             state.getProcessingOptions.mockReturnValue({
                 src: 'the/mocks/path',
                 patterns: {
-                    mocks: '**/*.somemock.json'
+                    presets: '**/**.custom.json'
                 }
             });
             mockPostData = {
                 name: 'newname',
-                request: {
-                    url: 'url',
-                    method: 'GET'
-                },
-                responses: {
-                    someResponse: {
-                        default: true,
-                        data: {}
-                    }
-                }
+                mocks: {},
+                variables: {}
+
             };
         });
-        it('shoud save the mock in the mocks folder', () => {
-            handler.saveMock(mockPostData);
-            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newname.somemock.json'), mockPostData, { spaces: 2 });
-        });
-        it('should add a default response if no reponse is posted and save the mock', () => {
-            mockPostData.responses = {};
-            handler.saveMock(mockPostData);
-            const expectedPostData = {
-                ...mockPostData,
-                responses: {
-                    createdDefault: {
-                        status: 501,
-                        data: {},
-                        default: true
-                    }
-                }
-            };
-            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newname.somemock.json'),
-                expectedPostData, { spaces: 2 });
+        it('shoud save the preset in the configured folder with the configured extention', () => {
+            handler.savePreset(mockPostData);
+            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newname.custom.json'), mockPostData, { spaces: 2 });
         });
     });
 
@@ -133,12 +112,18 @@ describe('CreateMocksHandler', () => {
         });
 
         it('indicates applicable when url and method match', () => {
-            request.url = '/base-path/mocks';
+            request.url = '/base-path/presets/somepreset';
+            request.method = HttpMethods.POST;
+            expect(handler.isApplicable(request as any)).toBe(true);
+        });
+
+        it('should not match on the default presets path', () => {
+            request.url = '/base-path/presets';
             request.method = HttpMethods.POST;
             expect(handler.isApplicable(request as any)).toBe(true);
         });
         it('indicates not applicable when the method does not match', () => {
-            request.url = '/base-path/mocks';
+            request.url = '/base-path/presets';
             request.method = HttpMethods.PUT;
             expect(handler.isApplicable(request as any)).toBe(false);
         });

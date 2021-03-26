@@ -58,7 +58,8 @@ export class SelectPresetHandler implements ApplicableHandler {
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.PUT;
-        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/presets`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/presets`)
+            && request.url.endsWith('/presets');
         return urlMatches && methodMatches;
     }
 

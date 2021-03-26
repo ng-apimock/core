@@ -5,7 +5,9 @@ import { NextHandleFunction } from 'connect';
 import { Container } from 'inversify';
 
 import { Configuration, DefaultConfiguration } from './configuration';
+import { AddMockScenarioToPresetHandler } from './middleware/handlers/api/add-mockscenario-to-preset.handler';
 import { CreateMockHandler } from './middleware/handlers/api/create-mock.handler';
+import { CreatePresetHandler } from './middleware/handlers/api/create-preset.handler';
 import { DefaultsHandler } from './middleware/handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './middleware/handlers/api/delete-variable.handler';
 import { GetMocksHandler } from './middleware/handlers/api/get-mocks.handler';
@@ -65,4 +67,6 @@ container.bind<NextHandleFunction>('JsonBodyParser').toConstantValue(bodyParser.
 container.bind<Middleware>('Middleware').to(Middleware);
 
 container.bind<CreateMockHandler>('CreateMockHandler').to(CreateMockHandler);
+container.bind<CreatePresetHandler>('CreatePresetHandler').to(CreatePresetHandler);
+container.bind<AddMockScenarioToPresetHandler>('AddMockScenarioToPresetHandler').to(AddMockScenarioToPresetHandler);
 export default container;
