@@ -7,7 +7,9 @@ import { Configuration, DefaultConfiguration } from '../configuration';
 import { IState } from '../state/Istate';
 import { State } from '../state/state';
 
+import { AddMockScenarioToPresetHandler } from './handlers/api/add-mockscenario-to-preset.handler';
 import { CreateMockHandler } from './handlers/api/create-mock.handler';
+import { CreatePresetHandler } from './handlers/api/create-preset.handler';
 import { DefaultsHandler } from './handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './handlers/api/delete-variable.handler';
 import { GetMocksHandler } from './handlers/api/get-mocks.handler';
@@ -50,6 +52,8 @@ describe('Middleware', () => {
     let selectPresetHandler: SelectPresetHandler;
     let updateMocksHandler: UpdateMocksHandler;
     let createMockHandler: CreateMockHandler;
+    let createPresetHandler: CreatePresetHandler;
+    let addMockToPresetHandler: AddMockScenarioToPresetHandler;
 
     beforeEach(() => {
         container = new Container();
@@ -72,6 +76,8 @@ describe('Middleware', () => {
         state = createSpyObj(State);
         updateMocksHandler = createSpyObj(UpdateMocksHandler);
         createMockHandler = createSpyObj(CreateMockHandler);
+        createPresetHandler = createSpyObj(CreatePresetHandler);
+        addMockToPresetHandler = createSpyObj(AddMockScenarioToPresetHandler);
 
         container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
@@ -94,6 +100,8 @@ describe('Middleware', () => {
         container.bind('Middleware').to(Middleware);
         container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
         container.bind('CreateMockHandler').toConstantValue(createMockHandler);
+        container.bind('CreatePresetHandler').toConstantValue(createPresetHandler);
+        container.bind('AddMockScenarioToPresetHandler').toConstantValue(addMockToPresetHandler);
 
         middleware = container.get<Middleware>('Middleware');
     });

@@ -7,7 +7,9 @@ import { Configuration } from '../configuration';
 import { Mock } from '../mock/mock';
 import { State } from '../state/state';
 
+import { AddMockScenarioToPresetHandler } from './handlers/api/add-mockscenario-to-preset.handler';
 import { CreateMockHandler } from './handlers/api/create-mock.handler';
+import { CreatePresetHandler } from './handlers/api/create-preset.handler';
 import { DefaultsHandler } from './handlers/api/defaults.handler';
 import { DeleteVariableHandler } from './handlers/api/delete-variable.handler';
 import { GetMocksHandler } from './handlers/api/get-mocks.handler';
@@ -53,6 +55,7 @@ export class Middleware {
      * @param {State} apimockState The apimock state.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
      * @param {CreateMockHandler} createMockHandler The create mocks handler.
+     * @param {CreatePresetHandler} createMockHandler The create presets handler.
      */
     constructor(@inject('Configuration') private configuration: Configuration,
                 @inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
@@ -73,7 +76,9 @@ export class Middleware {
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
                 @inject('State') private apimockState: State,
                 @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
-                @inject('CreateMockHandler') private createMockHandler: CreateMockHandler) {
+                @inject('CreateMockHandler') private createMockHandler: CreateMockHandler,
+                @inject('CreatePresetHandler') private createPresetHandler: CreatePresetHandler,
+                @inject('AddMockScenarioToPresetHandler') private addMockToPresetHandler: AddMockScenarioToPresetHandler) {
         this.handlers = [
             defaultsHandler,
             deleteVariableHandler,
@@ -88,6 +93,9 @@ export class Middleware {
             setVariableHandler,
             selectPresetHandler,
             updateMocksHandler,
+            createMockHandler,
+            createPresetHandler,
+            addMockToPresetHandler,
             createMockHandler
         ];
     }

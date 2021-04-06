@@ -5,16 +5,17 @@ import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
-import { Mock } from '../../../mock/mock';
-import { MockResponse } from '../../../mock/mock.response';
+import { Preset } from '../../../preset/preset';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
 import { ApplicableHandler } from '../handler';
 
-/**  Handler for creating and saving mocks in the mocks directory. */
+/**  Handler for creating an empty preset with the configured preset extention.
+ * adding mocks / scenario's can be done with a PUT request to the created preset.
+*/
 @injectable()
-export class CreateMockHandler implements ApplicableHandler {
+export class CreatePresetHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {Configuration} configuration The configuration.
@@ -25,46 +26,40 @@ export class CreateMockHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
-        id: string, body: Mock
+        id: string, body: Preset
     }): void {
         const { body } = params;
-        // no try to write to disc!
         try {
-            if (body.name && body.request && body.responses) {
-                if (HandlerUtils.checkIfMockExists(this.state, body.name)) {
-                    throw new Error('this mock already exists');
+            if (body.name && body.mocks && body.variables) {
+                if (HandlerUtils.checkIfPresetExists(this.state, body.name)) {
+                    throw new Error('Preset with this name already exists');
                 }
-                this.saveMock(body);
+                this.savePreset(body);
             } else {
-                throw new Error('a new mock should have a name, request and response');
+                throw new Error('a new preset should have a name, and a series of existing mocks with scenarios');
             }
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            response.end('mock created');
+            response.end('preset created');
         } catch (e) {
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }
     }
 
-    saveMock(mock: Mock) {
+    savePreset(preset: Preset) {
         const processConfig = this.state.getProcessingOptions();
-        const mocksConfig = processConfig.patterns.mocks;
-        const mockExtention = mocksConfig.substring(mocksConfig.lastIndexOf('*') + 1).replace(/^\./, '');
-        if (Object.keys(mock.responses).length === 0) {
-            const defaultResponse: MockResponse = {
-                status: 501,
-                data: {},
-                default: true
-            };
-            mock.responses['createdDefault'] = defaultResponse;
-        }
-        fs.outputJSONSync(path.join(processConfig.src, `${mock.name}.${mockExtention}`), mock, { spaces: 2 });
+        // remove wildcard tokens from config
+        const presetExt = processConfig.patterns.presets;
+        const presetExtention = presetExt.substring(presetExt.lastIndexOf('*') + 1).replace(/^\./, '');
+
+        //  save a preset with just the name and empty mocs / variables
+        fs.outputJSONSync(path.join(processConfig.src, `${preset.name.replace(' ', '')}.${presetExtention}`), preset, { spaces: 2 });
     }
 
     /** {@inheritDoc}. */
     isApplicable(request: http.IncomingMessage): boolean {
         const methodMatches = request.method === HttpMethods.POST;
-        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/mocks`);
+        const urlMatches = request.url.startsWith(`${this.configuration.middleware.basePath}/presets`);
         return urlMatches && methodMatches;
     }
 }
