@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/ng-apimock/core/compare/v2.5.0...v2.6.0) (2021-04-06)
+
+
+### Features
+
+* **create presets:** add functionality to add presets and mocks to preset ([#393](https://github.com/ng-apimock/core/issues/393)) ([45b8c00](https://github.com/ng-apimock/core/commit/45b8c00e5971c327c3d8f1658e417562907d455e))
+
 # [2.5.0](https://github.com/ng-apimock/core/compare/v2.4.0...v2.5.0) (2021-03-08)
 
 
