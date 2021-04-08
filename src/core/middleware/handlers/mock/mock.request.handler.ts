@@ -46,6 +46,7 @@ export class MockRequestHandler implements Handler {
             } catch (e) {
                 response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 response.end(JSON.stringify(e, ['message']));
+                console.log(JSON.stringify(e, ['message']));
             }
         } else {
             next();
