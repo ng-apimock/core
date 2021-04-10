@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
@@ -11,6 +12,8 @@ import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-add-mock-scenario-to-preset');
 
 /**  Handler for creating an empty preset with the configured preset extention.
  * adding mocks / scenario's can be done with a PUT request to the created preset.
@@ -48,12 +51,15 @@ export class AddMockScenarioToPresetHandler implements ApplicableHandler {
                 }
                 this.addMockScenarioToPreset(presetName, body.mockName, body.mockState);
             } else {
-                throw new Error('a new preset should have existing mocks with scenarios');
+                throw new Error('A new preset should have existing mocks with scenarios');
             }
+            const message = `Added mock [${body.mockName}] to preset`;
+            log(message);
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            response.end('added mock to preset');
+            response.end(message);
         } catch (e) {
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            log(e.message);
             response.end(JSON.stringify(e, ['message']));
         }
     }
