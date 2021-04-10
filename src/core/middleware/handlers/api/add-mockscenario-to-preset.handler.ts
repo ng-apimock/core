@@ -58,8 +58,8 @@ export class AddMockScenarioToPresetHandler implements ApplicableHandler {
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(message);
         } catch (e) {
-            response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             log(e.message);
+            response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }
     }

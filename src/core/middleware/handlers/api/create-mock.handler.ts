@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
@@ -11,6 +12,8 @@ import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-create-mock');
 
 /**  Handler for creating and saving mocks in the mocks directory. */
 @injectable()
@@ -32,15 +35,18 @@ export class CreateMockHandler implements ApplicableHandler {
         try {
             if (body.name && body.request && body.responses) {
                 if (HandlerUtils.checkIfMockExists(this.state, body.name)) {
-                    throw new Error('this mock already exists');
+                    throw new Error(`Mock with name: [${body.name}] already exists`);
                 }
                 this.saveMock(body);
             } else {
-                throw new Error('a new mock should have a name, request and response');
+                throw new Error('A new mock should have a name, request and response');
             }
+            const message = `Created mock [${body.name}]`;
+            log(message);
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            response.end('mock created');
+            response.end(message);
         } catch (e) {
+            log(e.message);
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }

@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
@@ -28,18 +29,28 @@ describe('CreateMocksHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
             handler.saveMock = jest.fn();
+
+            debug.enable('ng-apimock:handler-create-mock');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             request = {} as http.IncomingMessage;
             response = {
                 end: jest.fn(),
                 writeHead: jest.fn()
             } as unknown as http.ServerResponse;
         });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('should throw if the incoming request is not if the type Mock', () => {
             handler.handle(request as any, response as any, nextFn, {
                 id: 'someId',
@@ -60,8 +71,10 @@ describe('CreateMocksHandler', () => {
                     responses: {}
                 } as unknown as Mock
             });
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Mock with name: [valid] already exists'));
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'this mock already exists' }));
+            expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Mock with name: [valid] already exists' }));
         });
         it('should save the mock is the the mock is valid and does not yet exist', () => {
             handler.saveMock = jest.fn();
@@ -74,6 +87,8 @@ describe('CreateMocksHandler', () => {
                     responses: {}
                 } as unknown as Mock
             });
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Created mock [valid]'));
             expect(handler.saveMock).toHaveBeenCalled();
         });
     });
