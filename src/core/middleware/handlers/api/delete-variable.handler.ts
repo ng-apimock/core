@@ -1,11 +1,14 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-delete-variable');
 
 /**  Delete variable handler. */
 @injectable()
@@ -26,6 +29,7 @@ export class DeleteVariableHandler implements ApplicableHandler {
         const key = new RegExp(`${this.configuration.middleware.basePath}/variables/(.*)`).exec(url)[1];
         delete state.variables[key];
 
+        log(`Delete variable: [${key}]`);
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
     }
