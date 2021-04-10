@@ -74,8 +74,8 @@ describe('Converter', () => {
             it('updates each mock', () => {
                 expect(debugFn).toHaveBeenCalledTimes(3);
                 expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Converting mocks'));
-                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('src/mock/old.mock.json'));
-                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('src/mock/new.mock.json'));
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining(path.join('src', 'mock', 'old.mock.json')));
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining(path.join('src', 'mock', 'new.mock.json')));
             });
         });
         describe('without a specified pattern', () => {
