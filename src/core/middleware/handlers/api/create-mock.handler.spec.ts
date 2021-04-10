@@ -8,7 +8,7 @@ import { createSpyObj } from 'jest-createspyobj';
 
 import { Mock } from '../../../mock/mock';
 import { State } from '../../../state/state';
-import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { HttpHeaders, HttpMethods } from '../../http';
 import { HandlerUtils } from '../handerutil';
 
 import { CreateMockHandler } from './create-mock.handler';

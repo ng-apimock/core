@@ -6,10 +6,9 @@ import * as fs from 'fs-extra';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
-import { Mock } from '../../../mock/mock';
 import { Preset } from '../../../preset/preset';
 import { State } from '../../../state/state';
-import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { HttpHeaders, HttpMethods } from '../../http';
 import { HandlerUtils } from '../handerutil';
 
 import { AddMockScenarioToPresetHandler } from './add-mockscenario-to-preset.handler';
@@ -57,8 +56,7 @@ describe('AddMockScenarioToPresetHandler', () => {
         it('should throw if the incoming request is NOT ok', () => {
             handler.handle(request as any, response as any, nextFn, {
                 id: 'someId',
-                body: {
-                } as any
+                body: {} as any
             });
             expect(debugFn).toHaveBeenCalledTimes(1);
             expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('A new preset should have existing mocks with scenarios'));

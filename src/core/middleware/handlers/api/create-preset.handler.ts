@@ -10,6 +10,9 @@ import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
 import { ApplicableHandler } from '../handler';
+import * as debug from "debug";
+
+export const log = debug('ng-apimock:handler-create-preset');
 
 /**  Handler for creating an empty preset with the configured preset extention.
  * adding mocks / scenario's can be done with a PUT request to the created preset.
@@ -32,15 +35,18 @@ export class CreatePresetHandler implements ApplicableHandler {
         try {
             if (body.name && body.mocks && body.variables) {
                 if (HandlerUtils.checkIfPresetExists(this.state, body.name)) {
-                    throw new Error('Preset with this name already exists');
+                    throw new Error(`Preset with name: [${body.name}] already exists`);
                 }
                 this.savePreset(body);
             } else {
-                throw new Error('a new preset should have a name, and a series of existing mocks with scenarios');
+                throw new Error('A new preset should have a name, and a series of existing mocks with scenarios');
             }
+            const message = `Created preset [${body.name}]`;
+            log(message);
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            response.end('preset created');
+            response.end(message);
         } catch (e) {
+            log(e.message);
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }
