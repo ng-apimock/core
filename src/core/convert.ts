@@ -1,7 +1,10 @@
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
+
+export const log = debug('ng-apimock:convert');
 
 /** Convertor of mocks. */
 export class Converter {
@@ -12,7 +15,7 @@ export class Converter {
      * @param {string} pattern The pattern.
      */
     convert(sourceDirectory: string, destinationDirectory: string, pattern = '**/*.mock.json'): void {
-        console.log('>> Converting mocks');
+        log('>> Converting mocks');
         glob.sync(pattern, { cwd: sourceDirectory }).forEach((file) => {
             const source = path.join(sourceDirectory, file);
             const destination = path.join(process.cwd(), destinationDirectory, file);
@@ -33,7 +36,7 @@ export class Converter {
             }
 
             fs.outputJsonSync(destination, mock, { spaces: 2 });
-            console.log(`'${source}' -> '${destination}`);
+            log(`'${source}' -> '${destination}`);
         });
     }
 }
