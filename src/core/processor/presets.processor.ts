@@ -1,5 +1,6 @@
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as glob from 'glob';
 import { inject, injectable } from 'inversify';
 
@@ -8,6 +9,8 @@ import { State } from '../state/state';
 
 import { FileLoader } from './file.loader';
 import { ProcessingOptions } from './processing.options';
+
+export const log = debug('ng-apimock:processor-preset');
 
 /** Presets processor. */
 @injectable()
@@ -50,7 +53,7 @@ export class PresetsProcessor {
             const index = this.state.presets.indexOf(match);
 
             if (index > -1) { // exists so update preset
-                console.warn(`Preset with identifier '${preset.name}' already exists. Overwriting existing preset.`);
+                log(`Preset with identifier '${preset.name}' already exists. Overwriting existing preset.`);
                 this.state.presets[index] = preset;
             } else { // add preset
                 this.state.presets.push(preset);
@@ -58,6 +61,6 @@ export class PresetsProcessor {
             }
         });
 
-        console.log(`Processed ${counter} unique presets.`);
+        log(`Processed ${counter} unique presets.`);
     }
 }

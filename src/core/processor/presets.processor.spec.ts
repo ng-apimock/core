@@ -1,5 +1,6 @@
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as glob from 'glob';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
@@ -32,8 +33,7 @@ describe('PresetsProcessor', () => {
     });
 
     describe('process', () => {
-        let consoleLogFn: jest.Mock;
-        let consoleWarnFn: jest.Mock;
+        let debugFn: jest.SpyInstance;
         let doneFn: jest.Mock;
         let loadFileFn: jest.Mock;
         let globSyncFn: jest.Mock;
@@ -41,8 +41,8 @@ describe('PresetsProcessor', () => {
         beforeEach(() => {
             doneFn = jest.fn();
 
-            consoleLogFn = console.log = jest.fn();
-            consoleWarnFn = console.warn = jest.fn();
+            debug.enable('ng-apimock:processor-preset');
+            debugFn = jest.spyOn(process.stderr, 'write');
             loadFileFn = fileLoader.loadFile as jest.Mock;
             globSyncFn = glob.sync as jest.Mock;
 
@@ -76,6 +76,10 @@ describe('PresetsProcessor', () => {
                 processor.process({ ...DefaultProcessingOptions, src: 'src' });
             });
 
+            afterEach(() => {
+                jest.clearAllMocks();
+            });
+
             it('processes each mock', () => {
                 expect(globSyncFn).toHaveBeenCalledWith(
                     '**/*.preset.json', {
@@ -87,7 +91,11 @@ describe('PresetsProcessor', () => {
                 expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/duplicate.preset.json'));
             });
 
-            it('processes unique presets', () => expect(consoleLogFn).toHaveBeenCalledWith('Processed 2 unique presets.'));
+            it('processes unique presets', () => {
+                expect(debugFn).toHaveBeenCalledTimes(2);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Preset with identifier \'happy.preset\' already exists. Overwriting existing preset.'));
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Processed 2 unique presets.'));
+            });
         });
 
         describe('with full processing options', () => {
@@ -107,7 +115,11 @@ describe('PresetsProcessor', () => {
         describe('with preset watches set', () => {
             beforeEach(() => {
                 globSyncFn.mockReturnValue([]);
-                processor.process({ src: 'src', patterns: { presets: '**/*.mypreset.json' }, watches: { presets: '**/*' } });
+                processor.process({
+                    src: 'src',
+                    patterns: { presets: '**/*.mypreset.json' },
+                    watches: { presets: '**/*' }
+                });
             });
             it('processes each preset watch and preset', () => {
                 expect(globSyncFn).toHaveBeenCalledWith(
