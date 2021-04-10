@@ -1,6 +1,7 @@
 import * as http from 'http';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
@@ -10,7 +11,6 @@ import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
 import { ApplicableHandler } from '../handler';
-import * as debug from "debug";
 
 export const log = debug('ng-apimock:handler-create-preset');
 

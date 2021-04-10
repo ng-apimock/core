@@ -1,11 +1,14 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-defaults');
 
 /**  Defaults handler. */
 @injectable()
@@ -21,6 +24,7 @@ export class DefaultsHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
+        log(`Set defaults for apimockId: [${params.id}]`);
         this.state.setToDefaults(params.id);
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();
