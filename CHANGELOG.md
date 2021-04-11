@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.7.0](https://github.com/ng-apimock/core/compare/v2.6.0...v2.7.0) (2021-04-11)
+
+
+### Features
+
+* add debug logging ([#412](https://github.com/ng-apimock/core/issues/412)) ([180b20c](https://github.com/ng-apimock/core/commit/180b20cd6bd8870c99c1f9e3353fcdae3afa5f89))
+
 # [2.6.0](https://github.com/ng-apimock/core/compare/v2.5.0...v2.6.0) (2021-04-06)
 
 
