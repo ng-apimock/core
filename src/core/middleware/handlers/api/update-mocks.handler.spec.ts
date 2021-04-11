@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
@@ -27,11 +28,15 @@ describe('UpdateMocksHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
+            debug.enable('ng-apimock:handler-update-mocks');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             nextFn = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
@@ -68,6 +73,10 @@ describe('UpdateMocksHandler', () => {
             state.getMatchingState.mockReturnValue(matchingState);
         });
 
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('sets the echo', () => {
             const body = { name: 'two', echo: true };
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
@@ -82,6 +91,8 @@ describe('UpdateMocksHandler', () => {
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
             expect(matchingState.mocks['two'].delay).toBe(2000);
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Update mock: [two]'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
         });
@@ -94,6 +105,8 @@ describe('UpdateMocksHandler', () => {
             expect(matchingState.mocks['two'].scenario).toBe('thing');
             expect(matchingState.mocks['two'].counter).toBe(0);
             expect(matchingState.mocks['two'].delay).toBe(1000);
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Update mock: [two]'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
         });
@@ -117,6 +130,8 @@ describe('UpdateMocksHandler', () => {
                 one: { scenario: 'some', delay: 0, echo: true },
                 two: { scenario: 'thing', delay: 1000, echo: false }
             } as any)[body.name].scenario);
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No scenario matching [\'non-existing\'] found'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(`{"message":"No scenario matching ['${body.scenario}'] found"}`);
         });
@@ -125,6 +140,8 @@ describe('UpdateMocksHandler', () => {
             const body = { name: 'non-existing', scenario: 'non-existing' };
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No mock matching name [\'non-existing\'] found'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(`{"message":"No mock matching name ['${body.name}'] found"}`);
         });

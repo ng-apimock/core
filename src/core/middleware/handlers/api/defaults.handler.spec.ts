@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
@@ -26,11 +27,15 @@ describe('DefaultsHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
+            debug.enable('ng-apimock:handler-defaults');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             nextFn = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
@@ -42,6 +47,8 @@ describe('DefaultsHandler', () => {
         it('sets the defaults', () => {
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Set defaults'));
             expect(state.setToDefaults).toHaveBeenCalledWith('apimockId');
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();

@@ -1,11 +1,14 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-set-variable');
 
 /**  Handler for a variables. */
 @injectable()
@@ -29,6 +32,7 @@ export class SetVariableHandler implements ApplicableHandler {
             if (Object.keys(body).length > 0) {
                 Object.keys(body).forEach((key) => {
                     state.variables[key] = body[key];
+                    log(`Set variable [${key}]`);
                 });
             } else {
                 throw new Error('A variable should have a key and value');
@@ -36,6 +40,7 @@ export class SetVariableHandler implements ApplicableHandler {
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end();
         } catch (e) {
+            log(e.message);
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }

@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
@@ -7,6 +8,8 @@ import { Mock } from '../../../mock/mock';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-update-mocks');
 
 /**  Update mocks handler. */
 @injectable()
@@ -56,9 +59,11 @@ export class UpdateMocksHandler implements ApplicableHandler {
             } else {
                 throw new Error(`No mock matching name ['${mockName}'] found`);
             }
+            log(`Update mock: [${mockName}]`);
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end();
         } catch (e) {
+            log(e.message);
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }

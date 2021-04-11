@@ -1,11 +1,14 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-get-presets');
 
 /**  Get presets handler. */
 @injectable()
@@ -21,6 +24,7 @@ export class GetPresetsHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
+        log('Get presets');
         const result: any = {
             presets: this.state.presets
         };

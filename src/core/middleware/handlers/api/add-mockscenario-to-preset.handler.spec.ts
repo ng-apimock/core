@@ -1,14 +1,14 @@
 import * as http from 'http';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
-import { Mock } from '../../../mock/mock';
 import { Preset } from '../../../preset/preset';
 import { State } from '../../../state/state';
-import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
+import { HttpHeaders, HttpMethods } from '../../http';
 import { HandlerUtils } from '../handerutil';
 
 import { AddMockScenarioToPresetHandler } from './add-mockscenario-to-preset.handler';
@@ -29,12 +29,17 @@ describe('AddMockScenarioToPresetHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
             handler.addMockScenarioToPreset = jest.fn();
+
+            debug.enable('ng-apimock:handler-add-mock-scenario-to-preset');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             request = {
                 url: '/base-path/presets/newpreset'
             } as http.IncomingMessage;
@@ -43,12 +48,18 @@ describe('AddMockScenarioToPresetHandler', () => {
                 writeHead: jest.fn()
             } as unknown as http.ServerResponse;
         });
-        it('should throw if the incoming request is not if the ok', () => {
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should throw if the incoming request is NOT ok', () => {
             handler.handle(request as any, response as any, nextFn, {
                 id: 'someId',
-                body: {
-                } as any
+                body: {} as any
             });
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('A new preset should have existing mocks with scenarios'));
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         });
         it('should throw if the scenario does NOT exists', () => {
@@ -62,6 +73,8 @@ describe('AddMockScenarioToPresetHandler', () => {
                     }
                 }
             });
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No preset found with name: [newpreset]'));
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'No preset found with name: [newpreset]' }));
         });
@@ -78,6 +91,8 @@ describe('AddMockScenarioToPresetHandler', () => {
                     }
                 }
             });
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No mock found with name: [valid]'));
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'No mock found with name: [valid]' }));
         });
@@ -95,6 +110,9 @@ describe('AddMockScenarioToPresetHandler', () => {
                     }
                 }
             });
+
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No scenario found with name: [somescenario] in mock with name [valid]'));
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(
                 JSON.stringify({ message: 'No scenario found with name: [somescenario] in mock with name [valid]' })
@@ -114,6 +132,8 @@ describe('AddMockScenarioToPresetHandler', () => {
                     }
                 }
             });
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Added mock [valid] to preset'));
             expect(handler.addMockScenarioToPreset).toHaveBeenCalled();
         });
     });

@@ -1,5 +1,6 @@
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as glob from 'glob';
 import { inject, injectable } from 'inversify';
 
@@ -9,6 +10,8 @@ import { State } from '../state/state';
 
 import { FileLoader } from './file.loader';
 import { ProcessingOptions } from './processing.options';
+
+export const log = debug('ng-apimock:processor-mock');
 
 /** Mocks processor. */
 @injectable()
@@ -57,7 +60,7 @@ export class MocksProcessor {
             mock.path = path.dirname(mockPath);
 
             if (index > -1) { // exists so update mock
-                console.warn(`Mock with identifier '${mock.name}' already exists. Overwriting existing mock.`);
+                log(`Mock with identifier '${mock.name}' already exists. Overwriting existing mock.`);
                 this.state.mocks[index] = mock;
             } else { // add mock
                 this.state.mocks.push(mock);
@@ -101,6 +104,6 @@ export class MocksProcessor {
             this.state.global.mocks[mock.name] = JSON.parse(JSON.stringify(state));
         });
 
-        console.log(`Processed ${counter} unique mocks.`);
+        log(`Processed ${counter} unique mocks.`);
     }
 }

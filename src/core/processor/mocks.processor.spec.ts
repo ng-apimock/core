@@ -1,5 +1,6 @@
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as glob from 'glob';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
@@ -34,8 +35,7 @@ describe('MocksProcessor', () => {
     });
 
     describe('process', () => {
-        let consoleLogFn: jest.Mock;
-        let consoleWarnFn: jest.Mock;
+        let debugFn: jest.SpyInstance;
         let doneFn: jest.Mock;
         let loadFileFn: jest.Mock;
         let globSyncFn: jest.Mock;
@@ -43,8 +43,8 @@ describe('MocksProcessor', () => {
         beforeEach(() => {
             doneFn = jest.fn();
 
-            consoleLogFn = console.log = jest.fn();
-            consoleWarnFn = console.warn = jest.fn();
+            debug.enable('ng-apimock:processor-mock');
+            debugFn = jest.spyOn(process.stderr, 'write');
             loadFileFn = fileLoader.loadFile as jest.Mock;
             globSyncFn = glob.sync as jest.Mock;
 
@@ -104,6 +104,10 @@ describe('MocksProcessor', () => {
         describe('by default', () => {
             beforeEach(() => {
                 processor.process({ ...DefaultProcessingOptions, src: 'src' });
+            });
+
+            afterEach(() => {
+                jest.clearAllMocks();
             });
 
             it('processes each mock', () => {
@@ -174,7 +178,11 @@ describe('MocksProcessor', () => {
                 });
             });
 
-            it('processes unique mocks', () => expect(consoleLogFn).toHaveBeenCalledWith('Processed 3 unique mocks.'));
+            it('processes unique mocks', () => {
+                expect(debugFn).toHaveBeenCalledTimes(2);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Mock with identifier \'minimal-json-request\' already exists. Overwriting existing mock.'));
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Processed 3 unique mocks.'));
+            });
         });
 
         describe('with full processing options', () => {

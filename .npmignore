@@ -6,8 +6,12 @@ src
 jest.config.js
 
 # configs
+.eslintrc
+.releaserc
+commitlint.config.js
 tsconfig.json
 tslint.json
+sonar-project.properties
 
 # idea
 .idea

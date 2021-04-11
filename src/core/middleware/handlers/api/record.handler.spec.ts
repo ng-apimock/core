@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
@@ -27,11 +28,15 @@ describe('RecordHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
+            debug.enable('ng-apimock:handler-record');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             nextFn = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
@@ -57,6 +62,8 @@ describe('RecordHandler', () => {
                 body: { record: true }
             });
 
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Enable/disable recording'));
             expect(matchingState.record).toBe(true);
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();

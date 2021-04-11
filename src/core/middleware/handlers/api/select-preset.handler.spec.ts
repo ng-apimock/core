@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
@@ -27,11 +28,15 @@ describe('SelectPresetHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
+            debug.enable('ng-apimock:handler-select-preset');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             nextFn = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
@@ -87,6 +92,10 @@ describe('SelectPresetHandler', () => {
                 });
             });
 
+            afterEach(() => {
+                jest.clearAllMocks();
+            });
+
             it('sets the mocks', () => {
                 expect(matchingState.mocks.some.scenario).toBe('success');
                 expect(matchingState.mocks.some.delay).toBe(2000);
@@ -105,6 +114,11 @@ describe('SelectPresetHandler', () => {
                 expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 expect(response.end).toHaveBeenCalled();
             });
+
+            it('logs', () => {
+                expect(debugFn).toHaveBeenCalledTimes(1);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Selected preset [valid]'));
+            });
         });
 
         describe('valid preset data but no mocks', () => {
@@ -114,6 +128,10 @@ describe('SelectPresetHandler', () => {
                     id: 'apimockId',
                     body
                 });
+            });
+
+            afterEach(() => {
+                jest.clearAllMocks();
             });
 
             it('does not update the mocks', () => {
@@ -134,6 +152,11 @@ describe('SelectPresetHandler', () => {
                 expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 expect(response.end).toHaveBeenCalled();
             });
+
+            it('logs', () => {
+                expect(debugFn).toHaveBeenCalledTimes(1);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Selected preset [valid-no-mocks-and-variables]'));
+            });
         });
 
         describe('invalid preset data', () => {
@@ -145,7 +168,13 @@ describe('SelectPresetHandler', () => {
                 });
             });
 
+            afterEach(() => {
+                jest.clearAllMocks();
+            });
+
             it('throws an error when the scenario does not match', () => {
+                expect(debugFn).toHaveBeenCalledTimes(1);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No scenario matching [\'no-match\'] found for mock with name [\'another\']'));
                 expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'No scenario matching [\'no-match\'] found for mock with name [\'another\']' }));
             });
@@ -161,6 +190,8 @@ describe('SelectPresetHandler', () => {
             });
 
             it('throws an error when the preset does not match', () => {
+                expect(debugFn).toHaveBeenCalledTimes(1);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('No preset matching name [\'no-match\'] found'));
                 expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'No preset matching name [\'no-match\'] found' }));
             });

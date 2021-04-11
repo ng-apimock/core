@@ -1,5 +1,6 @@
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import * as glob from 'glob';
 
@@ -16,12 +17,14 @@ describe('Converter', () => {
     });
 
     describe('convert', () => {
+        let debugFn: jest.SpyInstance;
         let fsOutputJsonSyncFn: jest.Mock;
         let fsReadJsonSyncFn: jest.Mock;
         let globSyncFn: jest.Mock;
 
         beforeEach(() => {
-            console.log = jest.fn();
+            debug.enable('ng-apimock:convert');
+            debugFn = jest.spyOn(process.stderr, 'write');
             fsReadJsonSyncFn = fs.readJsonSync as jest.Mock;
             fsOutputJsonSyncFn = fs.outputJsonSync as jest.Mock;
             globSyncFn = glob.sync as jest.Mock;
@@ -45,6 +48,10 @@ describe('Converter', () => {
                 converter.convert('src', 'destination');
             });
 
+            afterEach(() => {
+                jest.resetAllMocks();
+            });
+
             it('processes all files', () => expect(globSyncFn).toHaveBeenCalledWith('**/*.mock.json', { cwd: 'src' }));
 
             it('reads all the mock files', () => {
@@ -63,6 +70,13 @@ describe('Converter', () => {
                 request: { method: 'GET', url: 'new/mock' },
                 responses: { 'new-json-response': {} },
             }, { spaces: 2 }));
+
+            it('updates each mock', () => {
+                expect(debugFn).toHaveBeenCalledTimes(3);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Converting mocks'));
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining(path.join('src', 'mock', 'old.mock.json')));
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining(path.join('src', 'mock', 'new.mock.json')));
+            });
         });
         describe('without a specified pattern', () => {
             beforeEach(() => {

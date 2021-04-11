@@ -4,6 +4,7 @@ import * as http from 'http';
 import * as os from 'os';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { Container } from 'inversify';
 
@@ -27,12 +28,16 @@ describe('GetRecordedResponseHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let fsReadFileSyncFn: jest.Mock;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
+            debug.enable('ng-apimock:handler-get-recorded-response');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             nextFn = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
@@ -48,6 +53,8 @@ describe('GetRecordedResponseHandler', () => {
         it('returns the recorded response', () => {
             handler.handle(request as any, response as any, nextFn);
 
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Get recorded response: [some.pdf]'));
             expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join(os.tmpdir(), 'some.pdf'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
             expect(response.end).toHaveBeenCalledWith('file-content');

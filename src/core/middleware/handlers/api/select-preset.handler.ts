@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
@@ -10,6 +11,8 @@ import { MockState } from '../../../state/mock.state';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-select-preset');
 
 /**  Select preset handler. */
 @injectable()
@@ -40,7 +43,9 @@ export class SelectPresetHandler implements ApplicableHandler {
                 try {
                     this.updateMocks(state, matchingPreset);
                     this.updateVariables(state, matchingPreset);
+                    log(`Selected preset [${presetName}]`);
                 } catch (e) {
+                    log(e.message);
                     response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                     response.end(JSON.stringify(e, ['message']));
                 }
@@ -48,8 +53,9 @@ export class SelectPresetHandler implements ApplicableHandler {
                 throw new Error(`No preset matching name ['${presetName}'] found`);
             }
             response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            response.end();
+            response.end(`Selected preset [${presetName}]`);
         } catch (e) {
+            log(e.message);
             response.writeHead(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             response.end(JSON.stringify(e, ['message']));
         }

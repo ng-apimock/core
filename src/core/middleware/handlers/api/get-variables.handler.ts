@@ -1,11 +1,14 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-get-variables');
 
 /**  Get variables handler. */
 @injectable()
@@ -21,6 +24,7 @@ export class GetVariablesHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
+        log('Get variables');
         const state = this.state.getMatchingState(params.id);
         const result: any = {
             state: state.variables

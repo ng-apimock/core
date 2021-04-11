@@ -2,13 +2,15 @@ import * as http from 'http';
 import * as os from 'os';
 import * as path from 'path';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
-import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
+
+export const log = debug('ng-apimock:handler-get-recorded-response');
 
 /**  Handler for a recording a response. */
 @injectable()
@@ -23,6 +25,7 @@ export class GetRecordedResponseHandler implements ApplicableHandler {
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
         const fileName = request.url.substring(request.url.lastIndexOf('/') + 1);
+        log(`Get recorded response: [${fileName}]`);
         const file = fs.readFileSync(path.join(os.tmpdir(), fileName));
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_BINARY);
         response.end(file);
