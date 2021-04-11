@@ -1,5 +1,6 @@
 import * as http from 'http';
 
+import * as debug from 'debug';
 import { Container } from 'inversify';
 import { createSpyObj } from 'jest-createspyobj';
 
@@ -27,11 +28,15 @@ describe('SetVariableHandler', () => {
     });
 
     describe('handle', () => {
+        let debugFn: jest.SpyInstance;
         let nextFn: jest.Mock;
         let request: http.IncomingMessage;
         let response: http.ServerResponse;
 
         beforeEach(() => {
+            debug.enable('ng-apimock:handler-set-variable');
+            debugFn = jest.spyOn(process.stderr, 'write');
+
             nextFn = jest.fn();
             request = {} as http.IncomingMessage;
             response = {
@@ -51,10 +56,16 @@ describe('SetVariableHandler', () => {
             state.getMatchingState.mockReturnValue(matchingState);
         });
 
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('sets the variable', () => {
             const body = { four: 'fourth' } as any;
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Set variable [four]'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
             expect(matchingState.variables.four).toBe('fourth');
@@ -64,6 +75,9 @@ describe('SetVariableHandler', () => {
             const body = { five: 'fifth', six: 'sixth' } as any;
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
+            expect(debugFn).toHaveBeenCalledTimes(2);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Set variable [five]'));
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Set variable [six]'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();
             expect(matchingState.variables.five).toBe('fifth');
@@ -74,6 +88,8 @@ describe('SetVariableHandler', () => {
             const body = {} as any;
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId', body });
 
+            expect(debugFn).toHaveBeenCalledTimes(1);
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('A variable should have a key and value'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.CONFLICT, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith('{"message":"A variable should have a key and value"}');
         });
