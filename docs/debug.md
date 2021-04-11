@@ -1,9 +1,3 @@
----
-id: debug
-title: Debugging
-sidebar_label: Debugging
----
-
 [@ng-apimock/core](https://github.com/ng-apimock/core) is uses [debug](https://www.npmjs.com/package/debug).
 
 ### Running
