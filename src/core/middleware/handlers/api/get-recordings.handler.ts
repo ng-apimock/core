@@ -24,7 +24,7 @@ export class GetRecordingsHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
-        log(`Get recordings for apimockId: [${params.id}]`);
+        log('Get recordings');
         const matchingState = this.state.getMatchingState(params.id);
         const result: any = {
             recordings: matchingState.recordings,

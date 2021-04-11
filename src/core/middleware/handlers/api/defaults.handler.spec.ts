@@ -48,7 +48,7 @@ describe('DefaultsHandler', () => {
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(debugFn).toHaveBeenCalledTimes(1);
-            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Set defaults for apimockId: [apimockId]'));
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Set defaults'));
             expect(state.setToDefaults).toHaveBeenCalledWith('apimockId');
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalled();

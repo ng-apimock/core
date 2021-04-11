@@ -24,7 +24,7 @@ export class DefaultsHandler implements ApplicableHandler {
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string }): void {
-        log(`Set defaults for apimockId: [${params.id}]`);
+        log('Set defaults');
         this.state.setToDefaults(params.id);
         response.writeHead(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
         response.end();

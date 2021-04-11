@@ -72,7 +72,7 @@ describe('GetRecordingsHandler', () => {
             handler.handle(request as any, response as any, nextFn, { id: 'apimockId' });
 
             expect(debugFn).toHaveBeenCalledTimes(1);
-            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Get recordings for apimockId: [apimockId]'));
+            expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Get recordings'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
             expect(response.end).toHaveBeenCalledWith(JSON.stringify({
                 recordings: { some: [] },
