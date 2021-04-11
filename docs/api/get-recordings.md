@@ -1,4 +1,4 @@
-Returns all the recordings that [@ng-apimock/core](https://github.com/ng-apimock/core) has made. In
+Returns all the recordings that [@ng-apimock/core](https://github.com/ng-apimock/core) has captured. In
 order for recordings to be captured, make sure to enable the recording functionality.
 
 ## Usage
