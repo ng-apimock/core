@@ -141,36 +141,78 @@ describe('MockRequestHandler', () => {
 
     describe('getChunk', () => {
         describe('binary', () => {
-            let fsReadFileSyncFn: jest.Mock;
-            let mockResponse: MockResponse;
-            let params: any;
+            describe('json', () => {
+                let fsReadFileSyncFn: jest.Mock;
+                let interpolateResponseDataFn: jest.SpyInstance;
+                let mockResponse: MockResponse;
+                let params: any;
+                let variables: any;
 
-            beforeEach(() => {
-                fsReadFileSyncFn = fs.readFileSync as jest.Mock;
-                mockResponse = {
-                    status: HttpStatusCode.OK,
-                    headers: HttpHeaders.CONTENT_TYPE_BINARY,
-                    file: 'some.pdf'
-                };
-                params = { mock: { path: '/path/to' } };
+                beforeEach(() => {
+                    fsReadFileSyncFn = fs.readFileSync as jest.Mock;
+                    interpolateResponseDataFn = jest.spyOn(mockRequestHandler as any, 'interpolateResponseData');
+                    mockResponse = {
+                        status: HttpStatusCode.OK,
+                        headers: HttpHeaders.CONTENT_TYPE_APPLICATION_JSON,
+                        file: 'some.json'
+                    };
+                    params = { mock: { path: '/path/to' } };
 
-                fsReadFileSyncFn.mockReturnValue('binary content');
+                    fsReadFileSyncFn.mockReturnValue({ some: '%%x%%' });
+                    variables = { x: 'x' };
+                    state.getVariables.mockReturnValue(variables);
+                    interpolateResponseDataFn.mockReturnValue('interpolated binary response data');
+                });
+
+                it('reads the binary content', () => {
+                    (mockRequestHandler as any).getChunk(mockResponse, params, false);
+
+                    expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join('/path/to', 'some.json'));
+                });
+
+                it('returns the response', () => {
+                    const chunk = (mockRequestHandler as any).getChunk(mockResponse, params, false);
+                    expect(chunk).toEqual('interpolated binary response data');
+                });
+
+                it('returns the wrapped body in a json callback', () => {
+                    const chunk = (mockRequestHandler as any).getChunk(mockResponse, params, 'callbackName');
+                    expect(chunk).toEqual('callbackName(interpolated binary response data)');
+                });
             });
 
-            it('reads the binary content', () => {
-                (mockRequestHandler as any).getChunk(mockResponse, params, false);
+            describe('non-json', () => {
+                let fsReadFileSyncFn: jest.Mock;
+                let mockResponse: MockResponse;
+                let params: any;
 
-                expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join('/path/to', 'some.pdf'));
-            });
+                beforeEach(() => {
+                    fsReadFileSyncFn = fs.readFileSync as jest.Mock;
+                    mockResponse = {
+                        status: HttpStatusCode.OK,
+                        headers: HttpHeaders.CONTENT_TYPE_BINARY,
+                        file: 'some.pdf'
+                    };
+                    params = { mock: { path: '/path/to' } };
 
-            it('returns the response', () => {
-                const chunk = (mockRequestHandler as any).getChunk(mockResponse, params, false);
-                expect(chunk).toEqual('binary content');
-            });
+                    fsReadFileSyncFn.mockReturnValue('binary content');
+                });
 
-            it('returns the wrapped body in a json callback', () => {
-                const chunk = (mockRequestHandler as any).getChunk(mockResponse, params, 'callbackName');
-                expect(chunk).toEqual('callbackName(binary content)');
+                it('reads the binary content', () => {
+                    (mockRequestHandler as any).getChunk(mockResponse, params, false);
+
+                    expect(fsReadFileSyncFn).toHaveBeenCalledWith(path.join('/path/to', 'some.pdf'));
+                });
+
+                it('returns the response', () => {
+                    const chunk = (mockRequestHandler as any).getChunk(mockResponse, params, false);
+                    expect(chunk).toEqual('binary content');
+                });
+
+                it('returns the wrapped body in a json callback', () => {
+                    const chunk = (mockRequestHandler as any).getChunk(mockResponse, params, 'callbackName');
+                    expect(chunk).toEqual('callbackName(binary content)');
+                });
             });
         });
 
