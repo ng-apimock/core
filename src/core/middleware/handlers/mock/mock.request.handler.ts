@@ -63,6 +63,11 @@ export class MockRequestHandler implements Handler {
         let chunk: Buffer | string;
         if (this.isBinaryResponse(_response)) {
             chunk = fs.readFileSync(path.join(params.mock.path, _response.file));
+
+            if (this.isJsonResponse(_response)) {
+                const _variables = this.state.getVariables(params.id);
+                chunk = this.interpolateResponseData(chunk.toString(), _variables);
+            }
         } else {
             const _variables: any = this.state.getVariables(params.id);
             const data = this.isJsonResponse(_response) ? JSON.stringify(_response.data) : _response.data;
@@ -126,8 +131,9 @@ export class MockRequestHandler implements Handler {
      * @return {boolean} indicator The indicator.
      */
     private isJsonResponse(response: MockResponse): boolean {
-        return !response.headers['Content-type'] // default json
-            || response.headers['Content-type'] === 'application/json';
+        return (!response.headers['Content-type'] && !response.headers['Content-Type']) // default json
+            || response.headers['Content-type'] === 'application/json'
+            || response.headers['Content-Type'] === 'application/json';
     }
 
     /**
