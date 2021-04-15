@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.1](https://github.com/ng-apimock/core/compare/v2.7.0...v2.7.1) (2021-04-15)
+
+
+### Bug Fixes
+
+* [#418](https://github.com/ng-apimock/core/issues/418) interpolate binary json responses ([#420](https://github.com/ng-apimock/core/issues/420)) ([bfa5e57](https://github.com/ng-apimock/core/commit/bfa5e576e4c29eee206c07ea7036128aee9f47cb))
+
 # [2.7.0](https://github.com/ng-apimock/core/compare/v2.6.0...v2.7.0) (2021-04-11)
 
 
