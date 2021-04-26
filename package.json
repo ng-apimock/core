@@ -72,7 +72,7 @@
         "debug": "4.3.1",
         "fs-extra": "9.1.0",
         "glob": "7.1.6",
-        "inversify": "5.0.5",
+        "inversify": "5.1.1",
         "node-fetch": "2.6.1",
         "reflect-metadata": "0.1.13",
         "uuid": "8.3.2"
