@@ -82,7 +82,7 @@ export class SelectPresetHandler implements ApplicableHandler {
                 const scenarioExists = Object.keys(matchingMock.responses)
                     .find((scenario) => scenario === mockState.scenario) !== undefined;
 
-                if (scenarioExists) {
+                if (scenarioExists || mockState.scenario === 'passThrough') {
                     state.mocks[mock] = JSON.parse(JSON.stringify(preset.mocks[mock]));
                     if (state.mocks[mock].echo === undefined) {
                         state.mocks[mock].echo = this.DEFAULT_ECHO;
