@@ -99,6 +99,7 @@ describe('CreatePresetHandler', () => {
         let mockPostData: Preset;
         beforeEach(() => {
             outputJSONSync = fs.outputJSONSync as jest.Mock;
+            (state as any).presets = [];
             state.getProcessingOptions.mockReturnValue({
                 src: 'the/mocks/path',
                 patterns: {
@@ -111,10 +112,19 @@ describe('CreatePresetHandler', () => {
                 variables: {}
 
             };
-        });
-        it('shoud save the preset in the configured folder with the configured extention', () => {
+
             handler.savePreset(mockPostData);
-            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newname.custom.json'), mockPostData, { spaces: 2 });
+        });
+        it('saves the preset in the configured folder with the configured extension', () =>
+            expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newname.custom.json'), mockPostData, { spaces: 2 }));
+
+        it('updates the state with the added preset', () => {
+            expect(state.presets.length).toBe(1);
+            expect(state.presets[0]).toEqual({
+                name: 'newname',
+                mocks: {},
+                variables: {}
+            });
         });
     });
 
@@ -130,8 +140,7 @@ describe('CreatePresetHandler', () => {
             request.method = HttpMethods.POST;
             expect(handler.isApplicable(request as any)).toBe(true);
         });
-
-        it('should not match on the default presets path', () => {
+        it('does not match on the default presets path', () => {
             request.url = '/base-path/presets';
             request.method = HttpMethods.POST;
             expect(handler.isApplicable(request as any)).toBe(true);
