@@ -62,6 +62,13 @@ describe('SelectPresetHandler', () => {
                 },
                 variables: { today: 'some date' }
             }, {
+                name: 'valid-passThrough',
+                mocks: {
+                    some: { scenario: 'passThrough', delay: 2000, echo: true },
+                    another: { scenario: 'failure' }
+                },
+                variables: { today: 'some date' }
+            }, {
                 name: 'valid-no-mocks-and-variables'
             }, {
                 name: 'invalid',
@@ -118,6 +125,44 @@ describe('SelectPresetHandler', () => {
             it('logs', () => {
                 expect(debugFn).toHaveBeenCalledTimes(1);
                 expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Selected preset [valid]'));
+            });
+        });
+
+        describe('valid preset data with passThrouh', () => {
+            beforeEach(() => {
+                const body = { name: 'valid-passThrough' };
+                handler.handle(request as any, response as any, nextFn, {
+                    id: 'apimockId',
+                    body
+                });
+            });
+
+            afterEach(() => {
+                jest.clearAllMocks();
+            });
+
+            it('sets the mocks', () => {
+                expect(matchingState.mocks.some.scenario).toBe('passThrough');
+                expect(matchingState.mocks.some.delay).toBe(2000);
+                expect(matchingState.mocks.some.echo).toBe(true);
+                expect(matchingState.mocks.another.scenario).toBe('failure');
+                expect(matchingState.mocks.another.delay).toBe(0); // defaults
+                expect(matchingState.mocks.another.echo).toBe(false); // defaults
+
+                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                expect(response.end).toHaveBeenCalled();
+            });
+
+            it('sets the variables', () => {
+                expect(matchingState.variables.today).toBe('some date');
+
+                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                expect(response.end).toHaveBeenCalled();
+            });
+
+            it('logs', () => {
+                expect(debugFn).toHaveBeenCalledTimes(1);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Selected preset [valid-passThrough]'));
             });
         });
 

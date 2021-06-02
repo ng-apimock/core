@@ -14,9 +14,9 @@ import { ApplicableHandler } from '../handler';
 
 export const log = debug('ng-apimock:handler-create-preset');
 
-/**  Handler for creating an empty preset with the configured preset extention.
+/**  Handler for creating an empty preset with the configured preset extension.
  * adding mocks / scenario's can be done with a PUT request to the created preset.
-*/
+ */
 @injectable()
 export class CreatePresetHandler implements ApplicableHandler {
     /**
@@ -25,7 +25,8 @@ export class CreatePresetHandler implements ApplicableHandler {
      * @param {State} state The state.
      */
     constructor(@inject('Configuration') private configuration: Configuration,
-                @inject('State') private state: State) {}
+                @inject('State') private state: State) {
+    }
 
     /** {@inheritDoc}. */
     handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: {
@@ -56,10 +57,12 @@ export class CreatePresetHandler implements ApplicableHandler {
         const processConfig = this.state.getProcessingOptions();
         // remove wildcard tokens from config
         const presetExt = processConfig.patterns.presets;
-        const presetExtention = presetExt.substring(presetExt.lastIndexOf('*') + 1).replace(/^\./, '');
+        const presetExtension = presetExt.substring(presetExt.lastIndexOf('*') + 1).replace(/^\./, '');
 
         //  save a preset with just the name and empty mocs / variables
-        fs.outputJSONSync(path.join(processConfig.src, `${preset.name.replace(' ', '')}.${presetExtention}`), preset, { spaces: 2 });
+        fs.outputJSONSync(path.join(processConfig.src, `${preset.name.replace(' ', '')}.${presetExtension}`), preset, { spaces: 2 });
+
+        this.state.presets.push(preset);
     }
 
     /** {@inheritDoc}. */
