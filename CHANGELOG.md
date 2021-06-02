@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/ng-apimock/core/compare/v2.7.1...v3.0.0) (2021-06-02)
+
+
+### chore
+
+* 🤖 drop support for Nodejs v10 because EOL ended ([#457](https://github.com/ng-apimock/core/issues/457)) ([8979ee5](https://github.com/ng-apimock/core/commit/8979ee5435a212d5388e52331f74b044e44fb7f2)), closes [#456](https://github.com/ng-apimock/core/issues/456) [#455](https://github.com/ng-apimock/core/issues/455) [#454](https://github.com/ng-apimock/core/issues/454) [#451](https://github.com/ng-apimock/core/issues/451) [#448](https://github.com/ng-apimock/core/issues/448) [#447](https://github.com/ng-apimock/core/issues/447) [#438](https://github.com/ng-apimock/core/issues/438) [#436](https://github.com/ng-apimock/core/issues/436) [#431](https://github.com/ng-apimock/core/issues/431) [#430](https://github.com/ng-apimock/core/issues/430) [#427](https://github.com/ng-apimock/core/issues/427) [#425](https://github.com/ng-apimock/core/issues/425) [#424](https://github.com/ng-apimock/core/issues/424)
+
+
+### BREAKING CHANGES
+
+* 🧨 NodeJs v10 dropped
+
 ## [2.7.1](https://github.com/ng-apimock/core/compare/v2.7.0...v2.7.1) (2021-04-15)
 
 
