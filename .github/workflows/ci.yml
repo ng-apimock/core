@@ -12,9 +12,9 @@ jobs:
       fail-fast: true
       matrix:
         node_version:
-          - 10
           - 12
           - 14
+          - 16
         os:
           - ubuntu-latest
           - macOS-latest
