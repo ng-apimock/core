@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/ng-apimock/core/compare/v3.0.0...v3.0.1) (2021-06-02)
+
+
+### Bug Fixes
+
+* [#452](https://github.com/ng-apimock/core/issues/452) preset with pass through ([#453](https://github.com/ng-apimock/core/issues/453)) ([d160f46](https://github.com/ng-apimock/core/commit/d160f46badfb0f96353c3eb0d155e98f71fb2da7))
+
 # [3.0.0](https://github.com/ng-apimock/core/compare/v2.7.1...v3.0.0) (2021-06-02)
 
 
