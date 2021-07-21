@@ -2,6 +2,7 @@ import * as http from 'http';
 import * as path from 'path';
 import * as url from 'url';
 
+import * as debug from 'debug';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
@@ -16,6 +17,8 @@ import { MockState } from '../../../state/mock.state';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpStatusCode } from '../../http';
 import { Handler } from '../handler';
+
+export const log = debug('ng-apimock:mock-request-handler');
 
 /**  Handler for a mock request. */
 @injectable()
@@ -44,6 +47,7 @@ export class MockRequestHandler implements Handler {
                     this.respond(params, then, response, status, headers, chunk);
                 }, delay);
             } catch (e) {
+                log(e.message);
                 response.writeHead(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 response.end(JSON.stringify(e, ['message']));
             }
