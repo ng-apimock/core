@@ -4,6 +4,7 @@ src
 # test
 **/*.spec.*
 jest.config.js
+coverage
 
 # configs
 .eslintrc
@@ -22,3 +23,8 @@ sonar-project.properties
 
 # generated
 .converted
+
+# docs
+docs
+
+
