@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2](https://github.com/ng-apimock/core/compare/v3.0.1...v3.0.2) (2021-07-21)
+
+
+### Bug Fixes
+
+* 🐛 add logging in try/catch - mock-request-handler ([#502](https://github.com/ng-apimock/core/issues/502)) ([fd3e09c](https://github.com/ng-apimock/core/commit/fd3e09c41cacc7061361b10cac3b7f4702cc7710)), closes [#421](https://github.com/ng-apimock/core/issues/421)
+
 ## [3.0.1](https://github.com/ng-apimock/core/compare/v3.0.0...v3.0.1) (2021-06-02)
 
 
