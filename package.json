@@ -45,7 +45,7 @@
         "@types/debug": "4.1.7",
         "@types/fs-extra": "9.0.12",
         "@types/glob": "7.1.4",
-        "@types/jest": "26.0.24",
+        "@types/jest": "27.0.0",
         "@types/node": "16.4.3",
         "@types/node-fetch": "2.5.12",
         "@types/url-join": "4.0.1",
