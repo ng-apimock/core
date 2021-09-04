@@ -77,6 +77,11 @@ describe('SelectPresetHandler', () => {
                     another: { scenario: 'no-match' }
                 },
                 variables: { today: 'some date' }
+            }, {
+                name: 'unknown-mock',
+                mocks: {
+                    invalid: {  scenario: 'success', delay: 2000, echo: true }
+                }
             }];
             matchingState = {
                 mocks: JSON.parse(JSON.stringify({
@@ -225,6 +230,27 @@ describe('SelectPresetHandler', () => {
             });
         });
 
+        describe('unknown mock in preset', () => {
+            beforeEach(() => {
+                const body = { name: 'unknown-mock' };
+                handler.handle(request as any, response as any, nextFn, {
+                    id: 'apimockId',
+                    body
+                });
+            });
+
+            afterEach(() => {
+                jest.clearAllMocks();
+            });
+
+            it('throws an error when an unknown mock is in the preset', () => {
+                expect(debugFn).toHaveBeenCalledTimes(1);
+                expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Preset [\'unknown-mock\'] references unknown mock with name [\'invalid\']'));
+                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Preset [\'unknown-mock\'] references unknown mock with name [\'invalid\']' }));
+            }); 
+        });
+
         describe('no matching preset', () => {
             beforeEach(() => {
                 const body = { name: 'no-match' };
@@ -242,6 +268,8 @@ describe('SelectPresetHandler', () => {
             });
         });
     });
+
+    
 
     describe('isApplicable', () => {
         let request: http.IncomingMessage;

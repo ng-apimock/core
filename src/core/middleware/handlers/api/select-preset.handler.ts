@@ -79,6 +79,9 @@ export class SelectPresetHandler implements ApplicableHandler {
             Object.keys(preset.mocks).forEach((mock) => {
                 const mockState: MockState = preset.mocks[mock];
                 const matchingMock: Mock = this.state.mocks.find((_mock) => _mock.name === mock);
+                if (!matchingMock) {
+                    throw new Error(`Preset ['${preset.name}'] references unknown mock with name ['${mock}']`);
+                }                
                 const scenarioExists = Object.keys(matchingMock.responses)
                     .find((scenario) => scenario === mockState.scenario) !== undefined;
 
