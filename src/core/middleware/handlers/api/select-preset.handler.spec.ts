@@ -80,7 +80,7 @@ describe('SelectPresetHandler', () => {
             }, {
                 name: 'unknown-mock',
                 mocks: {
-                    invalid: {  scenario: 'success', delay: 2000, echo: true }
+                    invalid: { scenario: 'success', delay: 2000, echo: true }
                 }
             }];
             matchingState = {
@@ -248,7 +248,7 @@ describe('SelectPresetHandler', () => {
                 expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Preset [\'unknown-mock\'] references unknown mock with name [\'invalid\']'));
                 expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
                 expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Preset [\'unknown-mock\'] references unknown mock with name [\'invalid\']' }));
-            }); 
+            });
         });
 
         describe('no matching preset', () => {
@@ -268,8 +268,6 @@ describe('SelectPresetHandler', () => {
             });
         });
     });
-
-    
 
     describe('isApplicable', () => {
         let request: http.IncomingMessage;
