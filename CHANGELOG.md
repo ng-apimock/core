@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/ng-apimock/core/compare/v3.0.3...v3.1.0) (2021-09-06)
+
+
+### Features
+
+* added error-message in case of preset referencing an unknown mock ([#556](https://github.com/ng-apimock/core/issues/556)) ([e205092](https://github.com/ng-apimock/core/commit/e20509282e088567279d6eb8f6988eccb064ceb4))
+
 ## [3.0.3](https://github.com/ng-apimock/core/compare/v3.0.2...v3.0.3) (2021-07-27)
 
 
