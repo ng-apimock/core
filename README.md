@@ -3,8 +3,8 @@
 
 
 > ng-apimock core module is a [Node.js](https://nodejs.org/) plugin that provides the ability to use scenario based api mocking. You can use it for both:
- - local development (see [local development plugins](#local-development-plugins))
- - automated testing (see [automated testing plugins](#automated-testing-plugins))
+ - local development (see [local development plugins](https://ngapimock.org/docs/plugins/plugin-introduction/#local-development))
+ - automated testing (see [automated testing plugins](https://ngapimock.org/docs/plugins/plugin-introduction/#automated-testing))
  
  
 ## Getting started
@@ -19,7 +19,7 @@
 ## Changelog
 [Learn about the latest improvements][changelog].
  
-[gettingStarted]: https://ngapimock.org/docs/
+[gettingStarted]: https://ngapimock.org/docs/installation
 [api]: https://ngapimock.org/docs/api/select-scenario
 [plugins]: https://ngapimock.org/docs/plugins/plugin-introduction
 [changelog]: https://github.com/ng-apimock/core/blob/master/CHANGELOG.md
