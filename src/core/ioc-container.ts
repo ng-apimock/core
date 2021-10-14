@@ -5,6 +5,7 @@ import { NextHandleFunction } from 'connect';
 import { Container } from 'inversify';
 
 import { Configuration, DefaultConfiguration } from './configuration';
+import { InstanceHolder } from './instance.holder';
 import { AddMockScenarioToPresetHandler } from './middleware/handlers/api/add-mockscenario-to-preset.handler';
 import { CreateMockHandler } from './middleware/handlers/api/create-mock.handler';
 import { CreatePresetHandler } from './middleware/handlers/api/create-preset.handler';
@@ -15,6 +16,7 @@ import { GetPresetsHandler } from './middleware/handlers/api/get-presets.handler
 import { GetRecordedResponseHandler } from './middleware/handlers/api/get-recorded-response.handler';
 import { GetRecordingsHandler } from './middleware/handlers/api/get-recordings.handler';
 import { GetVariablesHandler } from './middleware/handlers/api/get-variables.handler';
+import { InformationHandler } from './middleware/handlers/api/information.handler';
 import { InitHandler } from './middleware/handlers/api/init.handler';
 import { PassThroughsHandler } from './middleware/handlers/api/pass-throughs.handler';
 import { RecordHandler } from './middleware/handlers/api/record.handler';
@@ -33,10 +35,12 @@ import { State } from './state/state';
 
 // IOC configuration
 const container = new Container();
-container.bind<State>('State').to(State).inSingletonScope();
 container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
+container.bind<State>('State').to(State).inSingletonScope();
 
+container.bind<InformationHandler>('InformationHandler').to(InformationHandler);
 container.bind<InitHandler>('InitHandler').to(InitHandler);
+container.bind<InstanceHolder>('InstanceHolder').to(InstanceHolder).inSingletonScope();
 
 container.bind<EchoRequestHandler>('EchoRequestHandler').to(EchoRequestHandler);
 container.bind<MockRequestHandler>('MockRequestHandler').to(MockRequestHandler);
@@ -69,4 +73,5 @@ container.bind<Middleware>('Middleware').to(Middleware);
 container.bind<CreateMockHandler>('CreateMockHandler').to(CreateMockHandler);
 container.bind<CreatePresetHandler>('CreatePresetHandler').to(CreatePresetHandler);
 container.bind<AddMockScenarioToPresetHandler>('AddMockScenarioToPresetHandler').to(AddMockScenarioToPresetHandler);
+
 export default container;
