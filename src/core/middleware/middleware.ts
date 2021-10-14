@@ -17,6 +17,7 @@ import { GetPresetsHandler } from './handlers/api/get-presets.handler';
 import { GetRecordedResponseHandler } from './handlers/api/get-recorded-response.handler';
 import { GetRecordingsHandler } from './handlers/api/get-recordings.handler';
 import { GetVariablesHandler } from './handlers/api/get-variables.handler';
+import { HealthHandler } from './handlers/api/health.handler';
 import { InformationHandler } from './handlers/api/information.handler';
 import { InitHandler } from './handlers/api/init.handler';
 import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
@@ -46,6 +47,7 @@ export class Middleware {
      * @param {GetRecordingsHandler} getRecordingsHandler The get recordings handler.
      * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
      * @param {GetVariablesHandler} getVariablesHandler The get variables handler.
+     * @param {HealthHandler} healthHandler The health handler.
      * @param {InformationHandler} informationHandler The information handler.
      * @param {InitHandler} initHandler The init handler.
      * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
@@ -72,6 +74,7 @@ export class Middleware {
                 @inject('GetRecordingsHandler') private getRecordingsHandler: GetRecordingsHandler,
                 @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
                 @inject('GetVariablesHandler') private getVariablesHandler: GetVariablesHandler,
+                @inject('HealthHandler') private healthHandler: HealthHandler,
                 @inject('InformationHandler') private informationHandler: InformationHandler,
                 @inject('InitHandler') private initHandler: InitHandler,
                 @inject('MockRequestHandler') private mockRequestHandler: MockRequestHandler,
@@ -92,6 +95,7 @@ export class Middleware {
             getRecordingsHandler,
             getRecordedResponseHandler,
             getVariablesHandler,
+            healthHandler,
             informationHandler,
             initHandler,
             passThroughsHandler,

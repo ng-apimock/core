@@ -42,7 +42,7 @@ describe('InformationHandler', () => {
                 writeHead: jest.fn()
             } as unknown as http.ServerResponse;
 
-            instanceHolder.getInformation.mockReturnValue({the: 'information'});
+            instanceHolder.getInformation.mockReturnValue({ the: 'information' });
         });
 
         it('ends the response', () => {
@@ -51,7 +51,7 @@ describe('InformationHandler', () => {
             expect(debugFn).toHaveBeenCalledTimes(1);
             expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Information'));
             expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            expect(response.end).toHaveBeenCalledWith("{\"the\":\"information\"}");
+            expect(response.end).toHaveBeenCalledWith('{"the":"information"}');
         });
     });
 

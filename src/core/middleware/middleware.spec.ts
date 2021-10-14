@@ -17,6 +17,7 @@ import { GetPresetsHandler } from './handlers/api/get-presets.handler';
 import { GetRecordedResponseHandler } from './handlers/api/get-recorded-response.handler';
 import { GetRecordingsHandler } from './handlers/api/get-recordings.handler';
 import { GetVariablesHandler } from './handlers/api/get-variables.handler';
+import { HealthHandler } from './handlers/api/health.handler';
 import { InformationHandler } from './handlers/api/information.handler';
 import { InitHandler } from './handlers/api/init.handler';
 import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
@@ -47,6 +48,7 @@ describe('Middleware', () => {
     let getRecordingsHandler: GetRecordingsHandler;
     let getRecordedResponseHandler: GetRecordedResponseHandler;
     let getVariablesHandler: jest.Mocked<GetVariablesHandler>;
+    let healthHandler: jest.Mocked<HealthHandler>;
     let informationHandler: InformationHandler;
     let initHandler: InitHandler;
     let mockRequestHandler: MockRequestHandler;
@@ -75,6 +77,7 @@ describe('Middleware', () => {
         getRecordingsHandler = createSpyObj(GetRecordingsHandler);
         getRecordedResponseHandler = createSpyObj(GetRecordedResponseHandler);
         getVariablesHandler = createSpyObj(GetVariablesHandler);
+        healthHandler = createSpyObj(HealthHandler);
         informationHandler = createSpyObj(InformationHandler);
         initHandler = createSpyObj(InitHandler);
         mockRequestHandler = createSpyObj(MockRequestHandler);
@@ -100,6 +103,7 @@ describe('Middleware', () => {
         container.bind('GetRecordingsHandler').toConstantValue(getRecordingsHandler);
         container.bind('GetRecordedResponseHandler').toConstantValue(getRecordedResponseHandler);
         container.bind('GetVariablesHandler').toConstantValue(getVariablesHandler);
+        container.bind('HealthHandler').toConstantValue(healthHandler);
         container.bind('InformationHandler').toConstantValue(informationHandler);
         container.bind('InitHandler').toConstantValue(initHandler);
         container.bind('MockRequestHandler').toConstantValue(mockRequestHandler);

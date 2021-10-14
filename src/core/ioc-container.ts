@@ -16,6 +16,7 @@ import { GetPresetsHandler } from './middleware/handlers/api/get-presets.handler
 import { GetRecordedResponseHandler } from './middleware/handlers/api/get-recorded-response.handler';
 import { GetRecordingsHandler } from './middleware/handlers/api/get-recordings.handler';
 import { GetVariablesHandler } from './middleware/handlers/api/get-variables.handler';
+import { HealthHandler } from './middleware/handlers/api/health.handler';
 import { InformationHandler } from './middleware/handlers/api/information.handler';
 import { InitHandler } from './middleware/handlers/api/init.handler';
 import { PassThroughsHandler } from './middleware/handlers/api/pass-throughs.handler';
@@ -41,6 +42,7 @@ container.bind<State>('State').to(State).inSingletonScope();
 container.bind<InformationHandler>('InformationHandler').to(InformationHandler);
 container.bind<InitHandler>('InitHandler').to(InitHandler);
 container.bind<InstanceHolder>('InstanceHolder').to(InstanceHolder).inSingletonScope();
+container.bind<HealthHandler>('HealthHandler').to(HealthHandler);
 
 container.bind<EchoRequestHandler>('EchoRequestHandler').to(EchoRequestHandler);
 container.bind<MockRequestHandler>('MockRequestHandler').to(MockRequestHandler);
