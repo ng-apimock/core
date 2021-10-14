@@ -23,7 +23,8 @@ export const DefaultProcessingOptions = {
 export const GeneratedProcessingOptions = {
     src: path.join(process.cwd(), '.ngapimock', 'generated'),
     patterns: {
-        presets: '**/*.preset.json'
+        presets: '**/*.preset.json',
+        mocks: '**/*.mock.json'
     },
     watch: true
 };

@@ -8,6 +8,7 @@ import { inject, injectable } from 'inversify';
 import { Configuration } from '../../../configuration';
 import { Mock } from '../../../mock/mock';
 import { MockResponse } from '../../../mock/mock.response';
+import { GeneratedProcessingOptions } from '../../../processor/processing.options';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
@@ -53,9 +54,10 @@ export class CreateMockHandler implements ApplicableHandler {
     }
 
     saveMock(mock: Mock) {
-        const processConfig = this.state.getProcessingOptions();
+        const processConfig = GeneratedProcessingOptions;
         const mocksConfig = processConfig.patterns.mocks;
         const mockExtention = mocksConfig.substring(mocksConfig.lastIndexOf('*') + 1).replace(/^\./, '');
+
         if (Object.keys(mock.responses).length === 0) {
             const defaultResponse: MockResponse = {
                 status: 501,
