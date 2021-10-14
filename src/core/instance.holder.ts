@@ -10,7 +10,6 @@ import { State } from './state/state';
 
 @injectable()
 export class InstanceHolder {
-
     /**
      * Constructor
      * @param {Configuration} configuration The configuration.
