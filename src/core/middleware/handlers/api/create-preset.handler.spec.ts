@@ -3,15 +3,15 @@ import * as path from 'path';
 
 import * as debug from 'debug';
 import * as fs from 'fs-extra';
-import { Container } from 'inversify';
-import { createSpyObj } from 'jest-createspyobj';
+import {Container} from 'inversify';
+import {createSpyObj} from 'jest-createspyobj';
 
-import { Preset } from '../../../preset/preset';
-import { State } from '../../../state/state';
-import { HttpHeaders, HttpMethods } from '../../http';
-import { HandlerUtils } from '../handerutil';
+import {Preset} from '../../../preset/preset';
+import {State} from '../../../state/state';
+import {HttpHeaders, HttpMethods} from '../../http';
+import {HandlerUtils} from '../handerutil';
 
-import { CreatePresetHandler } from './create-preset.handler';
+import {CreatePresetHandler} from './create-preset.handler';
 
 jest.mock('fs-extra');
 jest.mock('../handerutil');
@@ -24,7 +24,7 @@ describe('CreatePresetHandler', () => {
     beforeEach(() => {
         container = new Container();
         state = createSpyObj(State);
-        container.bind('Configuration').toConstantValue({ middleware: { basePath: '/base-path' } });
+        container.bind('Configuration').toConstantValue({middleware: {basePath: '/base-path'}});
         container.bind('CreatePresetHandler').to(CreatePresetHandler);
         container.bind('State').toConstantValue(state);
         handler = container.get<CreatePresetHandler>('CreatePresetHandler');
@@ -75,7 +75,7 @@ describe('CreatePresetHandler', () => {
             expect(debugFn).toHaveBeenCalledTimes(1);
             expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Preset with name: [valid] already exists'));
             expect(response.writeHead).toHaveBeenCalledWith(409, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Preset with name: [valid] already exists' }));
+            expect(response.end).toHaveBeenCalledWith(JSON.stringify({message: 'Preset with name: [valid] already exists'}));
         });
         it('should save the Preset is the the preset is valid and does not yet exist', () => {
             handler.savePreset = jest.fn();
@@ -115,7 +115,11 @@ describe('CreatePresetHandler', () => {
 
             handler.savePreset(mockPostData);
         });
-        it('saves the preset in the configured folder with the configured extension', () => expect(outputJSONSync).toHaveBeenCalledWith(path.join('the/mocks/path', 'newname.custom.json'), mockPostData, { spaces: 2 }));
+        it('saves the preset in the configured folder with the configured extension', () =>
+            expect(outputJSONSync).toHaveBeenCalledWith(
+                path.join(process.cwd(), '.ngapimock', 'generated', 'newname.preset.json'),
+                mockPostData,
+                {spaces: 2}));
 
         it('updates the state with the added preset', () => {
             expect(state.presets.length).toBe(1);

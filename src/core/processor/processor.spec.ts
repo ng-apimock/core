@@ -1,12 +1,13 @@
 import * as chokidar from 'chokidar';
-import { Container } from 'inversify';
-import { createSpyObj } from 'jest-createspyobj';
+import {Container} from 'inversify';
+import {createSpyObj} from 'jest-createspyobj';
 
-import { State } from '../state/state';
+import {State} from '../state/state';
 
-import { MocksProcessor } from './mocks.processor';
-import { PresetsProcessor } from './presets.processor';
-import { Processor } from './processor';
+import {MocksProcessor} from './mocks.processor';
+import {PresetsProcessor} from './presets.processor';
+import {Processor} from './processor';
+import {GeneratedProcessingOptions} from "./processing.options";
 
 jest.mock('fs-extra');
 jest.mock('chokidar');
@@ -50,20 +51,20 @@ describe('MocksProcessor', () => {
         describe('default', () => {
             beforeEach(() => {
                 processor.process({
-                    src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+                    src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
                 });
             });
 
             it('merges with the default options', () => expect(getMergedOptionsFn).toHaveBeenCalledWith({
-                src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+                src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
             }));
 
             it('processes the mocks', () => expect(mocksProcessor.process).toHaveBeenCalledWith({
-                src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+                src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
             }));
 
             it('processes the presets', () => expect(presetsProcessor.process).toHaveBeenCalledWith({
-                src: 'src', patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' }
+                src: 'src', patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'}
             }));
 
             it('does not watch for mock changes', async () => {
@@ -77,13 +78,19 @@ describe('MocksProcessor', () => {
                     ignoreInitial: true, usePolling: true, interval: 2000
                 });
             });
+
+            it('watches for generated preset changes', async () => {
+                expect(chokidarWatchFn).toHaveBeenCalledWith(
+                    `${GeneratedProcessingOptions.src}/${GeneratedProcessingOptions.patterns.presets}`,
+                    {ignoreInitial: true, usePolling: true, interval: 2000});
+            });
         });
 
         describe('watch', () => {
             beforeEach(() => {
                 processor.process({
                     src: 'src',
-                    patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' },
+                    patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'},
                     watch: true
                 });
             });
@@ -104,20 +111,20 @@ describe('MocksProcessor', () => {
                 expect(mocksProcessor.process).toHaveBeenCalledTimes(2);
             });
 
-            it('watches for preset changes', async () => {
+            it('watches for preset changes and generated preset', async () => {
                 expect(chokidarWatchFn).toHaveBeenCalledWith('src/presets-pattern', {
                     ignoreInitial: true, usePolling: true, interval: 2000
                 });
 
                 expect(fsWatcher.on).toHaveBeenCalledWith('all', expect.anything());
-                expect(presetsProcessor.process).toHaveBeenCalledTimes(1);
+                expect(presetsProcessor.process).toHaveBeenCalledTimes(2); // also for generated
 
                 const onAllCall = fsWatcher.on.mock.calls[1];
 
                 expect(onAllCall[0]).toBe('all');
                 await onAllCall[1](); // call the callback function.
 
-                expect(presetsProcessor.process).toHaveBeenCalledTimes(2);
+                expect(presetsProcessor.process).toHaveBeenCalledTimes(3);
             });
         });
 
@@ -125,8 +132,8 @@ describe('MocksProcessor', () => {
             beforeEach(() => {
                 processor.process({
                     src: 'src',
-                    patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' },
-                    watches: { mocks: 'mock-watches' },
+                    patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'},
+                    watches: {mocks: 'mock-watches'},
                     watch: true
                 });
             });
@@ -152,8 +159,8 @@ describe('MocksProcessor', () => {
             beforeEach(() => {
                 processor.process({
                     src: 'src',
-                    patterns: { mocks: 'mocks-pattern', presets: 'presets-pattern' },
-                    watches: { presets: 'presets-watches' },
+                    patterns: {mocks: 'mocks-pattern', presets: 'presets-pattern'},
+                    watches: {presets: 'presets-watches'},
                     watch: true
                 });
             });
