@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 export interface ProcessingOptions {
     src: string;
     patterns?: {
@@ -16,4 +18,13 @@ export const DefaultProcessingOptions = {
         presets: '**/*.preset.json',
         mocks: '**/*.mock.json'
     }
+};
+
+export const GeneratedProcessingOptions = {
+    src: path.join(process.cwd(), '.ngapimock', 'generated'),
+    patterns: {
+        presets: '**/*.preset.json',
+        mocks: '**/*.mock.json'
+    },
+    watch: true
 };

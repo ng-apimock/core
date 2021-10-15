@@ -119,3 +119,10 @@ To start up the script just type:
 ```bash
 node serve.js
 ```
+
+### Endpoints
+There are a few endpoints available when you startup `@ng-apimock/core`:
+- `/info` - responsible for providing information of the running instance
+- `/health` - responsible for providing status information
+- `/health/readiness` - readiness probe
+- `/health/liveness` - liveness probe

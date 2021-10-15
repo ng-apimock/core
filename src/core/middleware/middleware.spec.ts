@@ -17,6 +17,8 @@ import { GetPresetsHandler } from './handlers/api/get-presets.handler';
 import { GetRecordedResponseHandler } from './handlers/api/get-recorded-response.handler';
 import { GetRecordingsHandler } from './handlers/api/get-recordings.handler';
 import { GetVariablesHandler } from './handlers/api/get-variables.handler';
+import { HealthHandler } from './handlers/api/health.handler';
+import { InformationHandler } from './handlers/api/information.handler';
 import { InitHandler } from './handlers/api/init.handler';
 import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
 import { RecordHandler } from './handlers/api/record.handler';
@@ -32,31 +34,41 @@ import { Middleware } from './middleware';
 
 describe('Middleware', () => {
     let container: Container;
+    let jsonBodyParser: jest.Mock;
+    let state: jest.Mocked<State>;
+
+    let addMockToPresetHandler: AddMockScenarioToPresetHandler;
+    let createMockHandler: CreateMockHandler;
+    let createPresetHandler: CreatePresetHandler;
     let defaultsHandler: DefaultsHandler;
     let deleteVariableHandler: DeleteVariableHandler;
     let echoRequestHandler: EchoRequestHandler;
     let getMocksHandler: GetMocksHandler;
     let getPresetsHandler: GetPresetsHandler;
-    let getVariablesHandler: jest.Mocked<GetVariablesHandler>;
     let getRecordingsHandler: GetRecordingsHandler;
-    let initHandler: InitHandler;
-    let middleware: Middleware;
-    let mockRequestHandler: MockRequestHandler;
-    let state: jest.Mocked<State>;
-    let passThroughsHandler: PassThroughsHandler;
-    let recordResponseHandler: RecordResponseHandler;
-    let recordHandler: RecordHandler;
     let getRecordedResponseHandler: GetRecordedResponseHandler;
-    let jsonBodyParser: jest.Mock;
-    let setVariableHandler: SetVariableHandler;
+    let getVariablesHandler: jest.Mocked<GetVariablesHandler>;
+    let healthHandler: jest.Mocked<HealthHandler>;
+    let informationHandler: InformationHandler;
+    let initHandler: InitHandler;
+    let mockRequestHandler: MockRequestHandler;
+    let passThroughsHandler: PassThroughsHandler;
+    let recordHandler: RecordHandler;
+    let recordResponseHandler: RecordResponseHandler;
     let selectPresetHandler: SelectPresetHandler;
+    let setVariableHandler: SetVariableHandler;
     let updateMocksHandler: UpdateMocksHandler;
-    let createMockHandler: CreateMockHandler;
-    let createPresetHandler: CreatePresetHandler;
-    let addMockToPresetHandler: AddMockScenarioToPresetHandler;
+
+    let middleware: Middleware;
 
     beforeEach(() => {
         container = new Container();
+        jsonBodyParser = jest.fn();
+        state = createSpyObj(State);
+
+        addMockToPresetHandler = createSpyObj(AddMockScenarioToPresetHandler);
+        createMockHandler = createSpyObj(CreateMockHandler);
+        createPresetHandler = createSpyObj(CreatePresetHandler);
         defaultsHandler = createSpyObj(DefaultsHandler);
         deleteVariableHandler = createSpyObj(DeleteVariableHandler);
         echoRequestHandler = createSpyObj(EchoRequestHandler);
@@ -65,21 +77,24 @@ describe('Middleware', () => {
         getRecordingsHandler = createSpyObj(GetRecordingsHandler);
         getRecordedResponseHandler = createSpyObj(GetRecordedResponseHandler);
         getVariablesHandler = createSpyObj(GetVariablesHandler);
+        healthHandler = createSpyObj(HealthHandler);
+        informationHandler = createSpyObj(InformationHandler);
         initHandler = createSpyObj(InitHandler);
-        jsonBodyParser = jest.fn();
         mockRequestHandler = createSpyObj(MockRequestHandler);
         passThroughsHandler = createSpyObj(PassThroughsHandler);
         recordHandler = createSpyObj(RecordHandler);
         recordResponseHandler = createSpyObj(RecordResponseHandler);
         selectPresetHandler = createSpyObj(SelectPresetHandler);
         setVariableHandler = createSpyObj(SetVariableHandler);
-        state = createSpyObj(State);
         updateMocksHandler = createSpyObj(UpdateMocksHandler);
-        createMockHandler = createSpyObj(CreateMockHandler);
-        createPresetHandler = createSpyObj(CreatePresetHandler);
-        addMockToPresetHandler = createSpyObj(AddMockScenarioToPresetHandler);
 
         container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
+        container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
+        container.bind('State').toConstantValue(state);
+
+        container.bind('AddMockScenarioToPresetHandler').toConstantValue(addMockToPresetHandler);
+        container.bind('CreateMockHandler').toConstantValue(createMockHandler);
+        container.bind('CreatePresetHandler').toConstantValue(createPresetHandler);
         container.bind('DefaultsHandler').toConstantValue(defaultsHandler);
         container.bind('DeleteVariableHandler').toConstantValue(deleteVariableHandler);
         container.bind('EchoRequestHandler').toConstantValue(echoRequestHandler);
@@ -88,6 +103,8 @@ describe('Middleware', () => {
         container.bind('GetRecordingsHandler').toConstantValue(getRecordingsHandler);
         container.bind('GetRecordedResponseHandler').toConstantValue(getRecordedResponseHandler);
         container.bind('GetVariablesHandler').toConstantValue(getVariablesHandler);
+        container.bind('HealthHandler').toConstantValue(healthHandler);
+        container.bind('InformationHandler').toConstantValue(informationHandler);
         container.bind('InitHandler').toConstantValue(initHandler);
         container.bind('MockRequestHandler').toConstantValue(mockRequestHandler);
         container.bind('PassThroughsHandler').toConstantValue(passThroughsHandler);
@@ -95,13 +112,9 @@ describe('Middleware', () => {
         container.bind('RecordResponseHandler').toConstantValue(recordResponseHandler);
         container.bind('SelectPresetHandler').toConstantValue(selectPresetHandler);
         container.bind('SetVariableHandler').toConstantValue(setVariableHandler);
-        container.bind('State').toConstantValue(state);
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);
+
         container.bind('Middleware').to(Middleware);
-        container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
-        container.bind('CreateMockHandler').toConstantValue(createMockHandler);
-        container.bind('CreatePresetHandler').toConstantValue(createPresetHandler);
-        container.bind('AddMockScenarioToPresetHandler').toConstantValue(addMockToPresetHandler);
 
         middleware = container.get<Middleware>('Middleware');
     });

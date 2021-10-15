@@ -17,6 +17,8 @@ import { GetPresetsHandler } from './handlers/api/get-presets.handler';
 import { GetRecordedResponseHandler } from './handlers/api/get-recorded-response.handler';
 import { GetRecordingsHandler } from './handlers/api/get-recordings.handler';
 import { GetVariablesHandler } from './handlers/api/get-variables.handler';
+import { HealthHandler } from './handlers/api/health.handler';
+import { InformationHandler } from './handlers/api/information.handler';
 import { InitHandler } from './handlers/api/init.handler';
 import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
 import { RecordHandler } from './handlers/api/record.handler';
@@ -31,11 +33,12 @@ import { RecordResponseHandler } from './handlers/mock/record.response.handler';
 /** Middleware. */
 @injectable()
 export class Middleware {
-    private handlers: ApplicableHandler[];
-
     /**
      * Constructor
+     * @param {AddMockScenarioToPresetHandler} addMockToPresetHandler The add mock to preset handler.
      * @param {Configuration} configuration The configuration object.
+     * @param {CreateMockHandler} createMockHandler The create mocks handler.
+     * @param {CreatePresetHandler} createPresetHandler The create presets handler.
      * @param {DefaultsHandler} defaultsHandler The defaults handler.
      * @param {DeleteVariableHandler} deleteVariableHandler The delete variables handler.
      * @param {EchoRequestHandler} echoRequestHandler The echo request handler.
@@ -44,6 +47,8 @@ export class Middleware {
      * @param {GetRecordingsHandler} getRecordingsHandler The get recordings handler.
      * @param {GetRecordedResponseHandler} getRecordedResponseHandler The get recorded response handler.
      * @param {GetVariablesHandler} getVariablesHandler The get variables handler.
+     * @param {HealthHandler} healthHandler The health handler.
+     * @param {InformationHandler} informationHandler The information handler.
      * @param {InitHandler} initHandler The init handler.
      * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
      * @param {MockRequestHandler} mockRequestHandler The mock request handler.
@@ -54,10 +59,13 @@ export class Middleware {
      * @param {SetVariableHandler} setVariableHandler The set variables handler.
      * @param {State} apimockState The apimock state.
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
-     * @param {CreateMockHandler} createMockHandler The create mocks handler.
-     * @param {CreatePresetHandler} createMockHandler The create presets handler.
      */
     constructor(@inject('Configuration') private configuration: Configuration,
+                @inject('JsonBodyParser') private bodyParser: NextHandleFunction,
+                @inject('State') private apimockState: State,
+                @inject('AddMockScenarioToPresetHandler') private addMockToPresetHandler: AddMockScenarioToPresetHandler,
+                @inject('CreateMockHandler') private createMockHandler: CreateMockHandler,
+                @inject('CreatePresetHandler') private createPresetHandler: CreatePresetHandler,
                 @inject('DefaultsHandler') private defaultsHandler: DefaultsHandler,
                 @inject('DeleteVariableHandler') private deleteVariableHandler: DeleteVariableHandler,
                 @inject('EchoRequestHandler') private echoRequestHandler: EchoRequestHandler,
@@ -66,39 +74,39 @@ export class Middleware {
                 @inject('GetRecordingsHandler') private getRecordingsHandler: GetRecordingsHandler,
                 @inject('GetRecordedResponseHandler') private getRecordedResponseHandler: GetRecordedResponseHandler,
                 @inject('GetVariablesHandler') private getVariablesHandler: GetVariablesHandler,
+                @inject('HealthHandler') private healthHandler: HealthHandler,
+                @inject('InformationHandler') private informationHandler: InformationHandler,
                 @inject('InitHandler') private initHandler: InitHandler,
-                @inject('JsonBodyParser') private bodyParser: NextHandleFunction,
                 @inject('MockRequestHandler') private mockRequestHandler: MockRequestHandler,
                 @inject('PassThroughsHandler') private passThroughsHandler: PassThroughsHandler,
                 @inject('RecordHandler') private recordHandler: RecordHandler,
                 @inject('RecordResponseHandler') private recordResponseHandler: RecordResponseHandler,
                 @inject('SelectPresetHandler') private selectPresetHandler: SelectPresetHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
-                @inject('State') private apimockState: State,
-                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,
-                @inject('CreateMockHandler') private createMockHandler: CreateMockHandler,
-                @inject('CreatePresetHandler') private createPresetHandler: CreatePresetHandler,
-                @inject('AddMockScenarioToPresetHandler') private addMockToPresetHandler: AddMockScenarioToPresetHandler) {
+                @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,) {
         this.handlers = [
+            addMockToPresetHandler,
+            createMockHandler,
+            createPresetHandler,
             defaultsHandler,
             deleteVariableHandler,
             getMocksHandler,
             getPresetsHandler,
             getRecordingsHandler,
+            getRecordedResponseHandler,
             getVariablesHandler,
+            healthHandler,
+            informationHandler,
             initHandler,
             passThroughsHandler,
-            getRecordedResponseHandler,
             recordHandler,
             setVariableHandler,
             selectPresetHandler,
-            updateMocksHandler,
-            createMockHandler,
-            createPresetHandler,
-            addMockToPresetHandler,
-            createMockHandler
+            updateMocksHandler
         ];
     }
+
+    private handlers: ApplicableHandler[];
 
     /**
      * Apimock Middleware.
