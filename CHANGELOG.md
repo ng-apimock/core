@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/ng-apimock/core/compare/v3.1.0...v3.2.0) (2021-10-15)
+
+
+### Features
+
+* add new features ([#603](https://github.com/ng-apimock/core/issues/603)) ([c5611b8](https://github.com/ng-apimock/core/commit/c5611b8e27409077343491524704d9d787687e0f)), closes [#600](https://github.com/ng-apimock/core/issues/600) [#598](https://github.com/ng-apimock/core/issues/598) [#596](https://github.com/ng-apimock/core/issues/596) [#593](https://github.com/ng-apimock/core/issues/593) [#592](https://github.com/ng-apimock/core/issues/592) [#590](https://github.com/ng-apimock/core/issues/590) [#580](https://github.com/ng-apimock/core/issues/580) [#578](https://github.com/ng-apimock/core/issues/578) [#577](https://github.com/ng-apimock/core/issues/577) [#576](https://github.com/ng-apimock/core/issues/576) [#557](https://github.com/ng-apimock/core/issues/557) [#554](https://github.com/ng-apimock/core/issues/554)
+
 # [3.1.0](https://github.com/ng-apimock/core/compare/v3.0.3...v3.1.0) (2021-09-06)
 
 
