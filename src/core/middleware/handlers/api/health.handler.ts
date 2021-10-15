@@ -4,7 +4,6 @@ import { debug } from 'debug';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
-import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { ApplicableHandler } from '../handler';
 
@@ -16,7 +15,6 @@ export class HealthHandler implements ApplicableHandler {
     /**
      * Constructor.
      * @param {Configuration} configuration The configuration.
-     * @param {State} state The state.
      */
     constructor(@inject('Configuration') private configuration: Configuration) {
     }
