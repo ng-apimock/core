@@ -38,7 +38,7 @@
         "@semantic-release/commit-analyzer": "9.0.1",
         "@semantic-release/git": "10.0.0",
         "@semantic-release/github": "8.0.1",
-        "@semantic-release/npm": "8.0.0",
+        "@semantic-release/npm": "8.0.1",
         "@semantic-release/release-notes-generator": "10.0.2",
         "@types/body-parser": "1.19.1",
         "@types/chokidar": "2.1.3",
