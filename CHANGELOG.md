@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/ng-apimock/core/compare/v3.1.0...v3.2.0) (2021-10-15)
+
+
+### Features
+
+* Information endpoint accessible under /ngapimock/info
+* Health endpoint accessible under /health, /health/readiness and /health/liveness
+
+### Refactorings
+
+* Presets are now created in under .ngapimock/generated
+* Mocks are now created in under .ngapimock/generated
+
+# [3.1.0](https://github.com/ng-apimock/core/compare/v3.0.3...v3.1.0) (2021-09-06)
+
+
+### Features
+
+* added error-message in case of preset referencing an unknown mock ([#556](https://github.com/ng-apimock/core/issues/556)) ([e205092](https://github.com/ng-apimock/core/commit/e20509282e088567279d6eb8f6988eccb064ceb4))
+
+## [3.0.3](https://github.com/ng-apimock/core/compare/v3.0.2...v3.0.3) (2021-07-27)
+
+
+### Bug Fixes
+
+* 🐛 add logging in try/catch - mock-request-handler ([8aacc5e](https://github.com/ng-apimock/core/commit/8aacc5ecb24e266e846a22e32f2d494521ae1276)), closes [#421](https://github.com/ng-apimock/core/issues/421)
+
+## [3.0.2](https://github.com/ng-apimock/core/compare/v3.0.1...v3.0.2) (2021-07-21)
+
+
+### Bug Fixes
+
+* 🐛 add logging in try/catch - mock-request-handler ([#502](https://github.com/ng-apimock/core/issues/502)) ([fd3e09c](https://github.com/ng-apimock/core/commit/fd3e09c41cacc7061361b10cac3b7f4702cc7710)), closes [#421](https://github.com/ng-apimock/core/issues/421)
+
 ## [3.0.1](https://github.com/ng-apimock/core/compare/v3.0.0...v3.0.1) (2021-06-02)
 
 

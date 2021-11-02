@@ -1,12 +1,13 @@
 import * as http from 'http';
 import * as path from 'path';
 
-import * as debug from 'debug';
+import { debug } from 'debug';
 import * as fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
 
 import { Configuration } from '../../../configuration';
 import { Preset } from '../../../preset/preset';
+import { GeneratedProcessingOptions } from '../../../processor/processing.options';
 import { State } from '../../../state/state';
 import { HttpHeaders, HttpMethods, HttpStatusCode } from '../../http';
 import { HandlerUtils } from '../handerutil';
@@ -54,7 +55,7 @@ export class CreatePresetHandler implements ApplicableHandler {
     }
 
     savePreset(preset: Preset) {
-        const processConfig = this.state.getProcessingOptions();
+        const processConfig = GeneratedProcessingOptions;
         // remove wildcard tokens from config
         const presetExt = processConfig.patterns.presets;
         const presetExtension = presetExt.substring(presetExt.lastIndexOf('*') + 1).replace(/^\./, '');

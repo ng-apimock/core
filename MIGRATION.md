@@ -36,7 +36,7 @@ And the core's processor like this:
 ```javascript
 apimock.processor.process({
     src: 'your/mocks/directory', // the directory where your mock.json files are located
-    pattern: { // optional
+    patterns: { // optional
         mocks: '**/*.json', // your optional mock.json glob pattern (defaults to: '**/*.mock.json')
         presets: '**/*.json', // your optional preset.json glob pattern (defaults to: '**/*.preset.json')
     }

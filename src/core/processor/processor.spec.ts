@@ -6,6 +6,7 @@ import { State } from '../state/state';
 
 import { MocksProcessor } from './mocks.processor';
 import { PresetsProcessor } from './presets.processor';
+import { GeneratedProcessingOptions } from './processing.options';
 import { Processor } from './processor';
 
 jest.mock('fs-extra');
@@ -77,6 +78,13 @@ describe('MocksProcessor', () => {
                     ignoreInitial: true, usePolling: true, interval: 2000
                 });
             });
+
+            it('watches for generated preset changes', async () => {
+                expect(chokidarWatchFn).toHaveBeenCalledWith(
+                    `${GeneratedProcessingOptions.src}/${GeneratedProcessingOptions.patterns.presets}`,
+                    { ignoreInitial: true, usePolling: true, interval: 2000 }
+                );
+            });
         });
 
         describe('watch', () => {
@@ -104,20 +112,20 @@ describe('MocksProcessor', () => {
                 expect(mocksProcessor.process).toHaveBeenCalledTimes(2);
             });
 
-            it('watches for preset changes', async () => {
+            it('watches for preset changes and generated preset', async () => {
                 expect(chokidarWatchFn).toHaveBeenCalledWith('src/presets-pattern', {
                     ignoreInitial: true, usePolling: true, interval: 2000
                 });
 
                 expect(fsWatcher.on).toHaveBeenCalledWith('all', expect.anything());
-                expect(presetsProcessor.process).toHaveBeenCalledTimes(1);
+                expect(presetsProcessor.process).toHaveBeenCalledTimes(2); // also for generated
 
                 const onAllCall = fsWatcher.on.mock.calls[1];
 
                 expect(onAllCall[0]).toBe('all');
                 await onAllCall[1](); // call the callback function.
 
-                expect(presetsProcessor.process).toHaveBeenCalledTimes(2);
+                expect(presetsProcessor.process).toHaveBeenCalledTimes(3);
             });
         });
 
