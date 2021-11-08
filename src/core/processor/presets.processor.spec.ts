@@ -81,11 +81,9 @@ describe('PresetsProcessor', () => {
             });
 
             it('processes each mock', () => {
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*.preset.json', {
-                        cwd: 'src', root: '/'
-                    }
-                );
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.preset.json', {
+                    cwd: 'src', root: '/'
+                });
                 expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/happy.preset.json'));
                 expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/unhappy.preset.json'));
                 expect(loadFileFn).toHaveBeenCalledWith(path.join('src', 'preset/duplicate.preset.json'));
@@ -104,11 +102,9 @@ describe('PresetsProcessor', () => {
                 processor.process({ src: 'src', patterns: { presets: '**/*.mypreset.json' } });
             });
             it('processes each preset', () => {
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*.mypreset.json', {
-                        cwd: 'src', root: '/'
-                    }
-                );
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.mypreset.json', {
+                    cwd: 'src', root: '/'
+                });
             });
         });
 
@@ -122,16 +118,12 @@ describe('PresetsProcessor', () => {
                 });
             });
             it('processes each preset watch and preset', () => {
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*', {
-                        cwd: 'src', root: '/', nodir: true
-                    }
-                );
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*.mypreset.json', {
-                        cwd: 'src', root: '/'
-                    }
-                );
+                expect(globSyncFn).toHaveBeenCalledWith('**/*', {
+                    cwd: 'src', root: '/', nodir: true
+                });
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.mypreset.json', {
+                    cwd: 'src', root: '/'
+                });
             });
         });
     });
