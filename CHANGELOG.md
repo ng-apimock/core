@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/ng-apimock/core/compare/v3.2.0...v3.3.0) (2021-11-09)
+
+
+### Features
+
+* 🎸 Bump version of node-fetch to 2.6.6 ([#632](https://github.com/ng-apimock/core/issues/632)) ([e6cbcad](https://github.com/ng-apimock/core/commit/e6cbcad8688b6f2df32b221789a7bc51f1ea35ce))
+
 # [3.2.0](https://github.com/ng-apimock/core/compare/v3.1.0...v3.2.0) (2021-10-15)
 
 
