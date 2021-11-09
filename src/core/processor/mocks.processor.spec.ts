@@ -191,11 +191,9 @@ describe('MocksProcessor', () => {
                 processor.process({ src: 'src', patterns: { mocks: '**/*.mymock.json' } });
             });
             it('processes each mock', () => {
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*.mymock.json', {
-                        cwd: 'src', root: '/'
-                    }
-                );
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.mymock.json', {
+                    cwd: 'src', root: '/'
+                });
             });
         });
 
@@ -205,16 +203,12 @@ describe('MocksProcessor', () => {
                 processor.process({ src: 'src', patterns: { mocks: '**/*.mymock.json' }, watches: { mocks: '**/*' } });
             });
             it('processes each mock watch and mock pattern', () => {
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*', {
-                        cwd: 'src', root: '/', nodir: true
-                    }
-                );
-                expect(globSyncFn).toHaveBeenCalledWith(
-                    '**/*.mymock.json', {
-                        cwd: 'src', root: '/'
-                    }
-                );
+                expect(globSyncFn).toHaveBeenCalledWith('**/*', {
+                    cwd: 'src', root: '/', nodir: true
+                });
+                expect(globSyncFn).toHaveBeenCalledWith('**/*.mymock.json', {
+                    cwd: 'src', root: '/'
+                });
             });
         });
     });

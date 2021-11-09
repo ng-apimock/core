@@ -459,11 +459,9 @@ describe('MockRequestHandler', () => {
             });
 
             it('handles the then criteria', () => {
-                expect(handleThenCriteriaFn).toHaveBeenCalledWith(
-                    { mocks: [] },
+                expect(handleThenCriteriaFn).toHaveBeenCalledWith({ mocks: [] },
                     { scenario: 'the default', counter: 2 },
-                    { mocks: { some: { scenario: 'the default', counter: 2 } } }
-                );
+                    { mocks: { some: { scenario: 'the default', counter: 2 } } });
             });
         });
     });

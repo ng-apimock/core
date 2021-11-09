@@ -301,7 +301,9 @@ describe('Middleware', () => {
                 });
 
                 it('calls the mock request handler', () => expect(mockRequestHandler.handle).toHaveBeenCalledWith(request,
-                    response, nextFn, {
+                    response,
+                    nextFn,
+                    {
                         id: 'apimockId',
                         mock: {
                             name: 'matching-mock',

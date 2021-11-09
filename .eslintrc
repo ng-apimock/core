@@ -25,12 +25,14 @@
     "comma-dangle": "off",
     "dot-notation": "off",
     "global-require": "off",
+    "function-paren-newline": ["error", "never"],
     "import/extensions": "off",
     "indent": [
       "error",
       4
     ],
     "import/no-extraneous-dependencies": "off",
+    "import/no-import-module-exports": "off",
     "import/no-unresolved": "off",
     "import/order": [
       "error",
@@ -58,6 +60,7 @@
     "no-unused-expressions": "off",
     "no-useless-constructor": "off",
     "no-trailing-spaces": "error",
+    "object-curly-spacing": ["error", "always"],
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-empty-function": "off",

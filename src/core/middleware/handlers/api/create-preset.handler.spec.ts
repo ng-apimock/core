@@ -115,11 +115,9 @@ describe('CreatePresetHandler', () => {
 
             handler.savePreset(mockPostData);
         });
-        it('saves the preset in the configured folder with the configured extension', () => expect(outputJSONSync).toHaveBeenCalledWith(
-            path.join(process.cwd(), '.ngapimock', 'generated', 'newname.preset.json'),
+        it('saves the preset in the configured folder with the configured extension', () => expect(outputJSONSync).toHaveBeenCalledWith(path.join(process.cwd(), '.ngapimock', 'generated', 'newname.preset.json'),
             mockPostData,
-            { spaces: 2 }
-        ));
+            { spaces: 2 }));
 
         it('updates the state with the added preset', () => {
             expect(state.presets.length).toBe(1);

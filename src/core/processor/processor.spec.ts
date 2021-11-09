@@ -80,10 +80,8 @@ describe('MocksProcessor', () => {
             });
 
             it('watches for generated preset changes', async () => {
-                expect(chokidarWatchFn).toHaveBeenCalledWith(
-                    `${GeneratedProcessingOptions.src}/${GeneratedProcessingOptions.patterns.presets}`,
-                    { ignoreInitial: true, usePolling: true, interval: 2000 }
-                );
+                expect(chokidarWatchFn).toHaveBeenCalledWith(`${GeneratedProcessingOptions.src}/${GeneratedProcessingOptions.patterns.presets}`,
+                    { ignoreInitial: true, usePolling: true, interval: 2000 });
             });
         });
 

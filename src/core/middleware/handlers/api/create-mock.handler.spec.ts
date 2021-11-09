@@ -136,7 +136,8 @@ describe('CreateMocksHandler', () => {
                 }
             };
             expect(outputJSONSync).toHaveBeenCalledWith(path.join(process.cwd(), '.ngapimock', 'generated', 'newname.mock.json'),
-                expectedPostData, { spaces: 2 });
+                expectedPostData,
+                { spaces: 2 });
         });
     });
 
