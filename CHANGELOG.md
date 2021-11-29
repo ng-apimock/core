@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/ng-apimock/core/compare/v3.3.0...v3.4.0) (2021-11-29)
+
+
+### Features
+
+* add schema definitions ([6ff2de5](https://github.com/ng-apimock/core/commit/6ff2de5fdef8ce16e5bcb8428bdcd21ad5fd77cb)), closes [#646](https://github.com/ng-apimock/core/issues/646) [#643](https://github.com/ng-apimock/core/issues/643) [#640](https://github.com/ng-apimock/core/issues/640) [#639](https://github.com/ng-apimock/core/issues/639) [#638](https://github.com/ng-apimock/core/issues/638) [#636](https://github.com/ng-apimock/core/issues/636) [#635](https://github.com/ng-apimock/core/issues/635) [#633](https://github.com/ng-apimock/core/issues/633) [#647](https://github.com/ng-apimock/core/issues/647)
+
 # [3.3.0](https://github.com/ng-apimock/core/compare/v3.2.0...v3.3.0) (2021-11-09)
 
 
