@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Preset",
+  "properties": {
+    "mocks": {
+      "additionalProperties": {
+        "$ref": "#/definitions/MockState"
+      },
+      "type": "object"
+    },
+    "name": {
+      "type": "string"
+    },
+    "variables": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "type": "object"
+    }
+  },
+  "required": ["name", "mocks", "variables"],
+  "type": "object",
+  "definitions": {
+    "MockState": {
+      "description": "Mock state",
+      "properties": {
+        "delay": {
+          "type": "number"
+        },
+        "echo": {
+          "type": "boolean"
+        },
+        "scenario": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  }
+}

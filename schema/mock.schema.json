@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Mock.",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "isArray": {
+      "type": "boolean"
+    },
+    "delay": {
+      "type": "number"
+    },
+    "request": {
+      "$ref": "#/definitions/MockRequest"
+    },
+    "responses": {
+      "additionalProperties": {
+        "$ref": "#/definitions/MockResponse"
+      },
+      "type": "object"
+    }
+  },
+  "required": ["name", "request", "responses"],
+  "type": "object",
+  "definitions": {
+    "MockRequest": {
+      "description": "Mock request.",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "HEAD",
+            "OPTIONS",
+            "POST",
+            "PUT",
+            "DELETE"
+          ],
+          "type": "string"
+        },
+        "body": {
+          "type": "object"
+        },
+        "headers": {
+          "type": "object"
+        }
+      },
+      "required": ["url", "method"],
+      "type": "object"
+    },
+    "MockResponse": {
+      "description": "Mock response.",
+      "properties": {
+        "data": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "items": [
+                {
+                  "type": "object"
+                }
+              ],
+              "minItems": 1,
+              "type": "array"
+            }
+          ]
+        },
+        "default": {
+          "type": "boolean"
+        },
+        "file": {
+          "type": "string"
+        },
+        "headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "status": {
+          "type": "number"
+        },
+        "statusText": {
+          "type": "string"
+        },
+        "then": {
+          "$ref": "#/definitions/MockResponseThenClause"
+        }
+      },
+      "type": "object"
+    },
+    "MockResponseThenClause": {
+      "properties": {
+        "criteria": {
+          "$ref": "#/definitions/MockResponseThenClauseCriteria"
+        },
+        "mocks": {
+          "items": {
+            "$ref": "#/definitions/MockResponseThenClauseMockSelection"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": ["mocks"],
+      "type": "object"
+    },
+    "MockResponseThenClauseCriteria": {
+      "properties": {
+        "times": {
+          "type": "number"
+        }
+      },
+      "required": ["times"],
+      "type": "object"
+    },
+    "MockResponseThenClauseMockSelection": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "scenario": {
+          "type": "string"
+        }
+      },
+      "required": ["scenario"],
+      "type": "object"
+    }
+  }
+}
