@@ -72,7 +72,7 @@
         "chokidar": "3.5.3",
         "debug": "4.3.4",
         "fs-extra": "10.0.1",
-        "glob": "7.2.0",
+        "glob": "8.0.2",
         "inversify": "6.0.1",
         "node-fetch": "2.6.7",
         "reflect-metadata": "0.1.13",
