@@ -111,9 +111,9 @@ export class MockRequestHandler implements Handler {
                     _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), variables[key]);
                 } else {
                     // 1. replace object assignments ie. "x": "%%my-key%%"
-                    _data = _data.replace(new RegExp(`"%%${key}%%"`, 'g'), variables[key]);
+                    _data = _data.replace(new RegExp(`"%%${key}%%"`, 'g'), JSON.stringify(variables[key]));
                     // 2. replace within a string ie. "x": "the following text %%my-key%% is replaced
-                    _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), variables[key]);
+                    _data = _data.replace(new RegExp(`%%${key}%%`, 'g'), JSON.stringify(variables[key]));
                 }
             }
         });
