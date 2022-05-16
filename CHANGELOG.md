@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/ng-apimock/core/compare/v3.4.0...v3.5.0) (2022-05-16)
+
+
+### Features
+
+* variables object interpolation ([#814](https://github.com/ng-apimock/core/issues/814)) ([b8f9398](https://github.com/ng-apimock/core/commit/b8f9398497c4e563c92a542ebd028382dec534be))
+
 # [3.4.0](https://github.com/ng-apimock/core/compare/v3.3.0...v3.4.0) (2021-11-29)
 
 
