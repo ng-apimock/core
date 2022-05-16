@@ -286,6 +286,18 @@ describe('MockRequestHandler', () => {
             });
             expect(interpolateResponseData).toBe('{"x":123,"xInString":"the following 123 has been replaced","y":false}');
         });
+
+        it('interpolates an object', () => {
+            const interpolateResponseData = (mockRequestHandler as any).interpolateResponseData(JSON.stringify({
+                x: '%%x%%',
+                xInString: 'the following %%x%% has been replaced',
+                y: '%%y%%'
+            }), {
+                x: 123,
+                y: { some: 'thing' }
+            });
+            expect(interpolateResponseData).toEqual('{"x":123,"xInString":"the following 123 has been replaced","y":{"some":"thing"}}');
+        });
     });
 
     describe('handleThenCriteria', () => {
