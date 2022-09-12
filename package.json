@@ -56,7 +56,7 @@
         "eslint": "8.19.0",
         "eslint-config-airbnb-base": "15.0.0",
         "eslint-plugin-import": "2.26.0",
-        "eslint-plugin-jest": "26.5.3",
+        "eslint-plugin-jest": "27.0.4",
         "husky": "8.0.1",
         "jest": "28.1.3",
         "jest-createspyobj": "2.0.0",
