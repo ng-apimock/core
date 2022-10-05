@@ -57,8 +57,8 @@ describe('GetPresetsHandler', () => {
 
             expect(debugFn).toHaveBeenCalledTimes(1);
             expect(debugFn).toHaveBeenCalledWith(expect.stringContaining('Get presets'));
-            expect(response.writeHead).toBeCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-            expect(response.end).toBeCalledWith(JSON.stringify({
+            expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.OK, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+            expect(response.end).toHaveBeenCalledWith(JSON.stringify({
                 presets: [{
                     name: 'one',
                     mocks: {
