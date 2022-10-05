@@ -122,14 +122,15 @@ export class State {
      * @return {boolean} indicator The indicator.
      */
     matchesBody(bodyMatcher: any, body: any): boolean {
-        return Object.keys(bodyMatcher).every((key) => {
-            if (typeof bodyMatcher[key] === 'object') {
-                return body[key] !== undefined ? this.matchesBody(bodyMatcher[key], body[key]) : false;
-            }
-            const defined = body[key] !== undefined;
-            const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
-            return defined && matched;
-        });
+        return Object.keys(bodyMatcher).length === Object.keys(body).length
+            && Object.keys(bodyMatcher).every((key) => {
+                if (typeof bodyMatcher[key] === 'object') {
+                    return body[key] !== undefined ? this.matchesBody(bodyMatcher[key], body[key]) : false;
+                }
+                const defined = body[key] !== undefined;
+                const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
+                return defined && matched;
+            });
     }
 
     /**

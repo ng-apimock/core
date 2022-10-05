@@ -83,6 +83,15 @@ describe('State', () => {
                     body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' } }
                 },
                 responses: { three: {}, four: {} }
+            }, {
+                name: 'similar-advanced-nested',
+                request: {
+                    url: 'some/api',
+                    method: 'POST',
+                    headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
+                    body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$', tuple: ['\\d+', '[\'true\'|\'false\']'] } }
+                },
+                responses: { three: {}, four: {} }
             }]);
         });
         describe('url does not match', () => {
@@ -153,6 +162,20 @@ describe('State', () => {
                         method: 'POST',
                         headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
                         body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' } }
+                    },
+                    responses: { three: {}, four: {} }
+                });
+                // match super-advanced-nested - url, method, headers, body
+                expect(state.getMatchingMock('some/api', 'POST', {
+                    'content-type': 'application/json',
+                    'cache-control': 'no-cache'
+                }, { nested: { number: 123, identifier: 'abcd', tuple: [1, false] } })).toEqual({
+                    name: 'similar-advanced-nested',
+                    request: {
+                        url: 'some/api',
+                        method: 'POST',
+                        headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
+                        body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$', tuple: ['\\d+', '[\'true\'|\'false\']'] } }
                     },
                     responses: { three: {}, four: {} }
                 });
