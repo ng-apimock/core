@@ -165,7 +165,7 @@ describe('State', () => {
                     },
                     responses: { three: {}, four: {} }
                 });
-                // match super-advanced-nested - url, method, headers, body
+                // match similar-advanced-nested - url, method, headers, body
                 expect(state.getMatchingMock('some/api', 'POST', {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache'
