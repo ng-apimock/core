@@ -1,4 +1,4 @@
-[@ng-apimock/core](https://github.com/ng-apimock/core) is uses [debug](https://www.npmjs.com/package/debug).
+[@ng-apimock/core](https://github.com/ng-apimock/core) uses [debug](https://www.npmjs.com/package/debug).
 
 ### Running
 You can debug the core by enabling it.
