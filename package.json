@@ -46,7 +46,7 @@
         "@types/fs-extra": "9.0.13",
         "@types/glob": "8.0.0",
         "@types/jest": "29.2.4",
-        "@types/node": "18.11.11",
+        "@types/node": "18.11.18",
         "@types/node-fetch": "2.6.2",
         "@types/url-join": "4.0.1",
         "@types/uuid": "9.0.0",
