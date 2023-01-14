@@ -10,7 +10,6 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-blue.svg)](https://github.com/semantic-release/semantic-release) 
 ![npm downloads](https://img.shields.io/npm/dm/@ng-apimock/core) 
 
-
 ## Introduction
 
 > ng-apimock is a modular [Node.js](https://nodejs.org/) framework that provides the ability to use scenario based api mocking. 
