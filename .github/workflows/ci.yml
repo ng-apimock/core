@@ -12,8 +12,8 @@ jobs:
       fail-fast: true
       matrix:
         node_version:
-          - 14
           - 16
+          - 18
         os:
           - ubuntu-latest
           - macOS-latest
