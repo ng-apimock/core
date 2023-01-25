@@ -24,6 +24,7 @@ import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
 import { RecordHandler } from './handlers/api/record.handler';
 import { SelectPresetHandler } from './handlers/api/select-preset.handler';
 import { SetVariableHandler } from './handlers/api/set-variable.handler';
+import { StateHandler } from './handlers/api/state.handler';
 import { UpdateMocksHandler } from './handlers/api/update-mocks.handler';
 import { ApplicableHandler } from './handlers/handler';
 import { EchoRequestHandler } from './handlers/mock/echo.request.handler';
@@ -83,6 +84,7 @@ export class Middleware {
                 @inject('RecordResponseHandler') private recordResponseHandler: RecordResponseHandler,
                 @inject('SelectPresetHandler') private selectPresetHandler: SelectPresetHandler,
                 @inject('SetVariableHandler') private setVariableHandler: SetVariableHandler,
+                @inject('StateHandler') private stateHandler: StateHandler,
                 @inject('UpdateMocksHandler') private updateMocksHandler: UpdateMocksHandler,) {
         this.handlers = [
             addMockToPresetHandler,
@@ -102,6 +104,7 @@ export class Middleware {
             recordHandler,
             setVariableHandler,
             selectPresetHandler,
+            stateHandler,
             updateMocksHandler
         ];
     }

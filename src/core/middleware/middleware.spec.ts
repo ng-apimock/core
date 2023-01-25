@@ -31,6 +31,8 @@ import { MockRequestHandler } from './handlers/mock/mock.request.handler';
 import { RecordResponseHandler } from './handlers/mock/record.response.handler';
 import { HttpMethods } from './http';
 import { Middleware } from './middleware';
+import {StateHandler} from "./handlers/api/state.handler";
+import container from "../ioc-container";
 
 describe('Middleware', () => {
     let container: Container;
@@ -57,6 +59,7 @@ describe('Middleware', () => {
     let recordResponseHandler: RecordResponseHandler;
     let selectPresetHandler: SelectPresetHandler;
     let setVariableHandler: SetVariableHandler;
+    let stateHandler: StateHandler;
     let updateMocksHandler: UpdateMocksHandler;
 
     let middleware: Middleware;
@@ -86,6 +89,7 @@ describe('Middleware', () => {
         recordResponseHandler = createSpyObj(RecordResponseHandler);
         selectPresetHandler = createSpyObj(SelectPresetHandler);
         setVariableHandler = createSpyObj(SetVariableHandler);
+        stateHandler = createSpyObj(StateHandler);
         updateMocksHandler = createSpyObj(UpdateMocksHandler);
 
         container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
@@ -112,6 +116,7 @@ describe('Middleware', () => {
         container.bind('RecordResponseHandler').toConstantValue(recordResponseHandler);
         container.bind('SelectPresetHandler').toConstantValue(selectPresetHandler);
         container.bind('SetVariableHandler').toConstantValue(setVariableHandler);
+        container.bind('StateHandler').toConstantValue(stateHandler);
         container.bind('UpdateMocksHandler').toConstantValue(updateMocksHandler);
 
         container.bind('Middleware').to(Middleware);

@@ -23,6 +23,7 @@ import { PassThroughsHandler } from './middleware/handlers/api/pass-throughs.han
 import { RecordHandler } from './middleware/handlers/api/record.handler';
 import { SelectPresetHandler } from './middleware/handlers/api/select-preset.handler';
 import { SetVariableHandler } from './middleware/handlers/api/set-variable.handler';
+import { StateHandler } from './middleware/handlers/api/state.handler';
 import { UpdateMocksHandler } from './middleware/handlers/api/update-mocks.handler';
 import { EchoRequestHandler } from './middleware/handlers/mock/echo.request.handler';
 import { MockRequestHandler } from './middleware/handlers/mock/mock.request.handler';
@@ -43,6 +44,7 @@ container.bind<InformationHandler>('InformationHandler').to(InformationHandler);
 container.bind<InitHandler>('InitHandler').to(InitHandler);
 container.bind<InstanceHolder>('InstanceHolder').to(InstanceHolder).inSingletonScope();
 container.bind<HealthHandler>('HealthHandler').to(HealthHandler);
+container.bind<StateHandler>('StateHandler').to(StateHandler);
 
 container.bind<EchoRequestHandler>('EchoRequestHandler').to(EchoRequestHandler);
 container.bind<MockRequestHandler>('MockRequestHandler').to(MockRequestHandler);
