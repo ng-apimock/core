@@ -24,6 +24,7 @@ import { PassThroughsHandler } from './handlers/api/pass-throughs.handler';
 import { RecordHandler } from './handlers/api/record.handler';
 import { SelectPresetHandler } from './handlers/api/select-preset.handler';
 import { SetVariableHandler } from './handlers/api/set-variable.handler';
+import { StateHandler } from './handlers/api/state.handler';
 import { UpdateMocksHandler } from './handlers/api/update-mocks.handler';
 import { ApplicableHandler } from './handlers/handler';
 import { EchoRequestHandler } from './handlers/mock/echo.request.handler';
@@ -31,8 +32,6 @@ import { MockRequestHandler } from './handlers/mock/mock.request.handler';
 import { RecordResponseHandler } from './handlers/mock/record.response.handler';
 import { HttpMethods } from './http';
 import { Middleware } from './middleware';
-import {StateHandler} from "./handlers/api/state.handler";
-import container from "../ioc-container";
 
 describe('Middleware', () => {
     let container: Container;
