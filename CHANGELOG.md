@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/ng-apimock/core/compare/v3.6.1...v3.7.0) (2023-01-25)
+
+
+### Features
+
+* 🎸 add /state endpoint ([ec1ea98](https://github.com/ng-apimock/core/commit/ec1ea98b6f9272da41ab9c4cb414da167e414e83))
+
 ## [3.6.1](https://github.com/ng-apimock/core/compare/v3.6.0...v3.6.1) (2023-01-14)
 
 
