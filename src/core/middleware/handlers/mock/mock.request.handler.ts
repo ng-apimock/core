@@ -37,7 +37,9 @@ export class MockRequestHandler implements Handler {
             const { headers } = _response;
             const { status } = _response;
             const { then } = _response;
-            const delay: number = this.state.getDelay(params.mock.name, params.id);
+            const delay: number = _response.delay !== undefined
+                ? _response.delay
+                : this.state.getDelay(params.mock.name, params.id);
             const jsonCallbackName = this.getJsonCallbackName(request);
 
             try {

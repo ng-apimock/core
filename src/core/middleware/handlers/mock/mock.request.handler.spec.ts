@@ -58,63 +58,128 @@ describe('MockRequestHandler', () => {
             let matchingState: IState;
             let params: any;
 
-            beforeEach(() => {
-                mockResponse = {
-                    data: 'data',
-                    headers: { 'Content-Type': 'application/json' },
-                    status: 200,
-                    then: { mocks: [] }
-                };
-                matchingState = { mocks: { some: { counter: 0 } } } as unknown as IState;
-                params = {
-                    id: 'apimockId',
-                    mock: {
-                        path: 'path/to',
-                        name: 'some',
-                        request: { method: HttpMethods.GET, url: '/some/url' }
-                    } as Mock
-                };
+            describe('delay specified on mock', () => {
+                beforeEach(() => {
+                    mockResponse = {
+                        data: 'data',
+                        headers: { 'Content-Type': 'application/json' },
+                        status: 200,
+                        then: { mocks: [] }
+                    };
+                    matchingState = { mocks: { some: { counter: 0 } } } as unknown as IState;
+                    params = {
+                        id: 'apimockId',
+                        mock: {
+                            path: 'path/to',
+                            name: 'some',
+                            request: { method: HttpMethods.GET, url: '/some/url' }
+                        } as Mock
+                    };
 
-                state.getResponse.mockReturnValue(mockResponse);
-                state.getDelay.mockReturnValue(1000);
-                state.getMatchingState.mockReturnValue(matchingState);
-                getJsonCallbackNameFn.mockReturnValue(false);
-                getChunkFn.mockReturnValue('chunk');
-            });
-
-            it('gets the chunk', () => {
-                mockRequestHandler.handle(request as any, response as any, nextFn, params);
-
-                expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
-                expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
-                expect(getJsonCallbackNameFn).toHaveBeenCalledWith(request);
-                expect(getChunkFn).toHaveBeenCalledWith(mockResponse, params, false);
-            });
-
-            it('sends the respond after the delay time has passed', () => {
-                mockRequestHandler.handle(request as any, response as any, nextFn, params);
-
-                jest.runAllTimers();
-                expect(respondFn).toHaveBeenCalledWith(params, { mocks: [] }, response, 200, { 'Content-Type': 'application/json' }, 'chunk');
-            });
-
-            it('throws an error when the something goes wrong', () => {
-                getChunkFn.mockImplementation(() => {
-                    throw new Error('Error');
+                    state.getResponse.mockReturnValue(mockResponse);
+                    state.getDelay.mockReturnValue(1000);
+                    state.getMatchingState.mockReturnValue(matchingState);
+                    getJsonCallbackNameFn.mockReturnValue(false);
+                    getChunkFn.mockReturnValue('chunk');
                 });
 
-                mockRequestHandler.handle(request as any, response as any, nextFn, params);
+                it('gets the chunk', () => {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, params);
 
-                expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
-                expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
-                expect(getJsonCallbackNameFn).toHaveBeenCalledWith(request);
-                expect(getChunkFn).toHaveBeenCalledWith(mockResponse, params, false);
+                    expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
+                    expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
+                    expect(getJsonCallbackNameFn).toHaveBeenCalledWith(request);
+                    expect(getChunkFn).toHaveBeenCalledWith(mockResponse, params, false);
+                });
 
-                expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
-                expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Error' }));
-                expect(response.writeHead).toHaveBeenCalledTimes(1);
-                expect(response.end).toHaveBeenCalledTimes(1);
+                it('sends the respond after the delay time has passed', () => {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, params);
+
+                    jest.runAllTimers();
+                    expect(respondFn).toHaveBeenCalledWith(params, { mocks: [] }, response, 200, { 'Content-Type': 'application/json' }, 'chunk');
+                });
+
+                it('throws an error when the something goes wrong', () => {
+                    getChunkFn.mockImplementation(() => {
+                        throw new Error('Error');
+                    });
+
+                    mockRequestHandler.handle(request as any, response as any, nextFn, params);
+
+                    expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
+                    expect(state.getDelay).toHaveBeenCalledWith('some', 'apimockId');
+                    expect(getJsonCallbackNameFn).toHaveBeenCalledWith(request);
+                    expect(getChunkFn).toHaveBeenCalledWith(mockResponse, params, false);
+
+                    expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                    expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Error' }));
+                    expect(response.writeHead).toHaveBeenCalledTimes(1);
+                    expect(response.end).toHaveBeenCalledTimes(1);
+                });
             });
+
+            describe('overridden delay for response', () => {
+                beforeEach(() => {
+                    mockResponse = {
+                        data: 'data',
+                        headers: { 'Content-Type': 'application/json' },
+                        status: 200,
+                        delay: 2000,
+                        then: { mocks: [] }
+                    };
+                    matchingState = { mocks: { some: { counter: 0 } } } as unknown as IState;
+                    params = {
+                        id: 'apimockId',
+                        mock: {
+                            path: 'path/to',
+                            name: 'some',
+                            request: { method: HttpMethods.GET, url: '/some/url' }
+                        } as Mock
+                    };
+
+                    state.getResponse.mockReturnValue(mockResponse);
+                    state.getDelay.mockReturnValue(1000);
+                    state.getMatchingState.mockReturnValue(matchingState);
+                    getJsonCallbackNameFn.mockReturnValue(false);
+                    getChunkFn.mockReturnValue('chunk');
+                });
+
+                it('gets the chunk', () => {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, params);
+
+                    expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
+                    expect(state.getDelay).not.toHaveBeenCalledWith('some', 'apimockId');
+                    expect(getJsonCallbackNameFn).toHaveBeenCalledWith(request);
+                    expect(getChunkFn).toHaveBeenCalledWith(mockResponse, params, false);
+                });
+
+                it('sends the respond after the delay time has passed', () => {
+                    mockRequestHandler.handle(request as any, response as any, nextFn, params);
+
+                    jest.runAllTimers();
+                    expect(respondFn).toHaveBeenCalledWith(params, { mocks: [] }, response, 200, { 'Content-Type': 'application/json' }, 'chunk');
+                });
+
+                it('throws an error when the something goes wrong', () => {
+                    getChunkFn.mockImplementation(() => {
+                        throw new Error('Error');
+                    });
+
+                    mockRequestHandler.handle(request as any, response as any, nextFn, params);
+
+                    jest.runAllTimers();
+                    expect(state.getResponse).toHaveBeenCalledWith('some', 'apimockId');
+                    expect(state.getDelay).not.toHaveBeenCalledWith('some', 'apimockId');
+                    expect(getJsonCallbackNameFn).toHaveBeenCalledWith(request);
+                    expect(getChunkFn).toHaveBeenCalledWith(mockResponse, params, false);
+
+                    expect(response.writeHead).toHaveBeenCalledWith(HttpStatusCode.INTERNAL_SERVER_ERROR, HttpHeaders.CONTENT_TYPE_APPLICATION_JSON);
+                    expect(response.end).toHaveBeenCalledWith(JSON.stringify({ message: 'Error' }));
+                    expect(response.writeHead).toHaveBeenCalledTimes(1);
+                    expect(response.end).toHaveBeenCalledTimes(1);
+                });
+            });
+
         });
 
         describe('no selected response', () => {

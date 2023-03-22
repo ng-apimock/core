@@ -16,4 +16,6 @@ export interface MockResponse {
     default?: boolean;
     // chainable response
     then?: MockResponseThenClause;
+    // override delay for the mock
+    delay?: number;
 }
