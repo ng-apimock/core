@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/ng-apimock/core/compare/v3.7.0...v3.8.0) (2023-03-22)
+
+
+### Features
+
+* 🎸 add delay per response as override to mock ([b588e5c](https://github.com/ng-apimock/core/commit/b588e5cfd5bea64b3910200eb1b93396429a6a8b)), closes [#246](https://github.com/ng-apimock/core/issues/246)
+
 # [3.7.0](https://github.com/ng-apimock/core/compare/v3.6.1...v3.7.0) (2023-01-25)
 
 
