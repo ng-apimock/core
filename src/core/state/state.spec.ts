@@ -75,12 +75,30 @@ describe('State', () => {
                 },
                 responses: { three: {}, four: {} }
             }, {
+                name: 'advanced-flat',
+                request: {
+                    url: 'some/api',
+                    method: 'POST',
+                    headers: { 'Content-Type': '.*/x-www-form-urlencoded', 'Cache-Control': 'no-cache' },
+                    body: '^[a-zA-Z]{4}$'
+                },
+                responses: { three: {}, four: {} }
+            }, {
                 name: 'advanced-nested',
                 request: {
                     url: 'some/api',
                     method: 'POST',
                     headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
                     body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' } }
+                },
+                responses: { three: {}, four: {} }
+            }, {
+                name: 'similar-advanced-nested',
+                request: {
+                    url: 'some/api',
+                    method: 'POST',
+                    headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
+                    body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$', tuple: ['\\d+', '[\'true\'|\'false\']'] } }
                 },
                 responses: { three: {}, four: {} }
             }, {
@@ -148,6 +166,20 @@ describe('State', () => {
                         method: 'POST',
                         headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
                         body: { number: '\\d+', identifier: '^[a-zA-Z]{4}$' }
+                    },
+                    responses: { three: {}, four: {} }
+                });
+                // match advanced mock - url, method, headers, body
+                expect(state.getMatchingMock('some/api', 'POST', {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'cache-control': 'no-cache'
+                }, 'abcd')).toEqual({
+                    name: 'advanced-flat',
+                    request: {
+                        url: 'some/api',
+                        method: 'POST',
+                        headers: { 'Content-Type': '.*/x-www-form-urlencoded', 'Cache-Control': 'no-cache' },
+                        body: '^[a-zA-Z]{4}$'
                     },
                     responses: { three: {}, four: {} }
                 });
