@@ -101,15 +101,6 @@ describe('State', () => {
                     body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$', tuple: ['\\d+', '[\'true\'|\'false\']'] } }
                 },
                 responses: { three: {}, four: {} }
-            }, {
-                name: 'similar-advanced-nested',
-                request: {
-                    url: 'some/api',
-                    method: 'POST',
-                    headers: { 'Content-Type': '.*/json', 'Cache-Control': 'no-cache' },
-                    body: { nested: { number: '\\d+', identifier: '^[a-zA-Z]{4}$', tuple: ['\\d+', '[\'true\'|\'false\']'] } }
-                },
-                responses: { three: {}, four: {} }
             }]);
         });
         describe('url does not match', () => {
