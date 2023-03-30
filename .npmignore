@@ -27,4 +27,10 @@ sonar-project.properties
 # docs
 docs
 
+# github
+.github
+
+# husky
+.husky
+
 
