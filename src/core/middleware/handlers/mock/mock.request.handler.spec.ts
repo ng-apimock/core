@@ -179,7 +179,6 @@ describe('MockRequestHandler', () => {
                     expect(response.end).toHaveBeenCalledTimes(1);
                 });
             });
-
         });
 
         describe('no selected response', () => {
