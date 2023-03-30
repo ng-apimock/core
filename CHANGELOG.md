@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/ng-apimock/core/compare/v3.9.0...v3.10.0) (2023-03-30)
+
+
+### Features
+
+* 🎸 support url encoded body ([2001b47](https://github.com/ng-apimock/core/commit/2001b47a76437e3b9b9084c8cf6cc9f6a6a14965))
+
 # [3.9.0](https://github.com/ng-apimock/core/compare/v3.8.0...v3.9.0) (2023-03-30)
 
 
