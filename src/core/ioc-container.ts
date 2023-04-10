@@ -72,6 +72,8 @@ container.bind<MocksProcessor>('MocksProcessor').to(MocksProcessor);
 container.bind<PresetsProcessor>('PresetsProcessor').to(PresetsProcessor);
 container.bind<Processor>('Processor').to(Processor);
 container.bind<NextHandleFunction>('JsonBodyParser').toConstantValue(bodyParser.json());
+container.bind<NextHandleFunction>('UrlEncodedBodyParser').toConstantValue(bodyParser.urlencoded({ extended: true }));
+container.bind<NextHandleFunction>('TextBodyParser').toConstantValue(bodyParser.text());
 container.bind<Middleware>('Middleware').to(Middleware);
 
 container.bind<CreateMockHandler>('CreateMockHandler').to(CreateMockHandler);

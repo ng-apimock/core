@@ -58,6 +58,7 @@ Writing a mock should always follow the [json schema](#json-schema).
 When [@ng-apimock/core](https://github.com/ng-apimock/core) tries to match a request to a mock, it will always look at the required fields of the request.
 But when the request is configured with the header and body, it will also use that information to match.
 
+#### JSON content
 Looking at the following request configuration
 ```json
 {
@@ -85,6 +86,81 @@ Looking at the following request configuration
 the request will only match when the 
 - Content-type header is of type 'application/json'
 - The body contains an item that matches the regex
+
+#### URL encoded content
+URL encoded content is a bit different. The body will be parsed and the resulting object will be used 
+to match the request. For example if the message payload looks like this:
+
+```text
+foo=bar&baz=qux&page=2
+```
+the body will be parsed to:
+```json
+{
+    "foo": "bar",
+    "baz": "qux",
+    "page": "2"
+}
+```
+
+So, looking at the following request configuration
+```json
+{
+    "name": "another mock",
+    "request": {
+        "url": "^/some/encoded-thing$",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": {
+            "foo": "bar",
+            "baz": "q(ux)?",
+            "page": "[0-9]+"
+        }
+    },
+    "responses": {
+        "ok": {
+            "default": true
+        },
+        "internal_server_error": {
+            "status": 500
+        }
+    }
+}
+```
+the request will only match when the 
+- Content-type header is of type 'application/x-www-form-urlencoded'
+- Each item in the decoded message matches the regex values in the body
+
+#### Text content
+Text content is more straightforward. The body will be matched against the regex value.
+
+looking at the following request configuration
+```json
+{
+    "name": "third mock",
+    "request": {
+        "url": "^/some/text-thing$",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "text/*"
+        },
+        "body": "^[a-zA-Z]{3,10}$"
+    },
+    "responses": {
+        "ok": {
+            "default": true
+        },
+        "internal_server_error": {
+            "status": 500
+        }
+    }
+}
+```
+the request will only match when the 
+- Content-type header starts with 'text/'
+- The body matches the regex value
 
 ### Chaining responses
 [@ng-apimock/core](https://github.com/ng-apimock/core) can also chain mock responses using then clauses.

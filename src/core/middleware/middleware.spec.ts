@@ -36,6 +36,8 @@ import { Middleware } from './middleware';
 describe('Middleware', () => {
     let container: Container;
     let jsonBodyParser: jest.Mock;
+    let urlEncodedBodyParser: jest.Mock;
+    let textBodyParser: jest.Mock;
     let state: jest.Mocked<State>;
 
     let addMockToPresetHandler: AddMockScenarioToPresetHandler;
@@ -66,6 +68,8 @@ describe('Middleware', () => {
     beforeEach(() => {
         container = new Container();
         jsonBodyParser = jest.fn();
+        urlEncodedBodyParser = jest.fn();
+        textBodyParser = jest.fn();
         state = createSpyObj(State);
 
         addMockToPresetHandler = createSpyObj(AddMockScenarioToPresetHandler);
@@ -93,6 +97,8 @@ describe('Middleware', () => {
 
         container.bind<Configuration>('Configuration').toConstantValue(DefaultConfiguration);
         container.bind('JsonBodyParser').toConstantValue(jsonBodyParser);
+        container.bind('UrlEncodedBodyParser').toConstantValue(urlEncodedBodyParser);
+        container.bind('TextBodyParser').toConstantValue(textBodyParser);
         container.bind('State').toConstantValue(state);
 
         container.bind('AddMockScenarioToPresetHandler').toConstantValue(addMockToPresetHandler);
@@ -160,6 +166,8 @@ describe('Middleware', () => {
                 middleware.middleware(request, response, nextFn);
 
                 jsonBodyParser.mock.calls[0][2]();
+                urlEncodedBodyParser.mock.calls[0][2]();
+                textBodyParser.mock.calls[0][2]();
             });
 
             it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
@@ -197,6 +205,8 @@ describe('Middleware', () => {
                     middleware.middleware(request, response, nextFn);
 
                     jsonBodyParser.mock.calls[0][2]();
+                    urlEncodedBodyParser.mock.calls[0][2]();
+                    textBodyParser.mock.calls[0][2]();
                 });
 
                 it('gets the apimock id', () => expect(getApimockIdFn).toHaveBeenCalled());
@@ -250,6 +260,8 @@ describe('Middleware', () => {
                         middleware.middleware(request, response, nextFn);
 
                         jsonBodyParser.mock.calls[0][2]();
+                        urlEncodedBodyParser.mock.calls[0][2]();
+                        textBodyParser.mock.calls[0][2]();
                     });
 
                     it('does not call the record response handler', () => expect(recordResponseHandler.handle).not.toHaveBeenCalled());
@@ -261,6 +273,8 @@ describe('Middleware', () => {
                         middleware.middleware(request, response, nextFn);
 
                         jsonBodyParser.mock.calls[0][2]();
+                        urlEncodedBodyParser.mock.calls[0][2]();
+                        textBodyParser.mock.calls[0][2]();
                     });
 
                     it('calls the record response handler',
@@ -302,6 +316,8 @@ describe('Middleware', () => {
                     middleware.middleware(request, response, nextFn);
 
                     jsonBodyParser.mock.calls[0][2]();
+                    urlEncodedBodyParser.mock.calls[0][2]();
+                    textBodyParser.mock.calls[0][2]();
                 });
 
                 it('calls the mock request handler', () => expect(mockRequestHandler.handle).toHaveBeenCalledWith(request,
@@ -330,6 +346,8 @@ describe('Middleware', () => {
                 middleware.middleware(request, response, nextFn);
 
                 jsonBodyParser.mock.calls[0][2]();
+                urlEncodedBodyParser.mock.calls[0][2]();
+                textBodyParser.mock.calls[0][2]();
             });
 
             it('calls next', () => expect(nextFn).toHaveBeenCalled());
