@@ -51,7 +51,9 @@ export class Middleware {
      * @param {HealthHandler} healthHandler The health handler.
      * @param {InformationHandler} informationHandler The information handler.
      * @param {InitHandler} initHandler The init handler.
-     * @param {NextHandleFunction} bodyParser The body parser that is responsible for making the body available.
+     * @param {NextHandleFunction} jsonBodyParser The body parser that is responsible for parsing application/json.
+     * @param {NextHandleFunction} urlEncodedBodyParser The body parser that is responsible for parsing application/x-www-form-urlencoded.
+     * @param {NextHandleFunction} textBodyParser The body parser that is responsible for parsing text/*.
      * @param {MockRequestHandler} mockRequestHandler The mock request handler.
      * @param {PassThroughsHandler} passThroughsHandler The pass throughs handler.
      * @param {RecordHandler} recordHandler The record handler.
@@ -62,7 +64,9 @@ export class Middleware {
      * @param {UpdateMocksHandler} updateMocksHandler The update mocks handler.
      */
     constructor(@inject('Configuration') private configuration: Configuration,
-                @inject('JsonBodyParser') private bodyParser: NextHandleFunction,
+                @inject('JsonBodyParser') private jsonBodyParser: NextHandleFunction,
+                @inject('UrlEncodedBodyParser') private urlEncodedBodyParser: NextHandleFunction,
+                @inject('TextBodyParser') private textBodyParser: NextHandleFunction,
                 @inject('State') private apimockState: State,
                 @inject('AddMockScenarioToPresetHandler') private addMockToPresetHandler: AddMockScenarioToPresetHandler,
                 @inject('CreateMockHandler') private createMockHandler: CreateMockHandler,
@@ -119,36 +123,41 @@ export class Middleware {
      */
     middleware(request: http.IncomingMessage, response: http.ServerResponse, next: Function): void {
         const apimockId: string = this.getApimockId(request.headers);
-        this.bodyParser(request, response, () => {
-            const { body } = request as any;
-            const handler = this.getMatchingApplicableHandler(request, body);
-            if (handler !== undefined) {
-                handler.handle(request, response, next, { id: apimockId, body });
-            } else {
-                const matchingMock: Mock = this.apimockState.getMatchingMock(request.url, request.method, request.headers, body);
-                if (matchingMock !== undefined) {
-                    this.echoRequestHandler.handle(request, response, next, {
-                        id: apimockId,
-                        mock: matchingMock,
-                        body
-                    });
-                    const matchingState = this.apimockState.getMatchingState(apimockId);
-                    if (matchingState.record && request.headers.record === undefined) {
-                        this.recordResponseHandler.handle(request, response, next, {
-                            id: apimockId,
-                            mock: matchingMock,
-                            body
-                        });
+
+        this.jsonBodyParser(request, response, () => {
+            this.urlEncodedBodyParser(request, response, () => {
+                this.textBodyParser(request, response, () => {
+                    const { body } = request as any;
+                    const handler = this.getMatchingApplicableHandler(request, body);
+                    if (handler !== undefined) {
+                        handler.handle(request, response, next, { id: apimockId, body });
                     } else {
-                        this.mockRequestHandler.handle(request, response, next, {
-                            id: apimockId,
-                            mock: matchingMock
-                        });
+                        const matchingMock: Mock = this.apimockState.getMatchingMock(request.url, request.method, request.headers, body);
+                        if (matchingMock !== undefined) {
+                            this.echoRequestHandler.handle(request, response, next, {
+                                id: apimockId,
+                                mock: matchingMock,
+                                body
+                            });
+                            const matchingState = this.apimockState.getMatchingState(apimockId);
+                            if (matchingState.record && request.headers.record === undefined) {
+                                this.recordResponseHandler.handle(request, response, next, {
+                                    id: apimockId,
+                                    mock: matchingMock,
+                                    body
+                                });
+                            } else {
+                                this.mockRequestHandler.handle(request, response, next, {
+                                    id: apimockId,
+                                    mock: matchingMock
+                                });
+                            }
+                        } else {
+                            next();
+                        }
                     }
-                } else {
-                    next();
-                }
-            }
+                });
+            });
         });
     }
 
