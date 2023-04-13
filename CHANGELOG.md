@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.11.0](https://github.com/ng-apimock/core/compare/v3.10.0...v3.11.0) (2023-04-13)
+
+
+### Features
+
+* add urlencoded and text middleware support ([#1064](https://github.com/ng-apimock/core/issues/1064)) ([75e02bc](https://github.com/ng-apimock/core/commit/75e02bc22d8a5e20af94292074fe94f4ec723d06))
+
 # [3.10.0](https://github.com/ng-apimock/core/compare/v3.8.0...v3.10.0) (2023-03-30)
 
 
