@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.11.1](https://github.com/ng-apimock/core/compare/v3.11.0...v3.11.1) (2023-11-14)
+
+
+### Bug Fixes
+
+* nested body matching should sort on accuracy ([02bc266](https://github.com/ng-apimock/core/commit/02bc266ef6c28bfb37025a2bf1649398bdff77ca))
+
 # [3.11.0](https://github.com/ng-apimock/core/compare/v3.10.0...v3.11.0) (2023-04-13)
 
 
