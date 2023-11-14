@@ -93,7 +93,7 @@ export class State {
      * @return {Mock} mock The matching mock.
      */
     getMatchingMock(url: string, method: string, headers: IncomingHttpHeaders, body: any): Mock {
-        return this.mocks.find((_mock) => {
+        const matches = this.mocks.filter((_mock) => {
             const matchUrl = new RegExp(_mock.request.url).exec(decodeURI(url)) !== null;
             const matchMethod = _mock.request.method === method;
 
@@ -110,9 +110,43 @@ export class State {
             if (_mock.request.body !== undefined) {
                 matchBody = this.matchesBody(_mock.request.body, body);
             }
-
             return matchUrl && matchMethod && matchHeaders && matchBody;
         });
+
+        return matches
+            .sort((lhs: Mock, rhs: Mock) => {
+                const aLength = lhs.request.body !== undefined ? this.accuracy(lhs.request.body) : 0;
+                const bLength = rhs.request.body !== undefined ? this.accuracy(rhs.request.body) : 0;
+
+                if (aLength > bLength) {
+                    return -1;
+                }
+                if (aLength < bLength) {
+                    return 1;
+                }
+                return 0;
+            })[0];
+    }
+
+    /**
+     * Gets the number of valiations for the body matcher.
+     * @param {object} bodyMatcher The body matcher.
+     */
+    accuracy(bodyMatcher: any) {
+        let accuracy = 0;
+
+        if (bodyMatcher !== undefined) {
+            if (typeof bodyMatcher === 'string') {
+                accuracy++;
+            } else if (typeof bodyMatcher === 'object' && bodyMatcher !== null) {
+                Object.keys(bodyMatcher).forEach((key) => {
+                    accuracy += typeof bodyMatcher[key] === 'object'
+                        ? this.accuracy(bodyMatcher[key])
+                        : 1;
+                });
+            }
+        }
+        return accuracy;
     }
 
     /**
@@ -127,15 +161,14 @@ export class State {
         if (typeof body === 'string') {
             result = new RegExp(bodyMatcher).exec(body) !== null;
         } else if (typeof body === 'object' && body !== null) {
-            result = Object.keys(bodyMatcher).length === Object.keys(body).length
-                && Object.keys(bodyMatcher).every((key) => {
-                    if (typeof bodyMatcher[key] === 'object') {
-                        return body[key] !== undefined ? this.matchesBody(bodyMatcher[key], body[key]) : false;
-                    }
-                    const defined = body[key] !== undefined;
-                    const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
-                    return defined && matched;
-                });
+            result = Object.keys(bodyMatcher).every((key) => {
+                if (typeof bodyMatcher[key] === 'object') {
+                    return body[key] !== undefined ? this.matchesBody(bodyMatcher[key], body[key]) : false;
+                }
+                const defined = body[key] !== undefined;
+                const matched = new RegExp(bodyMatcher[key]).exec(body[key]) !== null;
+                return defined && matched;
+            });
         }
         return result;
     }
