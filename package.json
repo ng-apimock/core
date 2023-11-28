@@ -8,6 +8,7 @@
         "email": "mischa@dasberg.nl"
     },
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "precompile": "rimraf dist",
         "compile": "tsc",

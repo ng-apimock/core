@@ -51,6 +51,26 @@ To start up the script just type:
 node serve.js
 ```
 
+### Minimal setup example (serve.ts)
+This is a minimal setup example in TypeScript of how you can manually use @ng-apimock/core
+```ts
+import * as apimock from '@ng-apimock/core';
+import express, { Application } from 'express';
+const app: Application = express();
+app.set('port', 9999);
+
+apimock.processor.process({
+    src: 'mocks'
+});
+
+app.use(apimock.middleware);
+
+app.listen(app.get('port'), () => {
+    console.log('@ng-apimock/core running on port', app.get('port'));
+});
+```
+
+
 ### Endpoints
 There are a few endpoints available when you startup `@ng-apimock/core`:
 - `/ngapimock/info` - responsible for providing information of the running instance
