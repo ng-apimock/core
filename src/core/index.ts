@@ -45,4 +45,4 @@ class NgApimock {
     }
 }
 
-module.exports = new NgApimock();
+export = new NgApimock();
