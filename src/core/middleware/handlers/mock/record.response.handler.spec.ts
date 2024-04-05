@@ -147,6 +147,92 @@ describe('RecordResponseHandler', () => {
             });
         });
 
+        describe('with ipAddress configured', () => {
+            beforeEach(() => {
+                container.rebind('Configuration').toConstantValue({ middleware: { basePath: '/base-path', ipAddress: 'some-ip' } });
+
+                recordResponseHandler = container.get<RecordResponseHandler>('RecordResponseHandler');
+                recordFn = jest.spyOn(recordResponseHandler, 'record');
+                fetchResponseFn = jest.spyOn(recordResponseHandler, 'fetchResponse');
+
+                fetchResponseFn.mockResolvedValue({
+                    buffer: responseBufferFn, headers: { raw: responseHeadersRawFn }, status: 200
+                });
+            });
+
+            describe('method GET', () => {
+                beforeEach(() => {
+                    request.method = HttpMethods.GET;
+
+                    recordResponseHandler.handle(request, response as any, nextFn, {
+                        id: 'apimockId',
+                        mock: { name: 'some' } as Mock,
+                        body: JSON.stringify({ x: 'x' })
+                    });
+                });
+
+                it('sets the record header to true', () => expect(request.headers.record).toBe('true'));
+
+                it('calls the api without body', async () => {
+                    expect(fetchResponseFn).toHaveBeenCalled();
+                    const actualRequest = fetchResponseFn.mock.calls[0][0];
+                    expect(actualRequest.url).toBe('http://some-ip:8888/some/api');
+                    expect(actualRequest.method).toBe(HttpMethods.GET);
+                    expect(actualRequest.body).toEqual(null);
+                    expect(actualRequest.headers.get('host')).toBe('localhost:8888');
+                    expect(actualRequest.headers.get('record')).toBe('true');
+                });
+            });
+
+            describe('method HEAD', () => {
+                beforeEach(() => {
+                    request.method = HttpMethods.HEAD;
+
+                    recordResponseHandler.handle(request, response as any, nextFn, {
+                        id: 'apimockId',
+                        mock: { name: 'some' } as Mock,
+                        body: JSON.stringify({ x: 'x' })
+                    });
+                });
+
+                it('sets the record header to true', () => expect(request.headers.record).toBe('true'));
+
+                it('calls the api without body', async () => {
+                    expect(fetchResponseFn).toHaveBeenCalled();
+                    const actualRequest = fetchResponseFn.mock.calls[0][0];
+                    expect(actualRequest.url).toBe('http://some-ip:8888/some/api');
+                    expect(actualRequest.method).toBe(HttpMethods.HEAD);
+                    expect(actualRequest.body).toEqual(null);
+                    expect(actualRequest.headers.get('host')).toBe('localhost:8888');
+                    expect(actualRequest.headers.get('record')).toBe('true');
+                });
+            });
+
+            describe('method OTHER', () => {
+                beforeEach(() => {
+                    request.method = HttpMethods.POST;
+
+                    recordResponseHandler.handle(request, response as any, nextFn, {
+                        id: 'apimockId',
+                        mock: { name: 'some' } as Mock,
+                        body: { x: 'x' }
+                    });
+                });
+
+                it('sets the record header to true', () => expect(request.headers.record).toBe('true'));
+
+                it('calls the api without body', async () => {
+                    expect(fetchResponseFn).toHaveBeenCalled();
+                    const actualRequest = fetchResponseFn.mock.calls[0][0];
+                    expect(actualRequest.url).toBe('http://some-ip:8888/some/api');
+                    expect(actualRequest.method).toBe(HttpMethods.POST);
+                    expect(actualRequest.body).not.toEqual(null);
+                    expect(actualRequest.headers.get('host')).toBe('localhost:8888');
+                    expect(actualRequest.headers.get('record')).toBe('true');
+                });
+            });
+        });
+
         describe('on successful api call', () => {
             beforeEach(async () => {
                 responseHeadersGetFn.mockReturnValue('application/pdf');
