@@ -27,7 +27,7 @@ describe('Converter', () => {
             debugFn = jest.spyOn(process.stderr, 'write');
             fsReadJsonSyncFn = fs.readJsonSync as jest.Mock;
             fsOutputJsonSyncFn = fs.outputJsonSync as jest.Mock;
-            globSyncFn = glob.sync as jest.Mock;
+            globSyncFn = glob.sync as unknown as jest.Mock;
 
             globSyncFn.mockReturnValue(['mock/old.mock.json', 'mock/new.mock.json']);
             fsReadJsonSyncFn.mockReturnValueOnce({

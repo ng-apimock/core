@@ -33,6 +33,7 @@ export class RecordResponseHandler implements Handler {
     async handle(request: http.IncomingMessage, response: http.ServerResponse, next: Function, params: { id: string, mock: Mock, body: any }): Promise<any> {
         const { method } = request;
         const { headers } = request;
+        const ipAddress = this.configuration.middleware.ipAddress !== undefined ? headers.host.replace('localhost', this.configuration.middleware.ipAddress) : headers.host;
 
         headers.record = 'true';
 
@@ -46,7 +47,7 @@ export class RecordResponseHandler implements Handler {
         }
 
         try {
-            const res = await this.fetchResponse(new Request(`http://${headers.host}${request.url}`, requestInit));
+            const res = await this.fetchResponse(new Request(`http://${ipAddress}${request.url}`, requestInit));
             const responseData = await res.buffer();
             const responseHeaders = await res.headers.raw();
             const responseStatusCode = res.status;

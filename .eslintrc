@@ -52,6 +52,7 @@
       140
     ],
     "no-console": "off",
+    "no-empty-function": "off",
     "no-multi-assign": "off",
     "no-param-reassign": "off",
     "no-prototype-builtins": "off",

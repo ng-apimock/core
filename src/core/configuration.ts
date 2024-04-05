@@ -2,6 +2,7 @@ export interface MiddlewareConfiguration {
     basePath: string;
     identifier: string;
     useHeader: boolean;
+    ipAddress: string;
 }
 
 export interface Configuration {
@@ -12,6 +13,7 @@ export const DefaultConfiguration: Configuration = {
     middleware: {
         basePath: '/ngapimock',
         identifier: 'apimockid',
-        useHeader: false
+        useHeader: false,
+        ipAddress: undefined
     }
 };
