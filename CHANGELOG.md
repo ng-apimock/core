@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.12.0](https://github.com/ng-apimock/core/compare/v3.11.2...v3.12.0) (2024-04-05)
+
+
+### Features
+
+* add override ipaddres configuration option ([#1070](https://github.com/ng-apimock/core/issues/1070)) ([72b4fd8](https://github.com/ng-apimock/core/commit/72b4fd8c963cbcde7c1edd59114b33ff1224c3be))
+
 ## [3.11.2](https://github.com/ng-apimock/core/compare/v3.11.1...v3.11.2) (2023-11-14)
 
 
