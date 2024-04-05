@@ -46,7 +46,7 @@ describe('MocksProcessor', () => {
             debug.enable('ng-apimock:processor-mock');
             debugFn = jest.spyOn(process.stderr, 'write');
             loadFileFn = fileLoader.loadFile as jest.Mock;
-            globSyncFn = glob.sync as jest.Mock;
+            globSyncFn = glob.sync as unknown as jest.Mock;
 
             (state as any).mocks = [];
             (state as any).defaults = {};

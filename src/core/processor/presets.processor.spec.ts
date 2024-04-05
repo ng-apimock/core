@@ -44,7 +44,7 @@ describe('PresetsProcessor', () => {
             debug.enable('ng-apimock:processor-preset');
             debugFn = jest.spyOn(process.stderr, 'write');
             loadFileFn = fileLoader.loadFile as jest.Mock;
-            globSyncFn = glob.sync as jest.Mock;
+            globSyncFn = glob.sync as unknown as jest.Mock;
 
             (state as any).presets = [];
             globSyncFn.mockReturnValue([
