@@ -90,6 +90,7 @@ We have a few channels for contact:
 - [API]( https://ngapimock.org/docs/api/select-scenario) 
 - [Plugins]( https://ngapimock.org/docs/plugins/plugin-introduction)
 - [Changelog]( https://github.com/ng-apimock/core/blob/master/CHANGELOG.md)
+- [OpenApi specification]( https://ngapimock.org/docs/openapi-specification)
 
 ## License
 
