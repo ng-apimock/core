@@ -1,0 +1,324 @@
+openapi: 3.0.2
+info:
+  title: @ng-apimock/core api
+  description: API for @ng-apimock/core
+  version: 1.0.0
+  contact:
+    name: Mischa Dasberg
+    email: mischa@dasberg.nl
+servers:
+  - url: 'http://localhost:3000/ngapimock'
+    description: local development server
+tags:
+  - name: Mocks
+    description: Mocks
+  - name: Presets
+    description: Presets
+  - name: Variables
+    description: Variables
+paths:
+  /mocks:
+    get:
+      tags:
+        - Mocks
+      summary: Gets the mocks
+      operationId: getMocks
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mock'
+    put:
+      tags:
+        - Mocks
+      summary: Update a specific mock
+      operationId: updateMock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMockRequest'
+      responses:
+        '200':
+          description: Update the mock state (scenario, delay, echo)
+  /presets:
+    get:
+      tags:
+        - Presets
+      summary: Gets the presets
+      operationId: getPresets
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Preset'
+    post:
+      tags:
+        - Presets
+      summary: Create a preset
+      operationId: createPreset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePresetRequest'
+      responses:
+        '200':
+          description: Created the preset
+    put:
+      tags:
+        - Presets
+      summary: Select a specific preset
+      operationId: selectPreset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SelectPresetRequest'
+      responses:
+        '200':
+          description: Select the preset
+  /variables:
+    get:
+      tags:
+        - Variables
+      summary: Gets the variables
+      operationId: getVariables
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Variable'
+    put:
+      tags:
+        - Variables
+      summary: Creates or updates a specific variable
+      operationId: createOrUpdateVariable
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateVariableRequest'
+      responses:
+        '200':
+          description: Update the mock state (scenario, delay, echo)
+    delete:
+      tags:
+        - Variables
+      summary: Deletes a specific variable
+      operationId: deleteVariable
+      parameters:
+        - name: key
+          in: path
+          required: true
+          description: the key of the variable to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted the variable
+components:
+  schemas:
+    CreateOrUpdateVariableRequest:
+      description: The create or update variable request
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the variable
+        value:
+          type: object
+          description: The value of the variable
+    CreatePresetRequest:
+      description: The create preset request
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the preset
+        mocks:
+          type: object
+          description: The mocks of the preset
+          additionalProperties:
+            $ref: '#/components/schemas/MockState'
+        variables:
+          type: object
+          description: The variables of the preset
+          additionalProperties:
+            type: string
+    Mock:
+      description: The mock
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the mock
+        isArrray:
+          type: boolean
+          description: Indicates whether the mock is returning an array
+        request:
+          $ref: '#/components/schemas/MockRequest'
+        responses:
+          type: object
+          description: The responses of the mock
+          additionalProperties:
+            $ref: '#/components/schemas/MockResponse'
+      required:
+        - name
+        - request
+        - responses
+    MockRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The url of the request (regex or string
+        method:
+          type: string
+          description: The method of the request
+        body:
+          type: object
+          description: The body of the request
+        headers:
+          type: object
+          description: The headers of the request
+          additionalProperties: {
+            type: "string",
+            properties: {
+            }
+          }
+      required:
+        - url
+        - method
+    MockResponse:
+      type: object
+      properties:
+        status:
+          type: number
+          description: The status of the response
+        statusText:
+          type: string
+          description: The status text of the response
+        data:
+          type: object
+          description: The data of the response
+        file:
+          type: string
+          description: The file pointing to the data of the response
+        headers:
+          type: object
+          description: The headers of the response
+          additionalProperties: {
+            type: "string",
+            properties: {
+            }
+          }
+        default:
+          type: boolean
+          description: Indicates whether the response is the default response (can only be one)
+        then:
+          $ref: '#/components/schemas/MockResponseThenClause'
+        delay:
+          type: number
+          description: The delay of the response
+    MockResponseThenClause:
+      type: object
+      properties:
+        mocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/MockResponseThenClauseMockSelection'
+        criteria:
+          $ref: '#/components/schemas/MockResponseThenClauseCriteria'
+      required:
+        - mocks
+    MockResponseThenClauseCriteria:
+      type: object
+      properties:
+        times:
+          type: number
+          description: The number of times after which the then clause should be activated
+    MockResponseThenClauseMockSelection:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the mock
+        scenario:
+          type: string
+          description: The name of the scenario of the mock to select
+    MockState:
+      type: object
+      properties:
+        scenario:
+          type: string
+          description: The name of the scenario of the mock to select
+        delay:
+          type: number
+          description: The delay of the response
+        echo:
+          type: boolean
+          description: Indicates whether the request should be echoed in the console
+        counter:
+          type: number
+          description: The counter of hits to the mock
+    Preset:
+      description: The preset
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the preset
+        mocks:
+          type: object
+          description: The mocks of the preset
+          additionalProperties:
+            $ref: '#/components/schemas/MockState'
+    SelectPresetRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the preset
+      required:
+        - name
+    UpdateMockRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the mock
+        scenario:
+          type: string
+          description: The name of the scenario of the mock to select
+        delay:
+          type: number
+          description: The delay of the response
+        echo:
+          type: boolean
+          description: Indicates whether the request should be echoed in the console
+      required:
+        - name
+    Variable:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The key of the variable
+        value:
+          type: object
+          description: The value of the variable
+
+
